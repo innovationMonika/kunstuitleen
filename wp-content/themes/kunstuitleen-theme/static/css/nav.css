@@ -1,0 +1,222 @@
+nav {
+    display: block;
+    position: relative;
+    padding: 0;
+    position: absolute;
+    bottom: 0;
+}
+    
+    nav .menu {
+        display: inline-block;
+    }
+    
+    .showmenu, .scrollshowmenu {
+        display: none;
+    }
+    
+        .scrollshowmenu {
+            cursor: pointer;
+            position: absolute;
+            top: 8px;
+            left: -20px;
+        }
+
+    
+    nav ul {
+        margin: 0;
+        padding: 0;
+    }
+    
+        nav ul li {
+            display: inline-block;
+            list-style-type: none;
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: -15px;
+        }
+            
+        
+            nav ul li a {
+                color: #1b1c1d;
+                display: inline-block;
+                font-family: 'Cinzel';
+                font-size: 17px;
+                margin: 0 20px;
+                padding: 0;
+                text-transform: uppercase;
+            }
+            
+                nav ul li.nav-li-search a {
+                    color: #e20816;
+                }
+            
+                nav ul li a:first-of-type {
+                    margin-left: 0;
+                }
+            
+                nav ul li:hover a, nav ul li.current-menu-item a, nav ul li.current-menu-parent a {
+                    color: #e20816;
+                    text-decoration: none;
+                }
+                
+                    nav ul li.current-menu-item a, nav ul li.current-menu-parent a {
+                        border-bottom: 1px solid #e20816; 
+                    }
+                    
+                    nav ul li.nav-li-search a:hover {
+                        color: #1b1c1d;
+                    }
+                            
+            nav ul li .touch-button {
+                display: none;
+                cursor: pointer;
+                padding: 10px 10px 10px 5px;
+            }
+            
+            nav ul ul {
+                display: none;
+            }
+        
+                        
+            nav ul li:hover ul {
+                display: block;
+            }
+            
+            
+@media screen and (max-width: 991px) {
+    nav {
+        clear: both;
+        display: block;
+        position: relative;
+        float: none;
+        width: auto;
+    }
+        
+    nav ul {
+        display: block;
+    }
+    
+        nav ul li {
+            display: block;
+        }
+        
+            nav ul li a {
+                display: block;
+                border-bottom: 1px solid #e9eaeb;
+                padding: 5px;
+                margin: 0;
+            }
+        
+        
+        nav ul li .touch-button {
+            display: block;
+            position: absolute;
+            top: 0px;
+            right: 5px;
+        }
+        
+            nav ul li .touch-button .navicon {
+                font-style: normal;
+            }
+        
+        nav ul ul {
+            border: 0;
+            margin: 0;
+        }
+        
+            nav ul ul li {
+                background-color: #FFF;
+                border: 0;
+            }
+            
+                nav ul ul li.current-menu-item {
+                    background-color: #f3f4f5;
+                }
+            
+                nav ul ul li a, nav ul li:hover ul li a {
+                    background-color: #FFF;
+                    color: #6e7882;
+                    display: block;
+                    font-family: 'MrJones-Book', sans-serif; 
+                    font-size: 14px;
+                    white-space: nowrap;
+                }
+            
+    
+    nav .menu {
+        display: none;
+    }
+    
+        nav .menu ul {
+            display: block;
+            margin: 10px 0 30px 0;
+            text-align: left;
+        }
+    
+    .showmenu, .scrollshowmenu {
+        color: #1b1c1d;
+        display: block;
+        font-size: 30px;
+        text-transform: uppercase;
+        margin: 5px 0 0 0;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .showmenu { position: relative; float: right; margin-right: 50px; }
+    nav ul li a { font-size: 16px; }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    nav ul li a {
+        margin: 0 8px;
+        font-size: 16px;
+    }
+    
+    .scrollshowmenu { left: -6px; }
+}
+
+@media screen and (min-width: 992px) {
+    nav .menu {
+        display: inline-block !important;
+    }
+    
+    nav ul ul {
+        background-color: #FFF;
+        border: 1px solid #dcb853;
+        border-top: 0;
+        min-width: 100%;
+        position: absolute;
+        top: 100%;
+        left: -10px;
+        text-align: left;
+        z-index: 200;
+    }
+    
+        .werk nav ul ul {
+            border-color: #63778c;
+        }
+    
+        nav ul ul li {
+            display: block;
+            padding: 0;
+            margin: 0;
+        }
+        
+            nav ul li ul li a, nav ul li:hover ul li a {
+                background-color: #FFF;
+                border: 0 !important;
+                color: #000;
+                display: block;
+                font-family: 'MrJones-Book', sans-serif; 
+                font-size: 15px;
+                margin: 0;
+                padding: 10px;
+                text-transform: none;
+                white-space: nowrap;
+            }
+            
+                nav ul li:hover ul li a:hover {
+                    color: #e20816;
+                }
+}

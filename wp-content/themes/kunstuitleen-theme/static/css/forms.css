@@ -1,0 +1,307 @@
+/* INPUT FIELDS BEGIN */
+
+form{
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+    ::-webkit-input-placeholder { /* WebKit browsers */
+        color:    #333;
+        font-style: italic;
+    }
+    :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+       color:    #333;
+       opacity:  1;
+       font-style: italic;
+    }
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+       color:    #333;
+       opacity:  1;
+       font-style: italic;
+    }
+    :-ms-input-placeholder { /* Internet Explorer 10+ */
+       color:    #333;
+       font-style: italic;
+    }
+
+    .frm_opt_container {
+        margin-bottom: 30px;
+    }
+    
+        .margin-on-description .frm_opt_container {
+            margin-bottom: 10px;
+        }
+    
+	input[type="checkbox"],
+	input[type="radio"]
+	{
+        display: none;
+	}
+	
+	    .frm_radio label, .frm_checkbox label {
+    	    background-image: url(../images/checkbox.svg);
+    	    background-position: left 4px;
+    	    background-repeat: no-repeat;
+    	    cursor: pointer;
+    	    font-size: 18px;
+    	    line-height: 28px;
+    	    padding-left: 30px;
+	    }
+	    
+	        .frm_radio label.checked, .frm_checkbox label.checked {
+        	    background-image: url(../images/checkbox-checked.svg);
+    	    }
+
+	input[type="text"], 
+	input[type="email"], 
+	input[type="tel"], 
+	input[type="password"], 
+	input[type="tel"], 
+	input[type="number"],
+	textarea,
+	select
+	{
+		display: block;
+		width: 100% !important;
+		height: 34px;
+		padding: 5px 15px;
+		font-size: 14px;
+		color: #555;
+		vertical-align: middle;
+		background-color: #fff;
+		background-image: none;
+		border: 0;
+		outline: none;
+		-webkit-appearance: none;
+	}
+		
+		textarea{
+			height:134px;
+			max-width:100%;
+		}
+		
+		.kadobon-form-container input[type="text"], 
+    	.kadobon-form-container input[type="email"], 
+    	.kadobon-form-container input[type="tel"], 
+    	.kadobon-form-container input[type="password"], 
+    	.kadobon-form-container input[type="tel"], 
+    	.kadobon-form-container input[type="number"],
+    	.kadobon-form-container textarea {
+        	border: 1px solid #c7c8ca;
+    	}
+
+		label{
+			font-weight:normal;
+		}
+		
+		.prefix-euro {
+    		position: relative;
+		}
+		
+    		.prefix-euro::before {
+        		background-color: #FFF;
+        		border: 1px solid #c7c8ca;
+        		color: #000;
+        		content: '€';
+        		font-size: 16px;
+        		font-weight: bold;
+        		text-align: center;
+        		padding: 5px 0;
+        		position: absolute;
+        		top: 0;
+        		left: 0;
+        		width: 34px;
+    		}
+    		
+    		.prefix-euro input[type="number"] {
+    		    margin-left: 44px;
+    		    width: 50% !important;
+    		}
+		    
+		    @media screen and (min-width: 1199px){
+    		    .prefix-euro input[type="number"] {
+        		    width: 25% !important;
+    		    }
+		    }
+		
+		
+		#modal input[type="text"], 
+		#modal input[type="email"], 
+		#modal input[type="tel"], 
+		#modal input[type="password"], 
+		#modal input[type="tel"],
+    	#modal textarea,
+    	#modal select {
+        	border: 1px solid #a6a8ab;
+        	font-size: 16px;
+    	}
+	
+	
+        #modal .frm_radio label, 
+        #modal .frm_checkbox label {
+            font-size: 13px;
+        }
+        
+        #modal .frm_radio label,
+        #modal .frm_checkbox label {
+    	    background-image: url(../images/modal-checkbox.svg);
+	    }
+	    
+	        #modal .frm_radio label.checked,
+	        #modal .frm_checkbox label.checked {
+    	        background-image: url(../images/modal-checkbox-checked.svg);
+	        }
+		
+		
+		#modal input[type="submit"] {
+            background-image: url(../images/btn-werk-upsidedown.svg);
+            background-position: left top;
+		}
+		    
+		    #modal input[type="submit"]:hover {
+                background-image: url(../images/btn-grey-upsidedown.svg);
+    		}
+
+
+/* INPUT FIELDS END */
+
+/* FORMIDABLE BOOTSTRAP BEGIN */
+
+.frm_screen_reader, .frm-hidden {
+    display: none;   
+}
+
+.frm_description {
+    font-style: italic;
+}
+
+footer .frm_forms .frm_form_field {
+    margin-bottom: 10px;
+    
+}
+
+footer .frm_forms .frm_form_field:last-of-type {
+    margin-bottom: 0;
+}
+
+footer .frm_forms .frm_form_field label.frm_primary_label {
+    display: none;
+}
+
+.frm_submit {
+    background-color: #FFF;
+    text-align: right;
+}
+
+    .column .frm_submit {
+/*
+        position: absolute;
+        bottom: -16px;
+        left: 60px;
+        right: 60px;
+*/
+    }
+    
+        .frm_submit .frm_ajax_loading {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+        }
+
+.frm_error {
+    color: #e20816;
+    margin-top: 3px;
+    font-style: italic;
+}
+
+    .checkbox .frm_error {
+        margin-top: -28px;
+        margin-bottom: 30px;
+    }
+    
+    .frm_error .preselect-error {
+        background-color: #e20816;
+        color: #FFF;
+        margin-top: 15px;
+        padding: 15px;
+    }
+        
+        .frm_error .preselect-error a {
+            color: #FFF;
+            text-decoration: underline;
+        }
+        
+        .frm_error .preselect-error ul {
+            margin-top: 10px;    
+        }
+        
+        .frm_error .preselect-error :last-child {
+            margin-bottom: 0;
+        }
+
+    .column.red .frm_error {
+        color: #FFF;
+    }
+
+.frm_hidden { display: none; }
+
+.frm_ajax_loading {
+    display: none;
+}
+
+.frm_ajax_loading.frm_loading_now {
+    display: block;
+}
+
+.frm_forms .margin-on-description .frm_description {
+    margin-left: 30px;
+    margin-top: -10px;
+}
+
+@media screen and (min-width: 992px) {
+
+    .horizontal_radio .frm_checkbox {
+        display: inline-block;
+        width: 49.5%;
+    }
+    
+        .horizontal_radio .frm_primary_label {
+            display: block;
+        }
+}
+
+.frm_checkbox label, .frm_radio label {
+    margin: auto;
+}
+
+input:read-only, select:read-only, input:disabled, select:disabled {
+    background-color: #ebebeb;
+}
+
+.frm_none_container, .frm_hidden_container {
+    margin-bottom: 15px;   
+}
+    .frm_none_container label.frm_primary_label, .frm_hidden_container label.frm_primary_label {
+        display: none;
+    }
+    
+.kadobon .frm_none_container, .kadobon .frm_hidden_container {
+    margin-bottom: 5px;
+}
+
+.frm_first_half, .frm_last_half {
+    width: 48%;
+}
+
+
+.frm_first_third, .frm_last_third {
+    width: 28%;
+}
+.frm_first_two_thirds, .frm_last_two_thirds {
+    width: 70%;
+}
+
+    .frm_first_half, .frm_first_third, .frm_first_two_thirds { float: left; }
+    .frm_last_half, .frm_last_third, .frm_last_two_thirds { float: right; }
+
+/* FORMIDABLE BOOTSTRAP END */
