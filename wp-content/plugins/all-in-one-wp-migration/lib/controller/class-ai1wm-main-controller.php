@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,18 +126,8 @@ class Ai1wm_Main_Controller {
 		// Enqueue backups scripts and styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_backups_scripts_and_styles' ), 5 );
 
-		// Enqueue schedules scripts and styles
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_schedules_scripts_and_styles' ), 5 );
-
-		// Enqueue reset scripts and styles
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_reset_scripts_and_styles' ), 5 );
-
 		// Enqueue updater scripts and styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_updater_scripts_and_styles' ), 5 );
-
-		// Handle export/import exceptions (errors)
-		add_action( 'ai1wm_status_export_error', array( $this, 'handle_error_cleanup' ), 5, 2 );
-		add_action( 'ai1wm_status_import_error', array( $this, 'handle_error_cleanup' ), 5, 2 );
 	}
 
 	/**
@@ -183,8 +173,6 @@ class Ai1wm_Main_Controller {
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Upload::execute', 5 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Compatibility::execute', 10 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Validate::execute', 50 );
-		add_filter( 'ai1wm_import', 'Ai1wm_Import_Check_Encryption::execute', 75 );
-		add_filter( 'ai1wm_import', 'Ai1wm_Import_Check_Decryption_Password::execute', 90 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Confirm::execute', 100 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Blogs::execute', 150 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Permalinks::execute', 170 );
@@ -192,7 +180,6 @@ class Ai1wm_Main_Controller {
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Content::execute', 250 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Mu_Plugins::execute', 270 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Database::execute', 300 );
-		add_filter( 'ai1wm_import', 'Ai1wm_Import_Users::execute', 310 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Options::execute', 330 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Done::execute', 350 );
 		add_filter( 'ai1wm_import', 'Ai1wm_Import_Clean::execute', 400 );
@@ -238,13 +225,10 @@ class Ai1wm_Main_Controller {
 		add_action( 'wp_maybe_auto_update', 'Ai1wm_Updater_Controller::check_for_updates' );
 
 		// Add HTTP export headers
-		add_filter( 'ai1wm_http_export_headers', 'ai1wm_auth_headers' );
+		add_filter( 'ai1wm_http_export_headers', 'Ai1wm_Export_Controller::http_export_headers' );
 
 		// Add HTTP import headers
-		add_filter( 'ai1wm_http_import_headers', 'ai1wm_auth_headers' );
-
-		// Add HTTP reset headers
-		add_filter( 'ai1wm_http_reset_headers', 'ai1wm_auth_headers' );
+		add_filter( 'ai1wm_http_import_headers', 'Ai1wm_Import_Controller::http_import_headers' );
 
 		// Add chunk size limit
 		add_filter( 'ai1wm_max_chunk_size', 'Ai1wm_Import_Controller::max_chunk_size' );
@@ -271,7 +255,7 @@ class Ai1wm_Main_Controller {
 	 * @return void
 	 */
 	public function wp_cli() {
-		if ( defined( 'WP_CLI' ) && count( Ai1wm_Extensions::get() ) === 0 ) {
+		if ( defined( 'WP_CLI' ) ) {
 			WP_CLI::add_command( 'ai1wm', 'Ai1wm_WP_CLI_Command', array( 'shortdesc' => __( 'All-in-One WP Migration Command', AI1WM_PLUGIN_NAME ) ) );
 		}
 	}
@@ -670,27 +654,6 @@ class Ai1wm_Main_Controller {
 			'ai1wm_backups',
 			'Ai1wm_Backups_Controller::index'
 		);
-
-		if ( ! defined( 'AI1WMVE_PATH' ) ) {
-			// Sub-level Reset
-			add_submenu_page(
-				'ai1wm_export',
-				__( 'Reset Hub', AI1WM_PLUGIN_NAME ),
-				__( 'Reset Hub', AI1WM_PLUGIN_NAME ) . Ai1wm_Template::get_content( 'main/premium-badge' ),
-				'export',
-				'ai1wm_reset',
-				'Ai1wm_Reset_Controller::index'
-			);
-			// Sub-level Schedules
-			add_submenu_page(
-				'ai1wm_export',
-				__( 'Schedules', AI1WM_PLUGIN_NAME ),
-				__( 'Schedules', AI1WM_PLUGIN_NAME ) . Ai1wm_Template::get_content( 'main/premium-badge' ),
-				'export',
-				'ai1wm_schedules',
-				'Ai1wm_Schedules_Controller::index'
-			);
-		}
 	}
 
 	/**
@@ -788,9 +751,6 @@ class Ai1wm_Main_Controller {
 				'ajax'       => array(
 					'url' => wp_make_link_relative( add_query_arg( array( 'ai1wm_import' => 1 ), admin_url( 'admin-ajax.php?action=ai1wm_export' ) ) ),
 				),
-				'download'   => array(
-					'url' => wp_make_link_relative( add_query_arg( array( 'ai1wm_import' => 1 ), admin_url( 'admin-ajax.php?action=ai1wm_backup_download_file' ) ) ),
-				),
 				'status'     => array(
 					'url' => wp_make_link_relative( add_query_arg( array( 'ai1wm_import' => 1, 'secret_key' => get_option( AI1WM_SECRET_KEY ) ), admin_url( 'admin-ajax.php?action=ai1wm_status' ) ) ),
 				),
@@ -817,7 +777,6 @@ class Ai1wm_Main_Controller {
 				'thanks_for_submitting_your_request'  => __( 'Thanks for submitting your request!', AI1WM_PLUGIN_NAME ),
 				'backups_count_singular'              => __( 'You have %d backup', AI1WM_PLUGIN_NAME ),
 				'backups_count_plural'                => __( 'You have %d backups', AI1WM_PLUGIN_NAME ),
-				'archive_browser_download_error'      => __( 'Error while downloading file', AI1WM_PLUGIN_NAME ),
 			)
 		);
 	}
@@ -922,7 +881,6 @@ class Ai1wm_Main_Controller {
 				'unable_to_import'                    => __( 'Unable to import', AI1WM_PLUGIN_NAME ),
 				'unable_to_start_the_import'          => __( 'Unable to start the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
 				'unable_to_confirm_the_import'        => __( 'Unable to confirm the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_check_decryption_password' => __( 'Unable to check decryption password. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
 				'unable_to_prepare_blogs_on_import'   => __( 'Unable to prepare blogs on import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
 				'unable_to_stop_the_import'           => __( 'Unable to stop the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
 				'please_wait_stopping_the_import'     => __( 'Please wait, stopping the import...', AI1WM_PLUGIN_NAME ),
@@ -937,12 +895,6 @@ class Ai1wm_Main_Controller {
 				'how_may_we_help_you'                 => __( 'How may we help you?', AI1WM_PLUGIN_NAME ),
 				'thanks_for_submitting_your_feedback' => __( 'Thanks for submitting your feedback!', AI1WM_PLUGIN_NAME ),
 				'thanks_for_submitting_your_request'  => __( 'Thanks for submitting your request!', AI1WM_PLUGIN_NAME ),
-				'backup_encrypted'                    => __( 'The backup is encrypted', AI1WM_PLUGIN_NAME ),
-				'backup_encrypted_message'            => __( 'Please enter a password to import the file', AI1WM_PLUGIN_NAME ),
-				'submit'                              => __( 'Submit', AI1WM_PLUGIN_NAME ),
-				'enter_password'                      => __( 'Enter a password', AI1WM_PLUGIN_NAME ),
-				'repeat_password'                     => __( 'Repeat the password', AI1WM_PLUGIN_NAME ),
-				'passwords_do_not_match'              => __( 'The passwords do not match', AI1WM_PLUGIN_NAME ),
 				'import_from_file'                    => sprintf(
 					__(
 						'Your file exceeds the maximum upload size for this site: <strong>%s</strong><br />%s%s',
@@ -954,7 +906,7 @@ class Ai1wm_Main_Controller {
 						AI1WM_PLUGIN_NAME
 					),
 					__(
-						'<a href="https://servmask.com/products/unlimited-extension" target="_blank">Get unlimited</a>',
+						'<a href="https://import.wp-migration.com" target="_blank">Get unlimited</a>',
 						AI1WM_PLUGIN_NAME
 					)
 				),
@@ -1061,19 +1013,13 @@ class Ai1wm_Main_Controller {
 			'ai1wm_backups',
 			array(
 				'ajax'       => array(
-					'url' => wp_make_link_relative( add_query_arg( array( 'ai1wm_import' => 1 ), admin_url( 'admin-ajax.php?action=ai1wm_backups' ) ) ),
+					'url' => wp_make_link_relative( admin_url( 'admin-ajax.php?action=ai1wm_backups' ) ),
 				),
 				'backups'    => array(
-					'url' => wp_make_link_relative( add_query_arg( array( 'ai1wm_import' => 1 ), admin_url( 'admin-ajax.php?action=ai1wm_backup_list' ) ) ),
+					'url' => wp_make_link_relative( admin_url( 'admin-ajax.php?action=ai1wm_backup_list' ) ),
 				),
 				'labels'     => array(
-					'url' => wp_make_link_relative( add_query_arg( array( 'ai1wm_import' => 1 ), admin_url( 'admin-ajax.php?action=ai1wm_add_backup_label' ) ) ),
-				),
-				'content'    => array(
-					'url' => wp_make_link_relative( add_query_arg( array( 'ai1wm_import' => 1 ), admin_url( 'admin-ajax.php?action=ai1wm_backup_list_content' ) ) ),
-				),
-				'download'   => array(
-					'url' => wp_make_link_relative( add_query_arg( array( 'ai1wm_import' => 1 ), admin_url( 'admin-ajax.php?action=ai1wm_backup_download_file' ) ) ),
+					'url' => wp_make_link_relative( admin_url( 'admin-ajax.php?action=ai1wm_add_backup_label' ) ),
 				),
 				'secret_key' => get_option( AI1WM_SECRET_KEY ),
 			)
@@ -1131,89 +1077,7 @@ class Ai1wm_Main_Controller {
 				),
 				'backups_count_singular'              => __( 'You have %d backup', AI1WM_PLUGIN_NAME ),
 				'backups_count_plural'                => __( 'You have %d backups', AI1WM_PLUGIN_NAME ),
-				'archive_browser_error'               => __( 'Error', AI1WM_PLUGIN_NAME ),
-				'archive_browser_list_error'          => __( 'Error while reading backup content', AI1WM_PLUGIN_NAME ),
-				'archive_browser_download_error'      => __( 'Error while downloading file', AI1WM_PLUGIN_NAME ),
-				'archive_browser_title'               => __( 'List the content of the backup', AI1WM_PLUGIN_NAME ),
-				'progress_bar_title'                  => __( 'Reading...', AI1WM_PLUGIN_NAME ),
-				'backup_encrypted'                    => __( 'The backup is encrypted', AI1WM_PLUGIN_NAME ),
-				'backup_encrypted_message'            => __( 'Please enter a password to import the file', AI1WM_PLUGIN_NAME ),
-				'submit'                              => __( 'Submit', AI1WM_PLUGIN_NAME ),
-				'enter_password'                      => __( 'Enter a password', AI1WM_PLUGIN_NAME ),
-				'repeat_password'                     => __( 'Repeat the password', AI1WM_PLUGIN_NAME ),
-				'passwords_do_not_match'              => __( 'The passwords do not match', AI1WM_PLUGIN_NAME ),
-
 			)
-		);
-	}
-
-	/**
-	 * Enqueue scripts and styles for Schedules page
-	 *
-	 * @param  string $hook Hook suffix
-	 * @return void
-	 */
-	public function enqueue_schedules_scripts_and_styles( $hook ) {
-		if ( stripos( 'all-in-one-wp-migration_page_ai1wm_schedules', $hook ) === false ) {
-			return;
-		}
-
-		// We don't want heartbeat to occur when restoring
-		wp_deregister_script( 'heartbeat' );
-
-		// We don't want auth check for monitoring whether the user is still logged in
-		remove_action( 'admin_enqueue_scripts', 'wp_auth_check_load' );
-
-		if ( is_rtl() ) {
-			wp_enqueue_style(
-				'ai1wm_schedules',
-				Ai1wm_Template::asset_link( 'css/schedules.min.rtl.css' )
-			);
-		} else {
-			wp_enqueue_style(
-				'ai1wm_schedules',
-				Ai1wm_Template::asset_link( 'css/schedules.min.css' )
-			);
-		}
-
-		wp_enqueue_script(
-			'ai1wm_schedules',
-			Ai1wm_Template::asset_link( 'javascript/schedules.min.js' )
-		);
-	}
-
-	/**
-	 * Enqueue scripts and styles for Reset page
-	 *
-	 * @param  string $hook Hook suffix
-	 * @return void
-	 */
-	public function enqueue_reset_scripts_and_styles( $hook ) {
-		if ( stripos( 'all-in-one-wp-migration_page_ai1wm_reset', $hook ) === false ) {
-			return;
-		}
-
-		// We don't want heartbeat to occur when restoring
-		wp_deregister_script( 'heartbeat' );
-
-		// We don't want auth check for monitoring whether the user is still logged in
-		remove_action( 'admin_enqueue_scripts', 'wp_auth_check_load' );
-
-		if ( is_rtl() ) {
-			wp_enqueue_style(
-				'ai1wm_reset',
-				Ai1wm_Template::asset_link( 'css/reset.min.rtl.css' )
-			);
-		} else {
-			wp_enqueue_style(
-				'ai1wm_reset',
-				Ai1wm_Template::asset_link( 'css/reset.min.css' )
-			);
-		}
-
-		wp_enqueue_script(
-			'ai1wm_reset',
-			Ai1wm_Template::asset_link( 'javascript/reset.min.js' )
 		);
 	}
 
@@ -1266,8 +1130,6 @@ class Ai1wm_Main_Controller {
 		);
 	}
 
-
-
 	/**
 	 * Outputs menu icon between head tags
 	 *
@@ -1286,22 +1148,16 @@ class Ai1wm_Main_Controller {
 	 * @return void
 	 */
 	public function init() {
-		$user     = false;
-		$password = false;
 		// Set username
 		if ( isset( $_SERVER['PHP_AUTH_USER'] ) ) {
-			$user = $_SERVER['PHP_AUTH_USER'];
+			update_option( AI1WM_AUTH_USER, $_SERVER['PHP_AUTH_USER'] );
 		} elseif ( isset( $_SERVER['REMOTE_USER'] ) ) {
-			$user = $_SERVER['REMOTE_USER'];
+			update_option( AI1WM_AUTH_USER, $_SERVER['REMOTE_USER'] );
 		}
 
 		// Set password
 		if ( isset( $_SERVER['PHP_AUTH_PW'] ) ) {
-			$password = $_SERVER['PHP_AUTH_PW'];
-		}
-
-		if ( $user !== false && $password !== false ) {
-			update_option( AI1WM_AUTH_HEADER, base64_encode( sprintf( '%s:%s', $user, $password ) ) );
+			update_option( AI1WM_AUTH_PASSWORD, $_SERVER['PHP_AUTH_PW'] );
 		}
 
 		// Check for updates
@@ -1337,8 +1193,6 @@ class Ai1wm_Main_Controller {
 		add_action( 'wp_ajax_ai1wm_feedback', 'Ai1wm_Feedback_Controller::feedback' );
 		add_action( 'wp_ajax_ai1wm_add_backup_label', 'Ai1wm_Backups_Controller::add_label' );
 		add_action( 'wp_ajax_ai1wm_backup_list', 'Ai1wm_Backups_Controller::backup_list' );
-		add_action( 'wp_ajax_ai1wm_backup_list_content', 'Ai1wm_Backups_Controller::backup_list_content' );
-		add_action( 'wp_ajax_ai1wm_backup_download_file', 'Ai1wm_Backups_Controller::download_file' );
 
 		// Update actions
 		if ( current_user_can( 'update_plugins' ) ) {
@@ -1376,19 +1230,5 @@ class Ai1wm_Main_Controller {
 		);
 
 		return $schedules;
-	}
-
-	/**
-	 * Handles ai1wm_status_export_error hook
-	 *
-	 * @param $params
-	 * @param $exception
-	 *
-	 * @return void
-	 */
-	public function handle_error_cleanup( $params, $exception = null ) {
-		if ( ! $exception instanceof Ai1wm_Import_Retry_Exception ) {
-			Ai1wm_Directory::delete( ai1wm_storage_path( $params ) );
-		}
 	}
 }

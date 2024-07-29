@@ -5,9 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmFormMigratorsHelper {
 
-	/**
-	 * @return bool
-	 */
 	private static function is_dismissed( $form, $dismissed = null ) {
 		if ( $dismissed === null ) {
 			$dismissed = get_option( 'frm_dismissed' );
@@ -20,9 +17,6 @@ class FrmFormMigratorsHelper {
 		return false;
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function maybe_show_download_link() {
 		$forms = self::import_links();
 		foreach ( $forms as $form ) {
@@ -38,16 +32,11 @@ class FrmFormMigratorsHelper {
 
 	/**
 	 * @since 4.05
-	 *
-	 * @return void
 	 */
 	public static function maybe_add_to_inbox() {
-		$forms = self::import_links();
-		if ( ! $forms ) {
-			return;
-		}
-
 		$inbox = new FrmInbox();
+		$forms = self::import_links();
+
 		foreach ( $forms as $form ) {
 			$inbox->add_message(
 				array(
@@ -62,9 +51,6 @@ class FrmFormMigratorsHelper {
 		}
 	}
 
-	/**
-	 * @return array
-	 */
 	private static function import_links() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
 			return array();
@@ -77,7 +63,7 @@ class FrmFormMigratorsHelper {
 				continue;
 			}
 
-			$installer         = new FrmInstallPlugin( array( 'plugin_file' => $form['importer'] ) );
+			$installer = new FrmInstallPlugin( array( 'plugin_file' => $form['importer'] ) );
 			$form['installed'] = $installer->is_installed();
 			$form['link']      = $installer->get_activate_link();
 
@@ -86,9 +72,6 @@ class FrmFormMigratorsHelper {
 		return $forms;
 	}
 
-	/**
-	 * @return string[][]
-	 */
 	private static function importable_forms() {
 		return array(
 			'gf' => array(
@@ -127,12 +110,6 @@ class FrmFormMigratorsHelper {
 		<?php
 	}
 
-	/**
-	 * @param array  $install
-	 * @param string $label
-	 *
-	 * @return void
-	 */
 	private static function install_button( $install, $label = '' ) {
 		$primary = 'button-secondary frm-button-secondary ';
 
@@ -164,9 +141,6 @@ class FrmFormMigratorsHelper {
 		<?php
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function dismiss_migrator() {
 		check_ajax_referer( 'frm_ajax', 'nonce' );
 		$dismissed = get_option( 'frm_dismissed' );
@@ -176,5 +150,12 @@ class FrmFormMigratorsHelper {
 		$dismissed[] = FrmAppHelper::get_param( 'plugin', '', 'post', 'sanitize_text_field' );
 		update_option( 'frm_dismissed', array_filter( $dismissed ), 'no' );
 		wp_die();
+	}
+
+	/**
+	 * @deprecated 4.05
+	 */
+	public static function notification_count() {
+		_deprecated_function( __METHOD__, '4.05' );
 	}
 }

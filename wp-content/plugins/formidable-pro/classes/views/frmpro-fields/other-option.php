@@ -13,10 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		// Get string for Other text field.
 		$other_val = FrmFieldsHelper::get_other_val( compact( 'opt_key', 'field' ) );
 
-		$checked = (bool) $other_val;
+		$checked = $other_val ? ' checked="checked"' : '';
 	}
 	?>
-	<input type="<?php echo esc_attr( $default_type ); ?>" name="<?php echo esc_attr( $field_name ); ?>" <?php checked( ! empty( $checked ) ); ?> value="<?php echo esc_attr( $field_val ); ?>" />
+	<input type="<?php echo esc_attr( $default_type ); ?>" name="<?php echo esc_attr( $field_name ); ?>" <?php echo $checked; // WPCS: XSS ok. ?> value="<?php echo esc_attr( $field_val ); ?>" />
+
 
 	<span class="frm-with-right-icon">
 		<input type="text" name="field_options[options_<?php echo esc_attr( $field['id'] ); ?>][<?php echo esc_attr( $opt_key ); ?>]" value="<?php echo esc_attr( $opt ); ?>" class="field_<?php echo esc_attr( $field['id'] ); ?>_option <?php echo esc_attr( $field['separate_value'] ? 'frm_with_key' : '' ); ?>" id="<?php echo esc_attr( $html_id . '-' . $opt_key ); ?>" data-frmchange="updateDefault" />

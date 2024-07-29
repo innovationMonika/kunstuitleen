@@ -84,16 +84,16 @@ class FrmProNotification {
 		}
 
 		// Get the file
-		$file = get_post_meta( $file_id, '_wp_attached_file', true );
+		$file = get_post_meta( $file_id, '_wp_attached_file', true);
 		if ( $file ) {
 			$uploads = wp_upload_dir();
 			$path    = $uploads['basedir'] . '/' . $file;
 			if ( self::$form_is_protected ) {
-				FrmProFileField::chmod( $path, FrmProFileField::get_readonly_permission() );
+				FrmProFileField::chmod( $path, 0400 );
 				add_action(
 					'frm_notification',
-					function () use ( $path ) {
-						FrmProFileField::chmod( $path, FrmProFileField::WRITE_ONLY );
+					function() use ( $path ) {
+						FrmProFileField::chmod( $path, 0200 );
 					}
 				);
 			}
@@ -116,7 +116,7 @@ class FrmProNotification {
 			return $attachments;
 		}
 
-		$unique_filename_filter = function ( $filename, $form, $args ) use ( $action_id, $entry ) {
+		$unique_filename_filter = function( $filename, $form, $args ) use ( $action_id, $entry ) {
 			if ( ! empty( $args['meta'] ) && array_key_exists( 'action_id', $args['meta'] ) && (int) $action_id === (int) $args['meta']['action_id'] ) {
 				$split = explode( '.', $filename, 2 );
 				if ( 2 === count( $split ) ) {
@@ -145,7 +145,7 @@ class FrmProNotification {
 
 		add_action(
 			'frm_notification',
-			function () use ( $csv_path ) {
+			function() use ( $csv_path ) {
 				if ( file_exists( $csv_path ) ) {
 					unlink( $csv_path );
 				}

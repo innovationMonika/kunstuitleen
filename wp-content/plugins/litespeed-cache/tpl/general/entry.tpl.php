@@ -39,6 +39,7 @@ if ( $this->_is_network_admin ) {
 
 	<div class="litespeed-body">
 	<?php
+		$this->form_action();
 
 		// include all tpl for faster UE
 		foreach ($menu_list as $tab => $val) {
@@ -47,6 +48,7 @@ if ( $this->_is_network_admin ) {
 			echo "</div>";
 		}
 
+		$this->form_end();
 	?>
 	</div>
 

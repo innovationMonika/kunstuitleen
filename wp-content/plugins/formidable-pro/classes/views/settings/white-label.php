@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php esc_html_e( 'Remove references to Formidable Forms to provide an unbranded experience for your clients.', 'formidable-pro' ); ?>
 </p>
 <p>
-	<label for="frm_menu" class="frm_left_label"><?php esc_html_e( 'Plugin Label', 'formidable-pro' ); ?></label>
+	<label class="frm_left_label"><?php esc_html_e( 'Plugin Label', 'formidable-pro' ); ?></label>
 	<input type="text" name="frm_menu" id="frm_menu" value="<?php echo esc_attr( $frm_settings->menu ); ?>" />
 	<?php if ( is_multisite() && current_user_can( 'setup_network' ) ) { ?>
 		<label for="frm_mu_menu">
@@ -26,7 +26,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<input type="radio" name="frm_menu_icon" value="<?php echo esc_attr( $icon ); ?>" <?php checked( $frmpro_settings->menu_icon, $icon ); ?> />
 			<?php
 			if ( empty( $icon ) ) {
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo FrmAppHelper::svg_logo(
 					array(
 						'height' => 22,

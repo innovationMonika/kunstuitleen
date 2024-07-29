@@ -45,16 +45,11 @@ class FrmViewsHooksController {
 		add_action( 'frm_include_front_css', 'FrmViewsAppController::include_views_css' );
 
 		add_filter( 'the_content', 'FrmViewsDisplaysController::get_content', 10 );
-		add_filter( 'get_canonical_url', 'FrmViewsDisplaysController::maybe_filter_canonical_url', 10, 2 );
 
 		add_shortcode( 'display-frm-data', 'FrmViewsDisplaysController::get_shortcode' );
 		add_filter( 'frm_export_csv_table_heading', 'FrmViewsEditorController::add_table_view_headers_to_csv', 10, 2 );
 
-		add_action( 'elementor/widgets/register', 'FrmViewsHooksController::register_elementor_hooks' );
-
-		// AJAX Pagination
-		add_filter( 'frm_before_display_content', 'FrmViewsPaginationController::before_display_content', 10, 3 );
-		add_filter( 'frm_after_display_content', 'FrmViewsPaginationController::after_display_content', 10, 3 );
+		add_action( 'elementor/widgets/widgets_registered', 'FrmViewsHooksController::register_elementor_hooks' );
 	}
 
 	public static function load_admin_hooks() {
@@ -67,8 +62,8 @@ class FrmViewsHooksController {
 		add_action( 'save_post', 'FrmViewsDisplaysController::save_post' );
 		add_action( 'frm_destroy_form', 'FrmViewsDisplaysController::delete_views_for_form' );
 		add_action( 'manage_frm_display_posts_custom_column', 'FrmViewsDisplaysController::manage_custom_columns', 10, 2 );
+		add_action( 'frm_views_listing_page_admin_nav', 'FrmViewsIndexController::admin_nav' );
 		add_action( 'admin_footer', 'FrmViewsIndexController::admin_footer' );
-		add_action( 'admin_enqueue_scripts', 'FrmViewsIndexController::add_index_script' );
 
 		add_filter( 'parse_query', 'FrmViewsDisplaysController::filter_forms' );
 		add_filter( 'frm_form_nav_list', 'FrmViewsAppController::form_nav', 9, 2 );
@@ -85,24 +80,8 @@ class FrmViewsHooksController {
 		add_filter( 'frm_popup_shortcodes', 'FrmViewsDisplaysController::popup_shortcodes', 9 );
 		add_filter( 'get_the_excerpt', 'FrmViewsDisplaysController::use_first_box_for_excerpt_for_grid', 1, 2 );
 
-		// Settings
-		add_filter( 'frm_add_settings_section', 'FrmViewsSettingsController::add_settings_section', 1 );
-		add_action( 'frm_update_settings', 'FrmViewsSettingsController::update' );
-		add_action( 'frm_store_settings', 'FrmViewsSettingsController::store' );
-
-		// Embed
-		add_filter( 'frm_create_page_with_view_shortcode_content', 'FrmViewsAppController::get_page_shortcode_content', 1, 2 );
-
-		// Applications
-		add_action( 'frm_application_pre_edit_form', 'FrmViewsApplicationsController::pre_edit_form', 1 );
-		add_filter( 'frm_application_term_icons', 'FrmViewsApplicationsController::add_views_icons_for_application_term_page', 1 );
-
 		if ( FrmViewsAppHelper::view_editor_is_active() ) {
 			add_filter( 'admin_body_class', 'FrmViewsEditorController::add_view_editor_body_class' );
-		}
-
-		if ( FrmViewsAppHelper::view_editor_is_active() || FrmViewsAppHelper::is_on_views_listing_page() ) {
-			add_filter( 'frm_api_include_embed_form_script', '__return_true' );
 		}
 
 		if ( FrmAppHelper::is_admin_page( 'formidable' ) ) {
@@ -117,11 +96,6 @@ class FrmViewsHooksController {
 		add_action( 'wp_ajax_frm_add_where_row', 'FrmViewsDisplaysController::get_where_row' );
 		add_action( 'wp_ajax_frm_add_where_options', 'FrmViewsDisplaysController::get_where_options' );
 		add_action( 'wp_ajax_frm_display_get_content', 'FrmViewsDisplaysController::get_post_content' );
-
-		// AJAX Pagination
-		add_action( 'wp_ajax_frm_views_load_page', 'FrmViewsPaginationController::load_page' );
-		add_action( 'wp_ajax_nopriv_frm_views_load_page', 'FrmViewsPaginationController::load_page' );
-
 		self::load_editor_ajax_hooks();
 	}
 
@@ -138,7 +112,6 @@ class FrmViewsHooksController {
 		add_action( 'wp_ajax_frm_delete_layout_template', $editor_route );
 		add_action( 'wp_ajax_frm_dismiss_coming_soon_message', $editor_route );
 		add_action( 'wp_ajax_frm_flatten_view', $editor_route );
-		add_action( 'wp_ajax_frm_view_dropdown_options', $editor_route );
 	}
 
 	public static function load_view_hooks() {
@@ -148,6 +121,7 @@ class FrmViewsHooksController {
 	}
 
 	public static function load_form_hooks() {
+
 	}
 
 	public static function load_multisite_hooks() {
@@ -159,12 +133,12 @@ class FrmViewsHooksController {
 
 	public static function register_elementor_hooks() {
 		require_once FrmViewsAppHelper::plugin_path() . '/classes/widgets/FrmViewsElementorWidget.php';
-		\Elementor\Plugin::instance()->widgets_manager->register( new \FrmViewsElementorWidget() );
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new \FrmViewsElementorWidget() );
 
 		if ( is_admin() ) {
 			add_action(
 				'elementor/editor/after_enqueue_styles',
-				function () {
+				function() {
 					wp_enqueue_style( 'font_icons', FrmAppHelper::plugin_url() . '/css/font_icons.css', array(), FrmAppHelper::plugin_version() );
 				}
 			);

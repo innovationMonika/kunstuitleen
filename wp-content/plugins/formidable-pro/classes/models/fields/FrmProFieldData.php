@@ -49,21 +49,17 @@ class FrmProFieldData extends FrmFieldType {
 
 	protected function extra_field_opts() {
 		return array(
-			'data_type'       => 'select',
-			'restrict'        => 0,
-			'option_order'    => 'ascending',
-			'get_values_form' => '',
+			'data_type' => 'select',
+			'restrict' => 0,
 		);
 	}
 
 	/**
 	 * @since 4.0
-	 *
-	 * @param array $args - Includes 'field', 'display', and 'values'.
-	 * @return void
+	 * @param array $args - Includes 'field', 'display', and 'values'
 	 */
 	public function show_primary_options( $args ) {
-		$field       = $args['field'];
+		$field = $args['field'];
 		$field_types = array(
 			'select'    => __( 'Dropdown', 'formidable-pro' ),
 			'radio'     => __( 'Radio Buttons', 'formidable-pro' ),
@@ -71,41 +67,31 @@ class FrmProFieldData extends FrmFieldType {
 			'data'      => __( 'List', 'formidable-pro' ),
 		);
 
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/dynamic-field.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/dynamic-field.php' );
 
 		parent::show_primary_options( $args );
 	}
 
 	/**
 	 * @since 4.0
-	 *
-	 * @param array $args - Includes 'field', 'display', and 'values'.
-	 * @return void.
+	 * @param array $args - Includes 'field', 'display', and 'values'
 	 */
 	public function show_extra_field_choices( $args ) {
 		$field     = $args['field'];
 		$data_type = FrmField::get_option( $field, 'data_type' );
 		$form_list = FrmForm::get_published_forms();
 
-		if ( ! $form_list ) {
+		if ( empty( $form_list ) ) {
 			return;
-		}
-
-		if ( 'dropdown' === $data_type ) {
-			// Map the dropdown type back to select. We use select in the db, but dropdown on the front end.
-			// We pass 'dropdown' instead of 'select' because some security tools block 'select'.
-			$data_type          = 'select';
-			$field['data_type'] = 'select';
 		}
 
 		$selected_field   = '';
 		$selected_form_id = '';
 		$current_field_id = $field['id'];
 		if ( isset( $field['form_select'] ) && is_numeric( $field['form_select'] ) ) {
-			$selected_field = FrmDb::get_row( 'frm_fields', array( 'id' => $field['form_select'] ), 'id, form_id' );
-
+			$selected_field = FrmField::getOne( $field['form_select'] );
 			if ( $selected_field ) {
-				$selected_form_id = ! empty( $field['field_options']['get_values_form'] ) ? $field['field_options']['get_values_form'] : FrmProFieldsHelper::get_parent_form_id( $selected_field );
+				$selected_form_id = FrmProFieldsHelper::get_parent_form_id( $selected_field );
 				$fields           = FrmProFieldsController::get_field_selection_fields( $selected_form_id );
 			} else {
 				$selected_field = '';
@@ -114,10 +100,11 @@ class FrmProFieldData extends FrmFieldType {
 			$selected_field = $field['form_select'];
 		}
 
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/options-form-before.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/options-form-before.php' );
 
 		if ( $data_type === 'select' ) {
-			include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/multi-select.php';
+			include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/multi-select.php' );
+
 			$this->auto_width_setting( $args );
 		}
 	}
@@ -145,13 +132,9 @@ class FrmProFieldData extends FrmFieldType {
 
 	/**
 	 * @since 3.0
-	 *
-	 * @param array|string $value
-	 * @param array        $atts
-	 * @return array|string
 	 */
 	protected function prepare_display_value( $value, $atts ) {
-		if ( ! isset( $this->field->field_options['form_select'] ) || $this->field->field_options['form_select'] === 'taxonomy' ) {
+		if ( ! isset( $this->field->field_options['form_select'] ) || $this->field->field_options['form_select'] == 'taxonomy' ) {
 			return $value;
 		}
 
@@ -161,13 +144,13 @@ class FrmProFieldData extends FrmFieldType {
 			$value = explode( $atts['sep'], $value );
 		}
 
-		if ( $atts['show'] === 'id' ) {
+		if ( $atts['show'] == 'id' ) {
 			// keep the values the same since we already have the ids
 			return (array) $value;
 		}
 
-		$show_opts = array( 'key', 'created-at', 'created_at', 'updated-at', 'updated_at, updated-by, updated_by', 'post_id', 'label' );
-		if ( in_array( $atts['show'], $show_opts, true ) ) {
+		$show_opts = array( 'key', 'created-at', 'created_at', 'updated-at', 'updated_at, updated-by, updated_by', 'post_id' );
+		if ( in_array( $atts['show'], $show_opts ) ) {
 			$value = $this->get_show_value( $value, $atts );
 		} else {
 			$value = $this->get_data_value( $value, $atts );
@@ -184,84 +167,17 @@ class FrmProFieldData extends FrmFieldType {
 
 		$value = array();
 		foreach ( (array) $linked_ids as $linked_id ) {
-			if ( is_numeric( $linked_id ) ) {
-				$include_metas = 'label' === $nice_show;
-				$linked_entry  = FrmEntry::getOne( $linked_id, $include_metas );
-				if ( $linked_entry ) {
-					if ( isset( $linked_entry->{$atts['show']} ) ) {
-						$value[] = $linked_entry->{$atts['show']};
-					} elseif ( isset( $linked_entry->{$nice_show} ) ) {
-						$value[] = $linked_entry->{$nice_show};
-					} elseif ( 'label' === $atts['show'] ) {
-						$value[] = $this->get_show_label_value_from_entry( $linked_entry );
-					} else {
-						$value[] = $linked_entry->item_key;
-					}
-				}
+			$linked_entry = FrmEntry::getOne( $linked_id );
+
+			if ( isset( $linked_entry->{$atts['show']} ) ) {
+				$value[] = $linked_entry->{$atts['show']};
+			} else if ( isset( $linked_entry->{$nice_show} ) ) {
+				$value[] = $linked_entry->{$nice_show};
 			} else {
-				// This is a value for a dynamic list field.
-				// Dynamic list fields don't use entry ids, but string values.
-				$data_field = $this->get_target_data_field();
-				if ( $data_field ) {
-					$option  = $this->get_matching_data_field_option( $data_field, $linked_id );
-					$value[] = is_array( $option ) ? $option['label'] : $linked_id;
-				}
+				$value[] = $linked_entry->item_key;
 			}
 		}
 		return $value;
-	}
-
-	/**
-	 * @since 6.7
-	 *
-	 * @param stdClass $data_field
-	 * @param string   $value
-	 * @return array|false
-	 */
-	private function get_matching_data_field_option( $data_field, $value ) {
-		foreach ( $data_field->options as $option ) {
-			if ( is_array( $option ) && isset( $option['value'] ) && isset( $option['label'] ) && $option['value'] === $value ) {
-				return $option;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * @since 6.7
-	 *
-	 * @param stdClass $entry
-	 * @return string
-	 */
-	private function get_show_label_value_from_entry( $entry ) {
-		$data_field = $this->get_target_data_field();
-		if ( ! $data_field || empty( $entry->metas[ $data_field->id ] ) ) {
-			return '';
-		}
-
-		$meta_value = $entry->metas[ $data_field->id ];
-		$option     = $this->get_matching_data_field_option( $data_field, $meta_value );
-
-		return is_array( $option ) ? $option['label'] : $meta_value;
-	}
-
-	/**
-	 * @since 6.7
-	 *
-	 * @return stdClass|false
-	 */
-	private function get_target_data_field() {
-		$data_field_id = FrmField::get_option( $this->field, 'form_select' );
-		if ( ! is_numeric( $data_field_id ) ) {
-			return false;
-		}
-
-		$data_field = FrmField::getOne( $data_field_id );
-		if ( ! $data_field ) {
-			return false;
-		}
-
-		return $data_field;
 	}
 
 	/**
@@ -280,20 +196,7 @@ class FrmProFieldData extends FrmFieldType {
 
 					unset( $new_val, $linked_id );
 				}
-				$value = array_filter(
-					$value,
-					/**
-					 * @param string|null $item
-					 * @return bool
-					 */
-					function ( $item ) {
-						if ( null === $item ) {
-							return false;
-						}
-
-						return strlen( $item ) > 0;
-					}
-				);
+				$value = array_filter( $value, 'strlen' );
 			} else {
 				$value = $this->get_single_data_value( $linked_ids, $atts );
 			}
@@ -437,14 +340,19 @@ class FrmProFieldData extends FrmFieldType {
 	 *
 	 * @since 5.0.02
 	 *
-	 * @param string   $value Attachment URL.
-	 * @param stdClass $field The file upload field.
+	 * @param string $value Attachment URL.
+	 * @param object $field The file upload field.
 	 * @return string
 	 */
 	protected function get_attachment_id_from_url( $value, $field ) {
-		add_filter( 'frm_should_import_files', 'FrmProFileImport::allow_file_import' );
+		$csv_files = FrmAppHelper::get_param( 'csv_files', '', 'REQUEST', 'absint' );
+
+		$_REQUEST['csv_files'] = 1; // Bypass the check inside FrmProFileImport::import_attachment().
+
 		$value = FrmProFileImport::import_attachment( $value, $field );
-		remove_filter( 'frm_should_import_files', 'FrmProFileImport::allow_file_import' );
+
+		$_REQUEST['csv_files'] = $csv_files;
+
 		return $value;
 	}
 
@@ -513,28 +421,12 @@ INNER JOIN {$wpdb->prefix}frm_items AS items ON posts.ID = items.post_id WHERE p
 
 			// Look for the entry ID based on the imported value
 			// TODO: this may not be needed for XML imports. It appears to always be the entry ID that's exported
-			$where  = array( 'field_id' => $this->field->field_options['form_select'], 'meta_value' => trim( $imported_value ) );
+			$where  = array( 'field_id' => $this->field->field_options['form_select'], 'meta_value' => $imported_value );
 			$new_id = FrmDb::get_var( 'frm_item_metas', $where, 'item_id' );
 
 			if ( $new_id && is_numeric( $new_id ) ) {
 				$imported_values[ $key ] = $new_id;
 			}
 		}
-	}
-
-	/**
-	 * @since 6.3.2
-	 *
-	 * @param array $args Contains 'value' that is submitted.
-	 *
-	 * @return array The field validation errors.
-	 */
-	public function validate( $args ) {
-		$errors = array();
-		if ( $this->field->required && $args['value'] === '0' ) {
-			$errors[ 'field' . $args['id'] ] = FrmFieldsHelper::get_error_msg( $this->field, 'blank' );
-		}
-
-		return $errors;
 	}
 }

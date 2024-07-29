@@ -33,6 +33,42 @@ $arrow_icons = FrmStylesHelper::arrow_icons();
 }
 <?php } ?>
 
+<?php if ( ! empty( $label_color ) ) { ?>
+.<?php echo esc_html( $style_class ); ?> .frm_icon_font{
+	color:<?php echo esc_html( $label_color . $important ); ?>;
+}
+<?php } ?>
+
+.<?php echo esc_html( $style_class ); ?> .frm_icon_font.frm_minus_icon:before{
+	content:"\e<?php echo esc_html( isset( $minus_icons[ $repeat_icon ] ) ? $minus_icons[ $repeat_icon ]['-'] : $minus_icons[1]['-'] ); ?>";
+}
+
+.<?php echo esc_html( $style_class ); ?> .frm_icon_font.frm_plus_icon:before{
+	content:"\e<?php echo esc_html( isset( $minus_icons[ $repeat_icon ] ) ? $minus_icons[ $repeat_icon ]['+'] : $minus_icons[1]['+'] ); ?>";
+}
+
+.<?php echo esc_html( $style_class ); ?> .frm_icon_font.frm_minus_icon:before,
+.<?php echo esc_html( $style_class ); ?> .frm_icon_font.frm_plus_icon:before{
+	<?php if ( ! empty( $submit_text_color ) ) { ?>
+		color:<?php echo esc_html( $submit_text_color . $important ); ?>;
+	<?php } ?>
+	vertical-align:middle;
+}
+
+.<?php echo esc_html( $style_class ); ?> .frm_trigger.active .frm_icon_font.frm_arrow_icon:before{
+	content:"\e<?php echo esc_html( isset( $arrow_icons[ $collapse_icon ] ) ? $arrow_icons[ $collapse_icon ]['-'] : $arrow_icons[1]['-'] ); ?>";
+	<?php if ( ! empty( $section_color ) ) { ?>
+		color:<?php echo esc_html( $section_color . $important ); ?>;
+	<?php } ?>
+}
+
+.<?php echo esc_html( $style_class ); ?> .frm_trigger .frm_icon_font.frm_arrow_icon:before{
+	content:"\e<?php echo esc_html( isset( $arrow_icons[ $collapse_icon ] ) ? $arrow_icons[ $collapse_icon ]['+'] : $arrow_icons[1]['+'] ); ?>";
+	<?php if ( ! empty( $section_color ) ) { ?>
+		color:<?php echo esc_html( $section_color . $important ); ?>;
+	<?php } ?>
+}
+
 <?php if ( ! empty( $field_margin ) ) { ?>
 .<?php echo esc_html( $style_class ); ?> .form-field{
 	margin-bottom:<?php echo esc_html( $field_margin . $important ); ?>;
@@ -47,8 +83,7 @@ $arrow_icons = FrmStylesHelper::arrow_icons();
 .<?php echo esc_html( $style_class ); ?> div.description,
 .<?php echo esc_html( $style_class ); ?> div.frm_description,
 .<?php echo esc_html( $style_class ); ?> .frm-show-form > div.frm_description,
-.<?php echo esc_html( $style_class ); ?> .frm_error,
-.<?php echo esc_html( $style_class ); ?> .frm_pro_max_limit_desc{
+.<?php echo esc_html( $style_class ); ?> .frm_error{
 	<?php if ( ! empty( $description_margin ) ) { ?>
 		margin:<?php echo esc_html( $description_margin . $important ); ?>;
 	<?php } ?>
@@ -124,7 +159,6 @@ if ( '' === $field_height || 'auto' === $field_height ) {
 	display:none<?php echo esc_html( $important ); ?>;
 }
 
-<?php if ( FrmAppHelper::pro_is_installed() ) : ?>
 .<?php echo esc_html( $style_class ); ?> .frm_scale label{
 	<?php if ( ! empty( $check_weight ) ) { ?>
 		font-weight:<?php echo esc_html( $check_weight . $important ); ?>;
@@ -139,7 +173,6 @@ if ( '' === $field_height || 'auto' === $field_height ) {
 		color:<?php echo esc_html( $check_label_color . $important ); ?>;
 	<?php } ?>
 }
-<?php endif; ?>
 
 /* These do not work if they are combined */
 .<?php echo esc_html( $style_class ); ?> input::placeholder,
@@ -152,10 +185,14 @@ if ( '' === $field_height || 'auto' === $field_height ) {
 }
 .<?php echo esc_html( $style_class ); ?> input::-moz-placeholder,
 .<?php echo esc_html( $style_class ); ?> textarea::-moz-placeholder{
-	opacity: 1;
+	color: <?php echo esc_html( $text_color_disabled . $important ); ?>;
 }
 .<?php echo esc_html( $style_class ); ?> input:-ms-input-placeholder,
 <?php echo esc_html( $style_class ); ?> textarea:-ms-input-placeholder{
+	color: <?php echo esc_html( $text_color_disabled . $important ); ?>;
+}
+.<?php echo esc_html( $style_class ); ?> input:-moz-placeholder,
+.<?php echo esc_html( $style_class ); ?> textarea:-moz-placeholder{
 	color: <?php echo esc_html( $text_color_disabled . $important ); ?>;
 }
 
@@ -218,19 +255,23 @@ if ( '' === $field_height || 'auto' === $field_height ) {
 	echo esc_html( $important );
 	?>
 	;
-	<?php if ( '' !== $submit_border_width ) : ?>
 	border-width:<?php echo esc_html( $submit_border_width ); ?>;
-	<?php endif; ?>
 	border-color: <?php echo esc_html( $submit_border_color . $important ); ?>;
 	border-style:solid;
 	color:<?php echo esc_html( $submit_text_color . $important ); ?>;
 	cursor:pointer;
 	font-weight:<?php echo esc_html( $submit_weight . $important ); ?>;
+	-moz-border-radius:<?php echo esc_html( $submit_border_radius . $important ); ?>;
+	-webkit-border-radius:<?php echo esc_html( $submit_border_radius . $important ); ?>;
 	border-radius:<?php echo esc_html( $submit_border_radius . $important ); ?>;
 	text-shadow:none;
 	padding:<?php echo esc_html( $submit_padding . $important ); ?>;
+	-moz-box-sizing:border-box;
 	box-sizing:border-box;
+	-ms-box-sizing:border-box;
 	<?php if ( ! empty( $submit_shadow_color ) ) { ?>
+	-moz-box-shadow:0 1px 1px <?php echo esc_html( $submit_shadow_color ); ?>;
+	-webkit-box-shadow:0 1px 1px <?php echo esc_html( $submit_shadow_color ); ?>;
 	box-shadow:0 1px 1px <?php echo esc_html( $submit_shadow_color ); ?>;
 	<?php } ?>
 	margin:<?php echo esc_html( $submit_margin ); ?>;
@@ -299,8 +340,8 @@ if ( '' === $field_height || 'auto' === $field_height ) {
 		<?php } ?>
 }
 		<?php
-	}//end if
-}//end if
+	}
+}
 ?>
 
 .<?php echo esc_html( $style_class ); ?>.frm_inline_top .frm_submit::before,
@@ -363,14 +404,12 @@ if ( '' === $field_height || 'auto' === $field_height ) {
 	border-color:<?php echo esc_html( $border_color_error ); ?> !important;
 }
 
-.<?php echo esc_html( $style_class ); ?> .frm_error,
-.<?php echo esc_html( $style_class ); ?> .frm_limit_error{
+.<?php echo esc_html( $style_class ); ?> .frm_error{
 	font-weight:<?php echo esc_html( $weight . $important ); ?>;
 }
 
 .<?php echo esc_html( $style_class ); ?> .frm_blank_field label,
-.<?php echo esc_html( $style_class ); ?> .frm_error,
-.<?php echo esc_html( $style_class ); ?> .frm_limit_error{
+.<?php echo esc_html( $style_class ); ?> .frm_error{
 	color:<?php echo esc_html( $border_color_error . $important ); ?>;
 }
 

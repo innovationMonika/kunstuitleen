@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Formidable Visual Views
-Description: Add the power of views to Formidable Forms to display form submissions in listings, tables, calendars, and more.
-Version: 5.5.1
+Description: Add the power of views to your Formidable Forms to display your form submissions in listings, tables, calendars, and more.
+Version: 5.1.05
 Plugin URI: https://formidableforms.com/
 Author URI: https://formidableforms.com/
 Author: Strategy11
@@ -38,7 +38,7 @@ if ( ! function_exists( 'load_formidable_views' ) ) {
 			return;
 		}
 
-		$filepath = __DIR__;
+		$filepath = dirname( __FILE__ );
 		frm_class_autoloader( $class_name, $filepath );
 	}
 
@@ -68,22 +68,3 @@ if ( ! function_exists( 'load_formidable_views' ) ) {
 		return $messages;
 	}
 }
-
-
-/**
- * Update stylesheet on activation hook.
- *
- * @since 5.3.1
- *
- * @return void
- */
-function frm_views_update_stylesheet_on_activation() {
-	if ( ! function_exists( 'load_formidable_forms' ) ) {
-		return;
-	}
-
-	load_formidable_views();
-	FrmViewsAppController::update_stylesheet();
-}
-
-register_activation_hook( __FILE__, 'frm_views_update_stylesheet_on_activation' );

@@ -48,7 +48,7 @@ if ( 'one' === $post->frm_show_count ) {
 
 <div>
 	<label><?php esc_html_e( 'Content', 'formidable-views' ); ?>
-		<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'The HTML for the page. If \'All Entries\' is selected above, this content will be repeated for each entry. The field ID and Key work synonymously, although there are times one choice may be better. If you are panning to copy the view settings to other blogs, use the Key since they will be copied and the ids may differ from blog to blog.', 'formidable-views' ); ?>"></span>
+		<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'The HTML for your page. If \'All Entries\' is selected above, this content will be repeated for each entry. The field ID and Key work synonymously, although there are times one choice may be better. If you are panning to copy your view settings to other blogs, use the Key since they will be copied and the ids may differ from blog to blog.', 'formidable-views' ); ?>"></span>
 	</label>
 
 
@@ -57,7 +57,7 @@ if ( 'one' === $post->frm_show_count ) {
 			<input type="checkbox" id="options_no_rt" name="options[no_rt]" value="1" <?php checked( $post->frm_no_rt, 1 ); ?> /> 
 			<?php esc_html_e( 'Disable visual editor for this view', 'formidable-views' ); ?>
 		</label>
-		<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'It is recommended to check this box if you include a <table> tag in the Before Content box. If you are editing a view and notice the visual tab is selected and the table HTML is missing, you can switch to the HTML tab, go up to the url in your browser and hit enter to reload the page. As long as the settings have not been saved, the old HTML will be back to way it was before loading it in the visual tab.', 'formidable-views' ); ?>"></span>
+		<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'It is recommended to check this box if you include a <table> tag in the Before Content box. If you are editing a view and notice the visual tab is selected and your table HTML is missing, you can switch to the HTML tab, go up to your url in your browser and hit enter to reload the page. As long as the settings have not been saved, your old HTML will be back to way it was before loading it in the visual tab.', 'formidable-views' ); ?>"></span>
 	</p>
 <div class="clear"></div>
 
@@ -101,7 +101,7 @@ if ( ! shortcode_exists( 'frm-export-view' ) && strpos( $post->frm_before_conten
 
 	?>
 	<p class="frmcenter">
-		<a href="javascript:void(0)" class="frm_pro_tip" <?php FrmAppHelper::array_to_html_params( $data, true ); ?>>
+		<a href="javascript:void(0)" class="frm_pro_tip" <?php echo FrmAppHelper::array_to_html_params( $data ); // WPCS: XSS ok. ?>>
 			Want to export Views from the front-end?<br/>
 			<span class="frm-tip-cta">Get the Export Views to CSV add-on.</span>
 		</a>

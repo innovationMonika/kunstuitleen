@@ -9,16 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php echo esc_html( $previous ); ?>
 	</button>
 	<button class="frm_button_submit" disabled="disabled">
-		<?php echo FrmAppHelper::kses( force_balance_tags( $field['name'] ), 'all' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<?php echo FrmAppHelper::kses( force_balance_tags( $field['name'] ), 'all' ); // WPCS: XSS ok. ?>
 	</button>
 </div>
 
 <div class="frm-page-break">
-	<div class="frm-collapse-page button frm-button-secondary frm-button-sm">
+	<div class="frm-collapse-page button frm-button-secondary">
 		<?php
 		/* translators: %s: The page number */
 		printf( esc_html__( 'Page %s', 'formidable-pro' ), '<span class="frm-page-num">2</span>' );
-		FrmAppHelper::icon_by_class( 'frmfont frm_arrowdown6_icon', array( 'aria-hidden' => 'true' ) );
 		?>
+		<i class="frm_icon_font frm_arrowdown6_icon"></i>
 	</div>
 </div>

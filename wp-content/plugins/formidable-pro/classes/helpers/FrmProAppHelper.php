@@ -6,17 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmProAppHelper {
 
-	/**
-	 * @var bool
-	 */
-	private static $included_svg = false;
-
 	public static function plugin_folder() {
 		return basename( self::plugin_path() );
 	}
 
 	public static function plugin_path() {
-		return dirname( dirname( __DIR__ ) );
+		return dirname( dirname( dirname( __FILE__ ) ) );
 	}
 
 	public static function plugin_url() {
@@ -25,15 +20,6 @@ class FrmProAppHelper {
 
 	public static function relative_plugin_url() {
 		return str_replace( array( 'https:', 'http:' ), '', self::plugin_url() );
-	}
-
-	/**
-	 * @since 6.4.2
-	 *
-	 * @return string
-	 */
-	public static function get_svg_folder_path() {
-		return self::plugin_path() . '/images/svg/';
 	}
 
 	/**
@@ -46,7 +32,7 @@ class FrmProAppHelper {
 	 */
 	public static function get_settings() {
 		global $frmpro_settings;
-		if ( empty( $frmpro_settings ) ) {
+		if ( empty($frmpro_settings) ) {
 			$frmpro_settings = new FrmProSettings();
 		}
 		return $frmpro_settings;
@@ -84,101 +70,23 @@ class FrmProAppHelper {
 		if ( is_callable( 'FrmAppHelper::icon_by_class' ) ) {
 			return FrmAppHelper::icon_by_class( $class, $atts );
 		}
-	}
 
-	/**
-	 * Load an independent svg file from the external folder. Returns the svg html or the inner HTML tags of the svg.
-	 *
-	 * @since 6.4.2
-	 * @param string $slug
-	 * @param boolean $inner_html_only
-	 * @param array $atts
-	 * @return string|array|false
-	 */
-	private static function init_svg_by_slug( $slug, $inner_html_only = false, $atts = array() ) {
-		$svg_file_path = self::get_svg_folder_path() . $slug . '.svg';
+		// For reverse compatibility. Can be removed by v4.01.
+		$echo = ! isset( $atts['echo'] ) || $atts['echo'];
 
-		if ( false === file_exists( $svg_file_path ) ) {
-			return false;
+		$html = '';
+		if ( ! empty( $atts ) ) {
+			foreach ( $atts as $key => $value ) {
+				$html .= ' ' . esc_attr( $key ) . '="' . esc_attr( $value ) . '"';
+			}
 		}
 
-		$svg = file_get_contents( $svg_file_path );
-
-		if ( false === $inner_html_only ) {
-			return $svg;
+		$icon = '<i class="' . esc_attr( $class ) . '"' . $html . '></i>';
+		if ( $echo ) {
+			echo $icon; // WPCS: XSS ok.
+		} else {
+			return $icon;
 		}
-
-		$svg_atts = array_merge(
-			array(
-				'viewBox' => '',
-			),
-			$atts
-		);
-
-		$svg_element = array(
-			'inner_html'  => '',
-			'atts'        => $svg_atts,
-			'atts_string' => '',
-		);
-
-		preg_match( '/viewBox\s*=\s*["\'](.*?)["\']/i', $svg, $matches );
-		if ( $matches[1] ) {
-			$svg_element['atts']['viewBox'] = $matches[1];
-		}
-
-		$html_params = $svg_element['atts'];
-		unset( $html_params['echo'] );
-		$svg_element['atts_string'] = FrmAppHelper::array_to_html_params( $html_params );
-
-		$svg_element['inner_html'] = preg_replace( '/^<svg[^>]*>|<\/svg>$/i', '', $svg );
-
-		return $svg_element;
-	}
-
-	/**
-	 * Get svg icon by slug.
-	 *
-	 * @since 6.4.2
-	 *
-	 * @param string $slug
-	 * @param string $classnames
-	 * @param array  $atts
-	 * @return string
-	 */
-	public static function get_svg_icon( $slug, $classnames, $atts = array() ) {
-		$echo        = isset( $atts['echo'] ) ? $atts['echo'] : false;
-		$inner_html  = ( isset( $classnames ) && '' !== $classnames ) || ! empty( $atts );
-		$svg_context = self::init_svg_by_slug( $slug, $inner_html, $atts );
-
-		if ( false === $svg_context ) {
-			return self::echo_or_return( '', $echo );
-		}
-
-		if ( ! is_array( $svg_context ) && false === $inner_html ) {
-			return self::echo_or_return( $svg_context, $echo );
-		}
-
-		return self::echo_or_return(
-			'<svg ' . $svg_context['atts_string'] . ' class="' . esc_attr( $classnames ) . '">' . $svg_context['inner_html'] . '</svg>',
-			$echo
-		);
-	}
-
-	/**
-	 * Echo the string or return it.
-	 *
-	 * @since 6.4.2
-	 *
-	 * @param string $string
-	 * @param boolean $echo
-	 */
-	private static function echo_or_return( $string, $echo = true ) {
-		if ( true === $echo ) {
-			echo $string; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			return;
-		}
-
-		return $string;
 	}
 
 	/**
@@ -189,12 +97,12 @@ class FrmProAppHelper {
 	 * @return string
 	 */
 	public static function get_date( $format = '' ) {
-		if ( empty( $format ) ) {
+		if ( empty($format) ) {
 			$frmpro_settings = self::get_settings();
 			$format = $frmpro_settings->date_format;
 		}
 
-		return date_i18n( $format, strtotime( current_time( 'mysql' ) ) );
+		return date_i18n($format, strtotime(current_time('mysql')));
 	}
 
 	/**
@@ -243,16 +151,13 @@ class FrmProAppHelper {
 	 * Get a value from the current user profile
 	 *
 	 * @since 2.0
-	 *
-	 * @param string $value
-	 * @param bool   $return_array
 	 * @return string|array
 	 */
 	public static function get_current_user_value( $value, $return_array = false ) {
 		global $current_user;
-		$new_value = isset( $current_user->{$value} ) ? $current_user->{$value} : '';
-		if ( is_array( $new_value ) && ! $return_array ) {
-			$new_value = implode( ', ', $new_value );
+		$new_value = isset($current_user->{$value}) ? $current_user->{$value} : '';
+		if ( is_array($new_value) && ! $return_array ) {
+			$new_value = implode(', ', $new_value);
 		}
 
 		return $new_value;
@@ -282,10 +187,10 @@ class FrmProAppHelper {
 			return;
 		}
 
-		if ( isset( $post->{$value} ) ) {
+		if ( isset($post->{$value}) ) {
 			$new_value = $post->{$value};
 		} else {
-			$new_value = get_post_meta( $post->ID, $value, true );
+			$new_value = get_post_meta($post->ID, $value, true);
 		}
 
 		return $new_value;
@@ -299,7 +204,7 @@ class FrmProAppHelper {
 	 * @return string
 	 */
 	public static function get_post_author_email() {
-		return get_the_author_meta( 'user_email' );
+		return get_the_author_meta('user_email');
 	}
 
 	/**
@@ -336,22 +241,22 @@ class FrmProAppHelper {
 	}
 
 	public static function maybe_convert_to_db_date( $date_str, $to_format = 'Y-m-d' ) {
-		$date_str = trim( $date_str );
-		$in_db_format = preg_match( '/^\d{4}-\d{2}-\d{2}/', $date_str );
+		$date_str = trim($date_str);
+		$in_db_format = preg_match('/^\d{4}-\d{2}-\d{2}/', $date_str);
 
 		if ( ! $in_db_format ) {
-			$date_str = self::convert_date( $date_str, 'db', $to_format );
+			$date_str = self::convert_date($date_str, 'db', $to_format);
 		}
 
 		return $date_str;
 	}
 
 	public static function maybe_convert_from_db_date( $date_str, $from_format = 'Y-m-d' ) {
-		$date_str = trim( $date_str );
-		$in_db_format = preg_match( '/^\d{4}-\d{2}-\d{2}/', $date_str );
+		$date_str = trim($date_str);
+		$in_db_format = preg_match('/^\d{4}-\d{2}-\d{2}/', $date_str);
 
 		if ( $in_db_format ) {
-			$date_str = self::convert_date( $date_str, $from_format, 'db' );
+			$date_str = self::convert_date($date_str, $from_format, 'db');
 		}
 
 		return $date_str;
@@ -396,12 +301,7 @@ class FrmProAppHelper {
 		if ( is_numeric( $date_elements['m'] ) ) {
 			$day = ( isset( $date_elements['j'] ) ? $date_elements['j'] : $date_elements['d'] );
 			$year = ( isset( $date_elements['Y'] ) ? $date_elements['Y'] : $date_elements['y'] );
-
-			if ( is_numeric( $day ) && is_numeric( $year ) ) {
-				$dummy_ts = mktime( 0, 0, 0, $date_elements['m'], $day, $year );
-			} else {
-				$dummy_ts = strtotime( $date_str );
-			}
+			$dummy_ts = mktime( 0, 0, 0, $date_elements['m'], $day, $year );
 		} else {
 			$dummy_ts = strtotime( $date_str );
 		}
@@ -411,7 +311,7 @@ class FrmProAppHelper {
 
 	public static function get_edit_link( $id ) {
 		$output = '';
-		if ( current_user_can( 'administrator' ) ) {
+		if ( current_user_can('administrator') ) {
 			$output = '<a href="' . esc_url( FrmProEntry::admin_edit_link( $id ) ) . '">' . __( 'Edit', 'formidable-pro' ) . '</a>';
 		}
 
@@ -419,9 +319,8 @@ class FrmProAppHelper {
 	}
 
 	public static function get_custom_post_types() {
-		$custom_posts = get_post_types( array(), 'object' );
+		$custom_posts = get_post_types( array(), 'object');
 		foreach ( array( 'revision', 'attachment', 'nav_menu_item' ) as $unset ) {
-			// @phpstan-ignore-next-line
 			unset( $custom_posts[ $unset ] );
 		}
 
@@ -436,22 +335,22 @@ class FrmProAppHelper {
 	}
 
 	public static function get_custom_taxonomy( $post_type, $field ) {
-		$taxonomies = get_object_taxonomies( $post_type );
+		$taxonomies = get_object_taxonomies($post_type);
 		if ( ! $taxonomies ) {
 			return false;
 		} else {
 			$field = (array) $field;
-			if ( ! isset( $field['taxonomy'] ) ) {
+			if ( ! isset($field['taxonomy']) ) {
 				self::unserialize_or_decode( $field['field_options'] );
 				$field['taxonomy'] = FrmField::get_option( $field, 'taxonomy' );
 			}
 
-			if ( isset( $field['taxonomy'] ) && in_array( $field['taxonomy'], $taxonomies ) ) {
+			if ( isset($field['taxonomy']) && in_array($field['taxonomy'], $taxonomies) ) {
 				return $field['taxonomy'];
 			} elseif ( $post_type == 'post' ) {
 				return 'category';
 			} else {
-				return reset( $taxonomies );
+				return reset($taxonomies);
 			}
 		}
 	}
@@ -489,23 +388,11 @@ class FrmProAppHelper {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		if ( ! (int) $args['form_id'] ) {
+		if ( ! (int) $args['form_id'] || ! $args['where_opt'] || ! is_numeric( $args['where_opt'] ) ) {
 			return $entry_ids;
 		}
 
-		if ( self::is_name_subfield_option( $args['where_opt'] ) ) {
-			list( $field_id ) = explode( '_', $args['where_opt'] );
-		}
-
-		if ( ! isset( $field_id ) ) {
-			if ( ! $args['where_opt'] || ! is_numeric( $args['where_opt'] ) ) {
-				return $entry_ids;
-			}
-
-			$field_id = $args['where_opt'];
-		}
-
-		$where_field = FrmField::getOne( $field_id );
+		$where_field = FrmField::getOne( $args['where_opt'] );
 		if ( ! $where_field ) {
 			return $entry_ids;
 		}
@@ -514,7 +401,7 @@ class FrmProAppHelper {
 			$args['display'] = self::get_blank_display_object();
 		}
 
-		self::prepare_where_args( $args, $where_field, $entry_ids );
+		self::prepare_where_args($args, $where_field, $entry_ids);
 
 		$new_ids = array();
 		self::filter_entry_ids( $args, $where_field, $entry_ids, $new_ids );
@@ -525,27 +412,12 @@ class FrmProAppHelper {
 
 		if ( $args['after_where'] ) {
 			//only use entries that are found with all wheres
-			$entry_ids = array_intersect( $new_ids, $entry_ids );
+			$entry_ids = array_intersect($new_ids, $entry_ids);
 		} else {
 			$entry_ids = $new_ids;
 		}
 
 		return $entry_ids;
-	}
-
-	/**
-	 * @since 6.8
-	 *
-	 * @param string $option
-	 * @return bool
-	 */
-	private static function is_name_subfield_option( $option ) {
-		if ( ! $option || is_numeric( $option ) ) {
-			return false;
-		}
-
-		$split = explode( '_', $option );
-		return 2 === count( $split ) && is_numeric( $split[0] ) && in_array( $split[1], array( 'first', 'last' ), true );
 	}
 
 	/**
@@ -569,7 +441,7 @@ class FrmProAppHelper {
 		self::prepare_where_datetime( $args, $where_field );
 
 		if ( $args['where_is'] == '=' && $args['where_val'] != '' && FrmField::is_field_with_multiple_values( $where_field ) ) {
-			if ( $where_field->type !== 'data' || $where_field->field_options['data_type'] !== 'checkbox' || is_numeric( $args['where_val'] ) ) {
+			if ( $where_field->type != 'data' || $where_field->field_options['data_type'] != 'checkbox' || is_numeric($args['where_val']) ) {
 				// leave $args['where_is'] the same if this is a data from entries checkbox with a numeric value
 				$args['where_is'] = 'LIKE';
 			}
@@ -590,17 +462,13 @@ class FrmProAppHelper {
 		}
 		$filter_args = $args;
 		$filter_args['entry_ids'] = $entry_ids;
-		$args['where_val'] = apply_filters( 'frm_filter_where_val', $args['where_val'], $filter_args );
+		$args['where_val'] = apply_filters('frm_filter_where_val', $args['where_val'], $filter_args);
 
-		self::prepare_dfe_text( $args, $where_field );
+		self::prepare_dfe_text($args, $where_field);
 	}
 
 	/**
 	 * @since 2.3
-	 *
-	 * @param array  $args
-	 * @param object $where_field
-	 * @return void
 	 */
 	private static function prepare_where_datetime( &$args, $where_field ) {
 		$is_datetime = ( $args['where_val'] == 'NOW' || $where_field->type == 'date' || $where_field->type == 'time' );
@@ -619,23 +487,19 @@ class FrmProAppHelper {
 
 	/**
 	 * @since 2.3
-	 *
-	 * @param string $where_is
-	 * @return bool
 	 */
 	private static function option_is_like( $where_is ) {
-		return in_array( $where_is, array( 'LIKE', 'not LIKE' ), true );
+		return in_array( $where_is, array( 'LIKE', 'not LIKE' ) );
 	}
 
 	/**
-	 * Replace a text value where_val with the matching entry IDs for Dynamic Field filters
-	 *
-	 * @param array  $args
-	 * @param object $where_field
-	 * @return void
-	 */
+	* Replace a text value where_val with the matching entry IDs for Dynamic Field filters
+	*
+	* @param array $args
+	* @param object $where_field
+	*/
 	private static function prepare_dfe_text( &$args, $where_field ) {
-		if ( $where_field->type !== 'data' ) {
+		if ( $where_field->type != 'data' ) {
 			return;
 		}
 
@@ -654,7 +518,7 @@ class FrmProAppHelper {
 		// If text doesn't return any entry IDs, get entry IDs from entry key
 		// Note: Keep for reverse compatibility
 		if ( ! $linked_id ) {
-			$linked_field = FrmField::getOne( $where_field->field_options['form_select'] );
+			$linked_field = FrmField::getOne($where_field->field_options['form_select']);
 			if ( ! $linked_field ) {
 				return;
 			}
@@ -676,45 +540,32 @@ class FrmProAppHelper {
 		$args['where_val'] = (array) $linked_id;
 
 		// Don't use old where_val_esc value for filtering
-		unset( $args['where_val_esc'] );
+		unset($args['where_val_esc']);
 
-		$args['where_val'] = apply_filters( 'frm_filter_dfe_where_val', $args['where_val'], $args );
+		$args['where_val'] = apply_filters('frm_filter_dfe_where_val', $args['where_val'], $args);
 	}
 
-	/**
-	 * @param array  $args
-	 * @param object $where_field
-	 * @param array  $entry_ids
-	 * @param array  $new_ids
-	 * @return void
-	 */
 	private static function filter_entry_ids( $args, $where_field, $entry_ids, &$new_ids ) {
 		$where_statement = array( 'fi.id' => (int) $args['where_opt'] );
 
 		$num_query = self::maybe_query_as_number( $where_field->type );
-
-		if ( 'name' === $where_field->type ) {
-			$field_key = self::get_field_key_for_name_field_query( $num_query, $args );
-		} else {
-			$field_key = 'meta_value ' . $num_query . FrmDb::append_where_is( $args['temp_where_is'] );
-		}
-
+		$field_key = 'meta_value ' . $num_query . FrmDb::append_where_is( $args['temp_where_is'] );
 		$nested_where = array( $field_key => $args['where_val'] );
-		if ( isset( $args['where_val_esc'] ) && $args['where_val_esc'] != $args['where_val'] ) {
-			$nested_where['or']               = 1;
+		if ( isset($args['where_val_esc']) && $args['where_val_esc'] != $args['where_val'] ) {
+			$nested_where['or'] = 1;
 			$nested_where[ ' ' . $field_key ] = $args['where_val_esc'];
 		}
 		$where_statement[] = $nested_where;
 
 		$args['entry_ids'] = $entry_ids;
-		$where_statement   = apply_filters( 'frm_where_filter', $where_statement, $args );
+		$where_statement = apply_filters('frm_where_filter', $where_statement, $args);
 
 		$filter_args = array( 'is_draft' => $args['drafts'] );
 
-		// If the field is from a repeating section (or embedded form?) get the parent ID.
-		$filter_args['return_parent_id'] = is_array( $args['form_id'] ) ? ! in_array( $where_field->form_id, $args['form_id'], true ) : $where_field->form_id != $args['form_id'];
+		// If the field is from a repeating section (or embedded form?) get the parent ID
+		$filter_args['return_parent_id'] = ( $where_field->form_id != $args['form_id'] );
 
-		// Add entry IDs to $where_statement.
+		// Add entry IDs to $where_statement
 		if ( $args['use_ids'] ) {
 			if ( is_array( $where_statement ) ) {
 				if ( $filter_args['return_parent_id'] ) {
@@ -723,7 +574,7 @@ class FrmProAppHelper {
 					$where_statement['item_id'] = $entry_ids;
 				}
 			} else {
-				// If the filter changed the query to a string, allow it.
+				// if the filter changed the query to a string, allow it
 				$where_statement .= FrmDb::prepend_and_or_where( ' AND ', array( 'item_id' => $entry_ids ) );
 			}
 		}
@@ -736,105 +587,6 @@ class FrmProAppHelper {
 	}
 
 	/**
-	 * @since 6.8
-	 *
-	 * @param string $num_query
-	 * @param array  $args
-	 * @return string
-	 */
-	private static function get_field_key_for_name_field_query( $num_query, $args ) {
-		if ( ! self::is_name_subfield_option( $args['where_opt'] ) ) {
-			// Filter for the whole name value.
-			// This query parses an "unserialized" full name string in-place with SQL.
-			return 'TRIM(
-				CONCAT(
-					SUBSTR(
-						REPLACE(
-							SUBSTRING_INDEX(
-								REPLACE(
-									SUBSTRING_INDEX(meta_value' . $num_query . ', \':\', 7 ),
-									SUBSTRING_INDEX(meta_value' . $num_query . ', \':\', 5 ),
-									""
-								),
-								":",
-								-1
-							),
-							\'";s\',
-							""
-						),
-						2
-					),
-					" ",
-					SUBSTR(
-					REPLACE(
-						REPLACE(
-							SUBSTRING_INDEX(
-								REPLACE(
-									SUBSTRING_INDEX(meta_value' . $num_query . ', \':\', 11 ),
-									SUBSTRING_INDEX(meta_value' . $num_query . ', \':\', 9 ),
-									""
-								),
-								":",
-								-1
-							),
-							\'";s\',
-							""
-						),
-						\'";}\',
-						""
-					),
-					2
-					),
-					" ",
-					SUBSTR(
-						REPLACE(
-							REPLACE(
-								SUBSTRING_INDEX(
-									REPLACE(
-										SUBSTRING_INDEX(meta_value' . $num_query . ', \':\', 15 ),
-										SUBSTRING_INDEX(meta_value' . $num_query . ', \':\', 13 ),
-										""
-									),
-									":",
-									-1
-								),
-								\'";s\',
-								""
-							),
-							\'";}\',
-							""
-						),
-						2
-					)
-				)
-			) ' . FrmDb::append_where_is( $args['temp_where_is'] );
-		}
-
-		$name_subfield = explode( '_', $args['where_opt'] )[1];
-
-		// Filter for a subfield (first or last name).
-		return 'TRIM( \'""\' FROM
-					CONCAT(
-						\'"\', 
-						SUBSTRING_INDEX(
-							SUBSTRING_INDEX(
-								REPLACE(
-									meta_value' . $num_query . ',
-									SUBSTRING_INDEX( meta_value' . $num_query . ', \'"' . $name_subfield . '";s\', 1 ),
-									""
-								),
-								";",
-								2
-							),
-							":",
-							-1
-						),
-						\'"\'
-					)
-				) ' . FrmDb::append_where_is( $args['temp_where_is'] );
-	}
-
-	/**
 	 * @since 3.0
 	 */
 	public static function maybe_query_as_number( $type ) {
@@ -843,33 +595,28 @@ class FrmProAppHelper {
 	}
 
 	/**
-	 * If there are posts linked to entries for this form.
-	 *
-	 * @param array  $args
-	 * @param object $where_field
-	 * @param array  $new_ids
-	 * @return void
+	 * If there are posts linked to entries for this form
 	 */
 	private static function prepare_post_filter( $args, $where_field, &$new_ids ) {
-		if ( empty( $args['form_posts'] ) ) {
-			// There are not posts related to this view.
+		if ( empty($args['form_posts']) ) {
+			// there are not posts related to this view
 			return;
 		}
 
-		if ( ! isset( $where_field->field_options['post_field'] ) || ! in_array( $where_field->field_options['post_field'], array( 'post_category', 'post_custom', 'post_status', 'post_content', 'post_excerpt', 'post_title', 'post_name', 'post_date' ), true ) ) {
-			// This is not a post field.
+		if ( ! isset( $where_field->field_options['post_field'] ) || ! in_array( $where_field->field_options['post_field'], array( 'post_category', 'post_custom', 'post_status', 'post_content', 'post_excerpt', 'post_title', 'post_name', 'post_date' ) ) ) {
+			// this is not a post field
 			return;
 		}
 
 		$post_ids = array();
 		foreach ( $args['form_posts'] as $form_post ) {
 			$post_ids[ $form_post->post_id ] = $form_post->id;
-			if ( ! in_array( $form_post->id, $new_ids ) ) {
+			if ( ! in_array($form_post->id, $new_ids) ) {
 				$new_ids[] = $form_post->id;
 			}
 		}
 
-		if ( empty( $post_ids ) ) {
+		if ( empty($post_ids) ) {
 			return;
 		}
 
@@ -887,7 +634,7 @@ class FrmProAppHelper {
 				't.slug ' . $args['temp_where_is'] => $args['where_val'],
 				't.name ' . $args['temp_where_is'] => $args['where_val'],
 			);
-			unset( $args['temp_where_is'] );
+			unset($args['temp_where_is']);
 
 			$query = array( 'tt.taxonomy' => $where_field->field_options['taxonomy'] );
 			$query[] = $t_where;
@@ -898,12 +645,12 @@ class FrmProAppHelper {
 				'tr.object_id',
 				$filter_args
 			);
-			$add_posts = array_intersect( $add_posts, array_keys( $post_ids ) );
+			$add_posts = array_intersect($add_posts, array_keys($post_ids));
 
-			if ( in_array( $args['where_is'], array( '!=', 'not LIKE' ), true ) ) {
+			if ( in_array( $args['where_is'], array( '!=', 'not LIKE' ) ) ) {
 				$remove_posts = $add_posts;
 				$add_posts = false;
-			} else if ( empty( $add_posts ) ) {
+			} else if ( empty($add_posts) ) {
 				$new_ids = array();
 				return;
 			}
@@ -930,7 +677,7 @@ class FrmProAppHelper {
 			$add_posts = array_intersect( $add_posts, array_keys( $post_ids ) );
 		}
 
-		if ( $add_posts ) {
+		if ( $add_posts && ! empty($add_posts) ) {
 			$new_ids = array();
 			foreach ( $add_posts as $add_post ) {
 				if ( ! in_array( $post_ids[ $add_post ], $new_ids ) ) {
@@ -939,15 +686,15 @@ class FrmProAppHelper {
 			}
 		}
 
-		if ( isset( $remove_posts ) ) {
-			if ( ! empty( $remove_posts ) ) {
+		if ( isset($remove_posts) ) {
+			if ( ! empty($remove_posts) ) {
 				foreach ( $remove_posts as $remove_post ) {
 					$key = array_search( $post_ids[ $remove_post ], $new_ids );
 					if ( $key && $new_ids[ $key ] == $post_ids[ $remove_post ] ) {
 						unset( $new_ids[ $key ] );
 					}
 
-					unset( $key );
+					unset($key);
 				}
 			}
 		} else if ( ! $add_posts ) {
@@ -1008,7 +755,7 @@ class FrmProAppHelper {
 	 * @return string The base Google APIS url for the current version of jQuery UI.
 	 */
 	public static function jquery_ui_base_url() {
-		$url = 'http' . ( is_ssl() ? 's' : '' ) . '://ajax.googleapis.com/ajax/libs/jqueryui/' . FrmAppHelper::script_version( 'jquery-ui-core', '1.13.2' );
+		$url = 'http' . ( is_ssl() ? 's' : '' ) . '://ajax.googleapis.com/ajax/libs/jqueryui/' . FrmAppHelper::script_version( 'jquery-ui-core', '1.11.4' );
 		$url = apply_filters( 'frm_jquery_ui_base_url', $url );
 		return $url;
 	}
@@ -1030,87 +777,6 @@ class FrmProAppHelper {
 			}
 		}
 		return array( $ids, $keys );
-	}
-
-	/**
-	 * Include svg images for Pro.
-	 *
-	 * @since 5.3
-	 */
-	public static function include_svg() {
-		if ( self::$included_svg ) {
-			return;
-		}
-
-		readfile( self::plugin_path() . '/images/icons.svg' );
-		self::$included_svg = true;
-	}
-
-	/**
-	 * Get the list of capabilities for pro.
-	 *
-	 * @since 5.3.1
-	 *
-	 * @param array<string,string> $permissions
-	 * @return array<string,string>
-	 */
-	public static function add_pro_capabilities( $permissions ) {
-		$permissions['frm_edit_applications']     = __( 'Add/Edit Applications', 'formidable-pro' );
-		$permissions['frm_application_dashboard'] = __( 'Access Application Dashboard', 'formidable-pro' );
-
-		$permissions = self::set_view_permissions( $permissions );
-
-		return $permissions;
-	}
-
-	/**
-	 * Sets Views permissions
-	 *
-	 * @since 6.5.4
-	 *
-	 * @param array<string,string> $permissions
-	 * @return array<string,string>
-	 */
-	private static function set_view_permissions( $permissions ) {
-		$views_is_installed = self::views_is_installed();
-		$permission_is_set  = isset( $permissions['frm_edit_displays'] );
-
-		if ( $views_is_installed && ! $permission_is_set ) {
-			$permissions['frm_edit_displays'] = __( 'Add/Edit Views', 'formidable-pro' );
-		} elseif ( ! $views_is_installed && $permission_is_set ) {
-			unset( $permissions['frm_edit_displays'] );
-		}
-
-		return $permissions;
-	}
-
-	/**
-	 * Checks if WP Cron is disabled.
-	 *
-	 * @since 5.4.1
-	 *
-	 * @return bool
-	 */
-	public static function is_cron_disabled() {
-		return defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON;
-	}
-
-	/**
-	 * Handles missing mime_content_type function.
-	 *
-	 * @since 6.4.3
-	 *
-	 * @param string $file
-	 *
-	 * @return string|false
-	 */
-	public static function get_mime_content_type( $file ) {
-		if ( function_exists( 'mime_content_type' ) ) {
-			return mime_content_type( $file );
-		}
-
-		$filetype = wp_check_filetype( $file );
-		return $filetype['type'];
 	}
 
 	/**
@@ -1138,7 +804,7 @@ class FrmProAppHelper {
 	 */
 	public static function get_time_format_for_field( $field ) {
 		_deprecated_function( __FUNCTION__, '3.02.01', 'FrmProFieldTime->get_time_format_for_field' );
-		$time_format = FrmField::get_option( $field, 'clock' );
+		$time_format = FrmField::get_option( $field, 'clock', 12 );
 		return self::get_time_format_for_setting( $time_format );
 	}
 
@@ -1151,28 +817,9 @@ class FrmProAppHelper {
 		$all_g = 'ABCDEFGHIJKLMNOPQRSTWXZ';
 		$pass = '';
 		for ( $i = 0; $i < $length; $i++ ) {
-			$pass .= $all_g[ rand( 0, strlen( $all_g ) - 1 ) ];
+			$pass .= $all_g[ rand(0, strlen($all_g) - 1) ];
 		}
 		return $pass;
-	}
-
-	/**
-	 * Allow falling back to the legacy chosen.js for autocomplete dropdowns.
-	 *
-	 * @since 6.8
-	 *
-	 * @return bool
-	 */
-	public static function use_chosen_js() {
-		/**
-		 * To use the legacy chosen.js for autocomplete dropdowns,
-		 * use add_filter( 'frm_use_chosen_js', '__return_true' );
-		 *
-		 * @since 6.8
-		 *
-		 * @param bool $use_chosen_js False by default.
-		 */
-		return (bool) apply_filters( 'frm_use_chosen_js', false );
 	}
 
 	/**
@@ -1229,24 +876,5 @@ class FrmProAppHelper {
 	 */
 	public static function reset_keys( $arr ) {
 		return FrmProDisplaysController::deprecated_function( __METHOD__, 'FrmViewsAppHelper::reset_keys', $arr );
-	}
-
-	/**
-	 * Get the server OS
-	 *
-	 * @since 6.4.2
-	 *
-	 * @return string
-	 */
-	public static function get_server_os() {
-
-		if ( is_callable( 'FrmAppHelper::get_server_os' ) ) {
-			return FrmAppHelper::get_server_os();
-		}
-		if ( function_exists( 'php_uname' ) ) {
-			return php_uname( 's' );
-		}
-
-		return '';
 	}
 }

@@ -6,5 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    '509f66d930a3f0b7d9b65b22aa319565' => $baseDir . '/packages/wp-pay/core/includes/functions.php',
+    '509f66d930a3f0b7d9b65b22aa319565' => $vendorDir . '/wp-pay/core/includes/functions.php',
+    'd868cbb0c7c5bea8d17ade7c881e4000' => $vendorDir . '/wp-pay/core/includes/xmlseclibs/xmlseclibs-ing.php',
 );

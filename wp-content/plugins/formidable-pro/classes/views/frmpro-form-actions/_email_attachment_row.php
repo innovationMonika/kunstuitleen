@@ -12,11 +12,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<!-- Attachment control container -->
 	<div class="frm_email_add_attachment_container frm_image_styling_frame" style="margin-left:0">
-		<p class="frm-m-0 frm-mb-sm">
-			<a href="#" class="<?php echo esc_attr( $has_attachment ? 'frm_hidden' : '' ); ?> frm_email_add_attachment button frm-button-secondary frm-button-sm">
-				<?php esc_html_e( 'Add Attachment', 'formidable-pro' ); ?>
-			</a>
-		</p>
+		<?php
+		/**
+		 * Anchor link to add an attachment.
+		 */
+		printf(
+			'<p><a style="%s" class="frm_email_add_attachment button frm-button-secondary" href="#">+ %s</a></p>',
+			( $has_attachment ? 'display: none;' : 'display: block;' ),
+			esc_html__( 'Add attachment', 'formidable-pro' )
+		);
+		?>
 
 		<span class="frm_email_attachment_icon">
 			<?php
@@ -39,8 +44,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			 * Anchor link to remove the attachment.
 			 */
 			printf(
-				'<a class="%s frm_email_remove_attachment frm_remove_image_option" href="#" title="%s">%s %s</a>',
-				( $has_attachment ? '' : 'frm_hidden' ),
+				'<a style="%s" class="frm_email_remove_attachment frm_remove_image_option" href="#" title="%s">%s %s</a>',
+				( $has_attachment ? 'display: block;' : 'display: none;' ),
 				esc_attr__( 'Remove file', 'formidable-pro' ),
 				FrmAppHelper::icon_by_class( 'frm_icon_font frm_delete_icon', array( 'echo' => false ) ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'Delete', 'formidable' )
@@ -53,7 +58,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php
 	if ( ! empty( $can_generate_csv_file ) ) {
-		FrmProHtmlHelper::admin_toggle(
+		FrmProHtmlHelper::toggle(
 			'frm_attach_csv',
 			$pass_args['action_control']->get_field_name( 'attach_csv' ),
 			array(
@@ -68,21 +73,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</label>
 		<?php
 	}
-
-	FrmProFormActionsController::show_disabled_pdf_attachment_option();
-
-	/**
-	 * Fires after the email attachment setting row.
-	 *
-	 * @since 5.4.2
-	 *
-	 * @param array $args {
-	 *     The args.
-	 *
-	 *     @type FrmFormAction $form_action Form action object.
-	 *     @type array         $pass_args   Pass args. See {@see FrmProFormActionsController::add_file_attachment_field()}.
-	 * }
-	 */
-	do_action( 'frm_pro_after_email_attachment_row', compact( 'form_action', 'pass_args' ) );
 	?>
 <!-- Add email attachment row end. -->

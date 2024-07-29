@@ -40,76 +40,22 @@ class FrmProFieldCaptcha extends FrmFieldCaptcha {
 			return parent::validate( $args );
 		}
 
-		if ( is_callable( self::class . '::post_data_includes_token' ) ) {
-			$post_data_includes_token = self::post_data_includes_token();
-		} else {
-			// Legacy fallback.
-			$post_data_includes_token = ! empty( $_POST['g-recaptcha-response'] ) || ! empty( $_POST['h-captcha-response'] );
-		}
-
-		if ( $post_data_includes_token ) {
+		if ( isset( $_POST['g-recaptcha-response'] ) ) {
 			$errors = $this->validate_against_api( $args );
 
 			if ( $errors ) {
 				return $errors;
 			}
 
-			$this->maybe_set_captcha_score_in_form_state();
 			self::$checked = wp_create_nonce( 'frm_captcha' );
 			return array();
 		}
 
 		if ( self::validate_checked() ) {
-			$this->maybe_pull_captcha_score_from_form_state();
 			return array();
 		}
 
 		return array( 'field' . $args['id'] => __( 'The captcha is missing from this form', 'formidable-pro' ) );
-	}
-
-	/**
-	 * As the reCAPTCHA is no longer validated once we use the recaptcha_checked nonce, set the score in the state field.
-	 *
-	 * @since 6.2
-	 *
-	 * @return void
-	 */
-	private function maybe_set_captcha_score_in_form_state() {
-		global $frm_vars;
-		$form_id = $this->get_form_id();
-		if ( ! empty( $frm_vars['captcha_scores'][ $form_id ] ) ) {
-			FrmProFormState::set_initial_value( 'captcha', $frm_vars['captcha_scores'][ $form_id ] );
-		}
-	}
-
-	/**
-	 * Get the captcha score from the state and put it back into the $frm_vars['captcha_scores'] global.
-	 *
-	 * @since 6.2
-	 *
-	 * @return void
-	 */
-	private function maybe_pull_captcha_score_from_form_state() {
-		$score = FrmProFormState::get_from_request( 'captcha', false );
-		if ( ! is_numeric( $score ) ) {
-			return;
-		}
-
-		global $frm_vars;
-		if ( ! isset( $frm_vars['captcha_scores'] ) ) {
-			$frm_vars['captcha_scores'] = array();
-		}
-		$frm_vars['captcha_scores'][ $this->get_form_id() ] = $score;
-	}
-
-	/**
-	 * @since 6.2
-	 *
-	 * @return int
-	 */
-	private function get_form_id() {
-		$form_id = is_object( $this->field ) ? $this->field->form_id : $this->field['form_id'];
-		return (int) $form_id;
 	}
 
 	/**
@@ -144,19 +90,10 @@ class FrmProFieldCaptcha extends FrmFieldCaptcha {
 
 	/**
 	 * @since 4.07
-	 *
 	 * @return bool
 	 */
 	public static function posting_captcha_data() {
-		if ( ! empty( $_POST['recaptcha_checked'] ) ) {
-			return true;
-		}
-
-		if ( is_callable( self::class . '::post_data_includes_token' ) ) {
-			return self::post_data_includes_token();
-		}
-
-		return ! empty( $_POST['g-recaptcha-response'] );
+		return isset( $_POST['g-recaptcha-response'] ) || isset( $_POST['recaptcha_checked'] );
 	}
 
 	/**

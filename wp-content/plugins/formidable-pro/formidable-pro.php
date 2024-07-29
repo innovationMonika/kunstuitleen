@@ -2,7 +2,7 @@
 /*
 Plugin Name: Formidable Forms Pro
 Description: Add more power to your forms, and bring your reports and data management to the front-end.
-Version: 6.8.4
+Version: 5.2.05
 Plugin URI: https://formidableforms.com/
 Author URI: https://formidableforms.com/
 Author: Strategy11
@@ -26,6 +26,13 @@ if ( ! function_exists( 'load_formidable_pro' ) ) {
 		} else {
 			add_action( 'admin_notices', 'frm_pro_forms_incompatible_version' );
 		}
+
+		// For reverse compatibility. Load views if it's still nested.
+		$frm_pro_path = dirname( __FILE__ );
+		if ( file_exists( $frm_pro_path . '/views/formidable-views.php' ) ) {
+			include $frm_pro_path . '/views/formidable-views.php';
+			load_formidable_views();
+		}
 	}
 
 	/**
@@ -37,11 +44,11 @@ if ( ! function_exists( 'load_formidable_pro' ) ) {
 			return;
 		}
 
-		$filepath = __DIR__;
+		$filepath = dirname( __FILE__ );
 		if ( frm_pro_is_deprecated_class( $class_name ) ) {
 			$filepath .= '/deprecated/' . $class_name . '.php';
 			if ( file_exists( $filepath ) ) {
-				require $filepath;
+				require( $filepath );
 			}
 		} else {
 			frm_class_autoloader( $class_name, $filepath );
@@ -50,8 +57,14 @@ if ( ! function_exists( 'load_formidable_pro' ) ) {
 
 	function frm_pro_is_deprecated_class( $class ) {
 		$deprecated = array(
+			'FrmProCreditCard',
+			'FrmProAddress',
 			'FrmProDisplay',
 			'FrmProDisplaysController',
+			'FrmProDropdownFieldsController',
+			'FrmProEntryFormat',
+			'FrmProTimeField',
+			'FrmUpdatesController',
 			'FrmProPhoneFieldsController',
 			'FrmProTextFieldsController',
 		);
@@ -72,7 +85,7 @@ if ( ! function_exists( 'load_formidable_pro' ) ) {
 			if ( 'update.php' !== $pagenow && 'update-core.php' !== $pagenow ) {
 				update_option( 'frm_ran_auto_install', true, 'no' );
 
-				include_once __DIR__ . '/classes/models/FrmProInstallPlugin.php';
+				include_once( dirname( __FILE__ ) . '/classes/models/FrmProInstallPlugin.php' );
 
 				$plugin_helper = new FrmProInstallPlugin(
 					array(
@@ -85,70 +98,8 @@ if ( ! function_exists( 'load_formidable_pro' ) ) {
 
 		?>
 		<div class="error">
-			<p>
-				<?php esc_html_e( 'Formidable Forms Premium requires Formidable Forms Lite to be installed.', 'formidable-pro' ); ?>
-				<a href="<?php echo esc_url( admin_url( 'plugin-install.php?s=formidable+forms&tab=search&type=term' ) ); ?>" class="button button-primary">
-					<?php esc_html_e( 'Install Formidable Forms', 'formidable-pro' ); ?>
-				</a>
-			</p>
+			<p><?php esc_html_e( 'Formidable Forms Premium requires Formidable Forms Lite to be installed.', 'formidable-pro' ); ?></p>
 		</div>
 		<?php
 	}
 }
-
-/**
- * Handles plugin activation.
- *
- * This hook is executed upon plugin activation.
- */
-register_activation_hook(
-	__FILE__,
-	function () {
-		// Check if free version of Formidable Forms is installed.
-		$is_free_installed = function_exists( 'load_formidable_forms' );
-		if ( ! $is_free_installed ) {
-			return;
-		}
-
-		// Register autoloader for Formidable Pro classes.
-		spl_autoload_register( 'frm_pro_forms_autoloader' );
-
-		// Updates the default stylesheet.
-		FrmProHooksController::load_pro();
-		FrmProAppController::update_stylesheet();
-	}
-);
-
-/**
- * Handles plugin deactivation.
- *
- * This hook is executed upon plugin deactivation.
- */
-register_deactivation_hook(
-	__FILE__,
-	function () {
-		if ( ! class_exists( 'FrmProCronController', false ) ) {
-			// Avoid using FrmProAppHelper::plugin_path to avoid a "PHP Fatal error:  Uncaught Error: Class 'FrmProAppHelper' not found" error.
-			require_once __DIR__ . '/classes/controllers/FrmProCronController.php';
-		}
-
-		// Remove any scheduled cron jobs associated with the plugin.
-		FrmProCronController::remove_cron();
-
-		// Check if free version of Formidable Forms is installed.
-		$is_free_installed = function_exists( 'load_formidable_forms' );
-		if ( ! $is_free_installed ) {
-			return;
-		}
-
-		// Register autoloader for Formidable Pro classes.
-		spl_autoload_register( 'frm_pro_forms_autoloader' );
-
-		// Updates the default stylesheet.
-		remove_action( 'frm_include_front_css', 'FrmProStylesController::include_front_css' );
-		remove_action( 'frm_output_single_style', 'FrmProStylesController::output_single_style' );
-		remove_filter( 'frm_default_style_settings', 'FrmProStylesController::add_defaults' );
-		remove_filter( 'frm_override_default_styles', 'FrmProStylesController::override_defaults' );
-		FrmProAppController::update_stylesheet();
-	}
-);

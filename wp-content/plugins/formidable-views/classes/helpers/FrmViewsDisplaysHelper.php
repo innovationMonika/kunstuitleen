@@ -61,7 +61,7 @@ class FrmViewsDisplaysHelper {
 	 * @return array
 	 */
 	public static function get_keys_that_map_to_an_frm_prefixed_option() {
-		return array( 'form_id', 'entry_id', 'dyncontent', 'param', 'type', 'show_count', 'table_view', 'grid_view' );
+		return array( 'form_id', 'entry_id', 'dyncontent', 'param', 'type', 'show_count' );
 	}
 
 	/**
@@ -99,7 +99,6 @@ class FrmViewsDisplaysHelper {
 			'order'                 => array(),
 			'limit'                 => '',
 			'page_size'             => '',
-			'offset'                => '',
 			'empty_msg'             => __( 'No Entries Found', 'formidable-views' ),
 			'copy'                  => 0,
 			'where'                 => array(),
@@ -117,7 +116,6 @@ class FrmViewsDisplaysHelper {
 			'grid_row_gap'          => '20',
 			'grid_column_gap'       => '2',
 			'grid_classes'          => '',
-			'ajax_pagination'       => '',
 		);
 	}
 
@@ -148,18 +146,18 @@ class FrmViewsDisplaysHelper {
 
 	public static function where_is_options() {
 		return array(
-			'='               => __( 'equals', 'formidable-views' ),
-			'!='              => __( 'does not equal', 'formidable-views' ),
-			'>'               => __( 'is greater than', 'formidable-views' ),
-			'<'               => __( 'is less than', 'formidable-views' ),
-			'>='              => __( 'is greater than or equal to', 'formidable-views' ),
-			'<='              => __( 'is less than or equal to', 'formidable-views' ),
-			'LIKE'            => __( 'contains', 'formidable-views' ),
-			'not LIKE'        => __( 'does not contain', 'formidable-views' ),
+			'='               => __( 'equal to', 'formidable-views' ),
+			'!='              => __( 'NOT equal to', 'formidable-views' ),
+			'>'               => __( 'greater than', 'formidable-views' ),
+			'<'               => __( 'less than', 'formidable-views' ),
+			'>='              => __( 'greater than or equal to', 'formidable-views' ),
+			'<='              => __( 'less than or equal to', 'formidable-views' ),
+			'LIKE'            => __( 'like', 'formidable-views' ),
+			'not LIKE'        => __( 'NOT like', 'formidable-views' ),
 			'LIKE%'           => __( 'starts with', 'formidable-views' ),
 			'%LIKE'           => __( 'ends with', 'formidable-views' ),
-			'group_by'        => __( 'is unique (get oldest entries)', 'formidable-views' ),
-			'group_by_newest' => __( 'is unique (get newest entries)', 'formidable-views' ),
+			'group_by'        => __( 'unique (get oldest entries)', 'formidable-views' ),
+			'group_by_newest' => __( 'unique (get newest entries)', 'formidable-views' ),
 		);
 	}
 
@@ -235,169 +233,5 @@ class FrmViewsDisplaysHelper {
 
 		$dyn_content          = 'one' === $display->frm_show_count ? $display->post_content : $display->frm_dyncontent;
 		$post['post_content'] = apply_filters( 'frm_content', $dyn_content, $form, $entry );
-	}
-
-	/**
-	 * Get the page number from the URL, and make sure it isn't 0
-	 *
-	 * @param int $view_id
-	 * @return int
-	 */
-	public static function get_current_page_num( $view_id ) {
-		$page_param   = $_GET && isset( $_GET[ 'frm-page-' . $view_id ] ) ? 'frm-page-' . $view_id : 'frm-page';
-		$current_page = FrmAppHelper::simple_get( $page_param, 'absint', 1 );
-		return max( 1, $current_page );
-	}
-
-	/**
-	 * @since 5.2
-	 *
-	 * @param object $view
-	 * @return string either 'classic', 'calendar', 'table', or 'grid'.
-	 */
-	public static function get_view_type( $view ) {
-		$show_count = get_post_meta( $view->ID, 'frm_show_count', true );
-		if ( 'calendar' === $show_count ) {
-			return 'calendar';
-		}
-
-		if ( self::is_grid_type( $view ) ) {
-			return 'grid';
-		}
-
-		if ( self::is_table_type( $view ) ) {
-			return 'table';
-		}
-
-		return 'classic';
-	}
-
-	/**
-	 * @since 5.3
-	 *
-	 * @param object $view
-	 * @return int 1 or 0.
-	 */
-	public static function is_grid_type( $view ) {
-		if ( in_array( get_post_meta( $view->ID, 'frm_grid_view', true ), array( '1', 1 ), true ) ) {
-			return 1;
-		}
-		if ( self::is_table_type( $view ) ) {
-			// table types use grid style content, so check for table before checking content for grid data.
-			return 0;
-		}
-		$show_count = get_post_meta( $view->ID, 'frm_show_count', true );
-		if ( ! in_array( $show_count, array( 'all', 'dynamic' ), true ) ) {
-			return 0;
-		}
-		if ( self::content_is_in_grid_format( $view->post_content ) ) {
-			return 1;
-		}
-		$dyncontent = get_post_meta( $view->ID, 'frm_dyncontent', true );
-		if ( self::content_is_in_grid_format( $dyncontent ) ) {
-			return 1;
-		}
-		return 0;
-	}
-
-	/**
-	 * @since 5.3
-	 *
-	 * @param string $content post_content or dyncontent value.
-	 * @return bool
-	 */
-	private static function content_is_in_grid_format( $content ) {
-		if ( ! $content ) {
-			return false;
-		}
-		$helper = new FrmViewsContentHelper( $content );
-		return $helper->content_is_an_array();
-	}
-
-	/**
-	 * @since 5.3
-	 *
-	 * @param object $view
-	 * @return int 1 or 0.
-	 */
-	public static function is_table_type( $view ) {
-		return in_array( get_post_meta( $view->ID, 'frm_table_view', true ), array( 1, '1' ), true ) ? 1 : 0;
-	}
-
-	/**
-	 * @since 5.3
-	 *
-	 * @param int $view_id
-	 * @return bool
-	 */
-	public static function is_legacy_table_type( $view_id ) {
-		$options = get_post_meta( $view_id, 'frm_options', true );
-
-		if ( ! is_array( $options ) || ! array_key_exists( 'before_content', $options ) ) {
-			return false;
-		}
-
-		$before_content = $options['before_content'];
-		$show_count     = get_post_meta( $view_id, 'frm_show_count', true );
-		return (bool) self::check_view_data_for_table_type( $show_count, $before_content );
-	}
-
-	/**
-	 * @since 5.3
-	 *
-	 * @param string $show_count
-	 * @param string $listing_before_content
-	 * @return int 1 or 0.
-	 */
-	public static function check_view_data_for_table_type( $show_count, $listing_before_content ) {
-		return in_array( $show_count, array( 'all', 'dynamic' ), true ) && self::check_if_view_before_content_matches_table_type( $listing_before_content ) ? 1 : 0;
-	}
-
-	/**
-	 * @since 5.3
-	 *
-	 * @param string $before_content
-	 * @return bool
-	 */
-	private static function check_if_view_before_content_matches_table_type( $before_content ) {
-		$before_content_begins_a_table = false !== strpos( $before_content, '<table' );
-		if ( ! $before_content_begins_a_table ) {
-			return false;
-		}
-		$before_content_ends_a_table = false !== strpos( $before_content, '</table>' );
-		return ! $before_content_ends_a_table;
-	}
-
-	/**
-	 * @since 5.2
-	 *
-	 * @param WP_Post|string $view
-	 * @return string
-	 */
-	public static function get_view_type_label( $view ) {
-		$view_type = is_string( $view ) ? $view : self::get_view_type( $view );
-		switch ( $view_type ) {
-			case 'calendar':
-				return __( 'Calendar', 'formidable-views' );
-			case 'grid':
-				return __( 'Grid', 'formidable-views' );
-			case 'table':
-				return __( 'Table', 'formidable-views' );
-			case 'classic':
-			default:
-				return __( 'Classic', 'formidable-views' );
-		}
-	}
-
-	/**
-	 * @param string              $string
-	 * @param stdClass|string|int $form
-	 * @return string
-	 */
-	public static function maybe_replace_form_name_shortcodes( $string, $form ) {
-		if ( ! is_callable( 'FrmFormsController::replace_form_name_shortcodes' ) ) {
-			return $string;
-		}
-		return FrmFormsController::replace_form_name_shortcodes( $string, $form );
 	}
 }

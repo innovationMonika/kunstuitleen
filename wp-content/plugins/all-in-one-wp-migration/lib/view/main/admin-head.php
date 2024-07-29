@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,10 +58,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		content: "\e619";
 	}
 
-	.ai1wm-icon-bullhorn:before {
-		content: "\e91a";
-	}
-
 	.ai1wm-label {
 		border: 1px solid #5cb85c;
 		background-color: transparent;
@@ -97,23 +93,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		line-height: 1.6;
 		text-align: center;
 		z-index: 26;
-	}
-
-	.ai1wm-menu-premium {
-		display: inline-block;
-		vertical-align: top;
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-		min-width: 18px;
-		height: 18px;
-		color: #ffd600;
-		font-size:  11px;
-		line-height: 1.6;
-		text-align: center;
-		z-index: 26;
-		float: right;
-		font-weight: normal;
 	}
 
 	.ai1wm-menu-count.ai1wm-menu-hide {

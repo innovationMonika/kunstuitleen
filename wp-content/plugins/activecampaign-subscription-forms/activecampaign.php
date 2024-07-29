@@ -4,7 +4,7 @@ Plugin Name: ActiveCampaign
 Plugin URI: http://www.activecampaign.com/apps/wordpress
 Description: Allows you to add ActiveCampaign contact forms to any post, page, or sidebar. Also allows you to embed <a href="http://www.activecampaign.com/help/site-event-tracking/" target="_blank">ActiveCampaign site tracking</a> code in your pages. To get started, please activate the plugin and add your <a href="http://www.activecampaign.com/help/using-the-api/" target="_blank">API credentials</a> in the <a href="options-general.php?page=activecampaign">plugin settings</a>.
 Author: ActiveCampaign
-Version: 8.1.16
+Version: 8.1.9
 Author URI: http://www.activecampaign.com
 */
 
@@ -60,13 +60,6 @@ Author URI: http://www.activecampaign.com
 ## version 8.1.7: Updated listing
 ## version 8.1.8: Updated listing
 ## version 8.1.9: Updated authentication for internal API requests
-## version 8.1.10: Verify 6.0 Compatibility. Updated listing
-## version 8.1.11: Removing obsolete Javascript
-## version 8.1.12: Security fix to address XSS vulnerability
-## version 8.1.13: Verify 6.3.1 Compatibility. Updated listing
-## version 8.1.14: Fixing shortcode CSS display in Form Preview
-## version 8.1.15: Security fix to address SSRF vulnerability with API URL verification and wp_safe_remote_get. Removing unreachable deprecated curl code
-## version 8.1.16: Verify 6.5 Compatibility. Updated listing
 
 define("ACTIVECAMPAIGN_URL", "");
 define("ACTIVECAMPAIGN_API_KEY", "");
@@ -188,11 +181,6 @@ function activecampaign_shortcodes($args)
     return "";
 }
 
-function activecampaign_verify_api_host($api_host)
-{
-    return (bool) preg_match('/^https:\/\/([a-zA-Z0-9_\-]+)\.(api\-us1|activehosted)\.com$/', $api_host);
-}
-
 /*
  * The ActiveCampaign settings page.
  */
@@ -221,54 +209,46 @@ function activecampaign_plugin_options()
                 exit;
             }
 
-            // Verify host against whitelist of known domains
-            if(!activecampaign_verify_api_host($_POST["api_url"])){
-                echo "<p style='margin: 0 0 20px; padding: 14px; font-size: 14px; color: #873c3c; font-family:arial; background: #ec9999; line-height: 19px; border-radius: 5px; overflow: hidden;'>" . __("Access denied: Invalid API URL \"{$_POST["api_url"]}\" please ensure https without extra whitespace.", "menu-activecampaign") . "</p>";
+
+            $ac = new ActiveCampaignWordPress($_POST["api_url"], $_POST["api_key"]);
+
+            if (!(int)$ac->credentials_test()) {
+                echo "<p style='margin: 0 0 20px; padding: 14px; font-size: 14px; color: #873c3c; font-family:arial; background: #ec9999; line-height: 19px; border-radius: 5px; overflow: hidden;'>" . __("Access denied: Invalid credentials (URL and/or API key).", "menu-activecampaign") . "</p>";
+            } else {
+                $instance = $_POST;
+
+                // first form submit (after entering API credentials).
+
+                // get account details.
+                $account = $ac->api("account/view");
+                $instance["account_view"] = get_object_vars($account);
+                $instance["account"] = property_exists($account, 'account')? $account->account : null;
+				$instance["tracking_actid"] = activecampaign_fetch_accountid($ac);
+
+                // get forms.
+                $instance = activecampaign_getforms($ac, $instance);
+                $instance = activecampaign_form_html($ac, $instance);
+
+                $connected = true;
+
+				// If fetches didn't return domain or account, we can't display embeds, so fail out. This can happen with non-admin API credentials
+				$domain = (isset($instance["account_view"]) && isset($instance["account_view"]["account"]))? $instance["account_view"]["account"] : null;
+				if(!isset($instance["account"]) || !isset($domain)){
+					$connected = false;
+					$instance = [];
+					echo "<p style='margin: 0 0 20px; padding: 14px; font-size: 14px; color: #873c3c; font-family:arial; background: #ec9999; line-height: 19px; border-radius: 5px; overflow: hidden;'>" . __("Access denied: You entered valid credentials, but the associated API User is not an ActiveCampaign Admin group member. Please use API credentials from a User within the Admin group.", "menu-activecampaign") . "</p>";
+				}
             }
-            else{
-                $ac = new ActiveCampaignWordPress($_POST["api_url"], $_POST["api_key"]);
-
-                if (!(int)$ac->credentials_test()) {
-                    echo "<p style='margin: 0 0 20px; padding: 14px; font-size: 14px; color: #873c3c; font-family:arial; background: #ec9999; line-height: 19px; border-radius: 5px; overflow: hidden;'>" . __("Access denied: Invalid credentials (URL and/or API key). \"{$_POST["api_url"]}\"", "menu-activecampaign") . "</p>";
-                } else {
-                    $instance = $_POST;
-
-                    // first form submit (after entering API credentials).
-
-                    // get account details.
-                    $account = $ac->api("account/view");
-                    $instance["account_view"] = get_object_vars($account);
-                    $instance["account"] = property_exists($account, 'account')? $account->account : null;
-                    $instance["tracking_actid"] = activecampaign_fetch_accountid($ac);
-
-                    // get forms.
-                    $instance = activecampaign_getforms($ac, $instance);
-                    $instance = activecampaign_form_html($ac, $instance);
-
-                    $connected = true;
-
-                    // If fetches didn't return domain or account, we can't display embeds, so fail out. This can happen with non-admin API credentials
-                    $domain = (isset($instance["account_view"]) && isset($instance["account_view"]["account"]))? $instance["account_view"]["account"] : null;
-                    if(!isset($instance["account"]) || !isset($domain)){
-                        $connected = false;
-                        $instance = [];
-                        echo "<p style='margin: 0 0 20px; padding: 14px; font-size: 14px; color: #873c3c; font-family:arial; background: #ec9999; line-height: 19px; border-radius: 5px; overflow: hidden;'>" . __("Access denied: You entered valid credentials, but the associated API User is not an ActiveCampaign Admin group member. Please use API credentials from a User within the Admin group.", "menu-activecampaign") . "</p>";
-                    }
-                }
-            }
+        } else {
+            // one or both of the credentials fields is empty. it will just disconnect below because $instance is empty.
         }
-        // else one or both of the credentials fields is empty. it will just disconnect below because $instance is empty.
 
         update_option("settings_activecampaign", $instance);
     } else {
         $instance = get_option("settings_activecampaign");
 //dbg($instance);
 
-        if (
-            isset($instance["api_url"], $instance["api_key"])
-            && $instance["api_url"] && $instance["api_key"]
-            && activecampaign_verify_api_host($instance["api_url"])
-        ) {
+        if (isset($instance["api_url"]) && $instance["api_url"] && isset($instance["api_key"]) && $instance["api_key"]) {
             // instance saved already.
             $connected = true;
         } else {
@@ -282,11 +262,7 @@ function activecampaign_plugin_options()
 
                 $widget_info = current($widget); // take the first item.
 
-                if (
-                    isset($widget_info["api_url"], $widget_info["api_key"])
-                    && $widget_info["api_url"] && $widget_info["api_key"]
-                    && activecampaign_verify_api_host($widget_info["api_url"])
-                ) {
+                if (isset($widget_info["api_url"]) && $widget_info["api_url"] && isset($widget_info["api_key"]) && $widget_info["api_key"]) {
                     // if they already supplied an API URL and key in the widget.
                     $instance["api_url"] = $widget_info["api_url"];
                     $instance["api_key"] = $widget_info["api_key"];
@@ -631,7 +607,7 @@ function activecampaign_plugin_options()
 
                     ?>
 
-                    <p><?php echo __("Embed using"); ?><code>[activecampaign form=<?php echo $form_id; ?> css=<?php echo (isset($instance["css"]) && !empty($instance["css"][$form_id]))? '1' : '0'; ?>]</code></p>
+                    <p><?php echo __("Embed using"); ?><code>[activecampaign form=<?php echo $form_id; ?> css=<?php echo (isset($instance["css"]) && !empty($instance["css"][$form["id"]]))? '1' : '0'; ?>]</code></p>
 
                     <hr style="border: 1px dotted #ccc; border-width: 1px 0 0 0; margin-top: 40px;" />
 
@@ -865,6 +841,19 @@ function activecampaign_add_buttons($plugin_array)
     //we need to load the JS for this button as well
     //and we should load it on any page that has the button loaded, since some plugins allow editing pages from anywhere
     wp_enqueue_script("editor_pages", plugins_url("editor_pages.js", __FILE__), array(), false, true);
+
+    if (!in_array($GLOBALS["pagenow"], array('post.php', 'page.php', 'post-new.php', 'post-edit.php'))) {
+        //Some plugins will inject the form HTML dynamically into the page, including the script tags
+        //unfortunately, browsers will not execute the scripts in order if that happens
+        //so we need to make sure these calendar files are loaded, or errors will happen
+        //if, for example, the Live Composer plugin detects errors, it will not finish saving changes
+        $instance = get_option("settings_activecampaign");
+        if (isset($instance["api_url"]) && $instance["api_url"] && isset($instance["api_key"]) && $instance["api_key"]) {
+            wp_enqueue_script("form_calendar", $instance["api_url"] . '/ac_global/jscalendar/calendar.js?_=1456685745739', array(), false, true);
+            wp_enqueue_script("form_calendar_en", $instance["api_url"] . '/ac_global/jscalendar/lang/calendar-en.js?_=1456685745739', array(), false, true);
+            wp_enqueue_script("form_calendar_setup", $instance["api_url"] . '/ac_global/jscalendar/calendar-setup.js?_=1456685745739', array(), false, true);
+        }
+    }
 
     // any data we need to access in JavaScript.
     $data = array(

@@ -44,12 +44,7 @@ class FrmProPostAction extends FrmFormAction {
             }
         }
 
-		$embedded_fields = $this->get_embedded_fields( $form_id );
-		$fields          = array_merge( $values['fields'], $embedded_fields );
-
-		$embedded_field_ids = array_column( $embedded_fields, 'id' );
-
-		if ( empty( $form_action->post_content['post_category'] ) && ! empty( $fields ) ) {
+		if ( empty( $form_action->post_content['post_category'] ) && ! empty( $values['fields'] ) ) {
 			foreach ( $values['fields'] as $fo_key => $fo ) {
 				if ( $fo['post_field'] === 'post_category' ) {
 					if ( ! isset( $fo['taxonomy'] ) || $fo['taxonomy'] == '' ) {
@@ -74,42 +69,7 @@ class FrmProPostAction extends FrmFormAction {
 			}
 		}
 
-		$values = FrmProFormActionsController::maybe_merge_fields( $values, $embedded_fields );
-		unset( $embedded_fields );
-
-		include __DIR__ . '/post_options.php';
-	}
-
-	/**
-	 * Returns a formatted list of embedded fields in a form.
-	 *
-	 * @since 6.8
-	 *
-	 * @param int   $form_id
-	 * @return array
-	 */
-	private function get_embedded_fields( $form_id ) {
-		$embedded_form_ids = FrmProFormsHelper::get_embedded_form_ids( $form_id );
-		if ( ! $embedded_form_ids ) {
-			return array();
-		}
-		$embedded_fields = FrmDb::get_results( 'frm_fields', array( 'form_id' => $embedded_form_ids ) );
-
-		$formatted_fields = array();
-
-		foreach ( $embedded_fields as $field ) {
-			FrmAppHelper::unserialize_or_decode( $field->field_options );
-			$field = (array) $field;
-			$opts  = (array) $field['field_options'];
-			$field = array_merge( $opts, $field );
-			if ( ! isset( $field['post_field'] ) ) {
-				$field['post_field'] = '';
-			}
-			$formatted_fields[] = $field;
-			unset( $field, $opts );
-		}
-
-		return $formatted_fields;
+		include dirname( __FILE__ ) . '/post_options.php';
 	}
 
 	private function get_form_action_display( $form_id, $form_action ) {
@@ -126,7 +86,7 @@ class FrmProPostAction extends FrmFormAction {
 		$link                  = $this->get_views_placeholder_link( $form_id );
 		$display_id_field_name = $this->get_field_name( 'display_id' );
 		$display_id            = isset( $form_action->post_content['display_id'] ) ? $form_action->post_content['display_id'] : '';
-		require __DIR__ . '/post_options_for_views_placeholder.php';
+		require dirname( __FILE__ ) . '/post_options_for_views_placeholder.php';
 	}
 
 	private function get_views_placeholder_link( $form_id ) {

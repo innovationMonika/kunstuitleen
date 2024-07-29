@@ -10,7 +10,7 @@ class FrmEntry {
 	 *
 	 * @param array $values
 	 *
-	 * @return bool|int $entry_id
+	 * @return int | boolean $entry_id
 	 */
 	public static function create( $values ) {
 		$entry_id = self::create_entry( $values, 'standard' );
@@ -21,16 +21,16 @@ class FrmEntry {
 	/**
 	 * Create a new entry with some differences depending on type
 	 *
-	 * @param array  $values
+	 * @param array $values
 	 * @param string $type
 	 *
-	 * @return bool|int $entry_id
+	 * @return int | boolean $entry_id
 	 */
 	private static function create_entry( $values, $type ) {
 		$new_values = self::before_insert_entry_in_database( $values, $type );
 
 		// Don't check XML entries for duplicates
-		if ( $type !== 'xml' && self::is_duplicate( $new_values, $values ) ) {
+		if ( $type != 'xml' && self::is_duplicate( $new_values, $values ) ) {
 			return false;
 		}
 
@@ -42,7 +42,7 @@ class FrmEntry {
 	/**
 	 * Check for duplicate entries created in the last minute
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	public static function is_duplicate( $new_values, $values ) {
 		$duplicate_entry_time = apply_filters( 'frm_time_to_check_duplicates', 60, $new_values );
@@ -52,7 +52,7 @@ class FrmEntry {
 		}
 
 		$check_val                 = $new_values;
-		$check_val['created_at >'] = gmdate( 'Y-m-d H:i:s', strtotime( $new_values['created_at'] ) - absint( $duplicate_entry_time ) );
+		$check_val['created_at >'] = gmdate( 'Y-m-d H:i:s', ( strtotime( $new_values['created_at'] ) - absint( $duplicate_entry_time ) ) );
 
 		unset( $check_val['created_at'], $check_val['updated_at'], $check_val['is_draft'], $check_val['id'], $check_val['item_key'] );
 
@@ -107,16 +107,17 @@ class FrmEntry {
 			}
 
 			$diff = array_diff_assoc( $field_metas, $new_meta );
-			foreach ( $diff as $meta_value ) {
+			foreach ( $diff as $field_id => $meta_value ) {
 				if ( ! empty( $meta_value ) ) {
 					$is_duplicate = false;
+					continue;
 				}
 			}
 
 			if ( $is_duplicate ) {
 				break;
 			}
-		}//end foreach
+		}
 
 		$frm_vars['checking_duplicates'] = false;
 
@@ -150,7 +151,7 @@ class FrmEntry {
 	 * @since 2.0.23
 	 *
 	 * @param array $values
-	 * @param int   $duplicate_entry_time
+	 * @param int $duplicate_entry_time
 	 *
 	 * @return bool
 	 */
@@ -212,10 +213,10 @@ class FrmEntry {
 	/**
 	 * Update an entry (not via XML)
 	 *
-	 * @param int   $id
+	 * @param int $id
 	 * @param array $values
 	 *
-	 * @return bool|int $update_results
+	 * @return boolean|int $update_results
 	 */
 	public static function update( $id, $values ) {
 		$update_results = self::update_entry( $id, $values, 'standard' );
@@ -228,10 +229,10 @@ class FrmEntry {
 	 *
 	 * @since 2.0.16
 	 *
-	 * @param int   $id
+	 * @param int $id
 	 * @param array $values
 	 *
-	 * @return bool|int $query_results
+	 * @return boolean|int $query_results
 	 */
 	private static function update_entry( $id, $values, $update_type ) {
 		global $wpdb;
@@ -250,46 +251,23 @@ class FrmEntry {
 		return $query_results;
 	}
 
-	/**
-	 * Delete an entry.
-	 *
-	 * @param int|string $id
-	 * @return bool True on success, false if nothing was deleted.
-	 */
 	public static function destroy( $id ) {
 		global $wpdb;
 		$id = (int) $id;
 
-		// Item meta is required for conditional logic in actions with 'delete' events.
-		$entry = self::getOne( $id, true );
+		$entry = self::getOne( $id );
 		if ( ! $entry ) {
 			$result = false;
+
 			return $result;
 		}
 
-		/**
-		 * Trigger an action to run custom logic before the entry is deleted.
-		 *
-		 * @param int      $id    The id of the entry that was destroyed.
-		 * @param stdClass $entry The entry object.
-		 */
 		do_action( 'frm_before_destroy_entry', $id, $entry );
 
 		$wpdb->query( $wpdb->prepare( 'DELETE FROM ' . $wpdb->prefix . 'frm_item_metas WHERE item_id=%d', $id ) );
 		$result = $wpdb->query( $wpdb->prepare( 'DELETE FROM ' . $wpdb->prefix . 'frm_items WHERE id=%d', $id ) );
 
 		self::clear_cache();
-
-		/**
-		 * Trigger an action to run custom logic after the entry is deleted.
-		 * Use this hook if you need to update caching after an entry is deleted.
-		 *
-		 * @since 5.4.1
-		 *
-		 * @param int      $id    The id of the entry that was destroyed.
-		 * @param stdClass $entry The entry object.
-		 */
-		do_action( 'frm_after_destroy_entry', $id, $entry );
 
 		return $result;
 	}
@@ -336,10 +314,9 @@ class FrmEntry {
 	/**
 	 * If $entry is numeric, get the entry object
 	 *
-	 * @since 2.0.9
+	 * @param int|object $entry by reference
 	 *
-	 * @param int|object $entry By reference.
-	 * @return void
+	 * @since 2.0.9
 	 */
 	public static function maybe_get_entry( &$entry ) {
 		if ( $entry && is_numeric( $entry ) ) {
@@ -355,7 +332,7 @@ class FrmEntry {
 		$query = "SELECT it.*, fr.name as form_name, fr.form_key as form_key FROM {$wpdb->prefix}frm_items it
                   LEFT OUTER JOIN {$wpdb->prefix}frm_forms fr ON it.form_id=fr.id WHERE ";
 
-		$query     .= is_numeric( $id ) ? 'it.id=%d' : 'it.item_key=%s';
+		$query      .= is_numeric( $id ) ? 'it.id=%d' : 'it.item_key=%s';
 		$query_args = array( $id );
 		$query      = $wpdb->prepare( $query, $query_args ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
@@ -389,8 +366,7 @@ class FrmEntry {
 		}
 
 		FrmAppHelper::unserialize_or_decode( $entry->description );
-		// TODO: Remove slashes on input only, not output.
-		$entry = wp_unslash( $entry );
+		$entry = wp_unslash( $entry ); // TODO: Remove slashes on input only, not output.
 	}
 
 	/**
@@ -417,16 +393,15 @@ class FrmEntry {
 				'item_id'    => $entry->id,
 				'field_id !' => 0,
 			),
-			'field_id, meta_value, field_key, item_id, f.type'
+			'field_id, meta_value, field_key, item_id'
 		);
 
 		$entry->metas = array();
 
 		$include_key = apply_filters( 'frm_include_meta_keys', false, array( 'form_id' => $entry->form_id ) );
 		foreach ( $metas as $meta_val ) {
-			FrmFieldsHelper::prepare_field_value( $meta_val->meta_value, $meta_val->type );
-
 			if ( $meta_val->item_id == $entry->id ) {
+				FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
 				$entry->metas[ $meta_val->field_id ] = $meta_val->meta_value;
 				if ( $include_key ) {
 					$entry->metas[ $meta_val->field_key ] = $entry->metas[ $meta_val->field_id ];
@@ -439,6 +414,7 @@ class FrmEntry {
 				$entry->metas[ $meta_val->field_id ] = array();
 			}
 
+			FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
 			$entry->metas[ $meta_val->field_id ][] = $meta_val->meta_value;
 
 			unset( $meta_val );
@@ -469,7 +445,7 @@ class FrmEntry {
 		}
 		$id = FrmDb::get_var( $wpdb->prefix . 'frm_items', $where );
 
-		return $id && $id > 0;
+		return ( $id && $id > 0 );
 	}
 
 	public static function getAll( $where, $order_by = '', $limit = '', $meta = false, $inc_form = true ) {
@@ -481,12 +457,12 @@ class FrmEntry {
 		$entries   = wp_cache_get( $cache_key, 'frm_entry' );
 
 		if ( false === $entries ) {
-			$fields = 'it.id, it.item_key, it.name, it.ip, it.form_id, it.post_id, it.user_id, it.parent_item_id, it.updated_by, it.created_at, it.updated_at, it.is_draft, it.description';
+			$fields = 'it.id, it.item_key, it.name, it.ip, it.form_id, it.post_id, it.user_id, it.parent_item_id, it.updated_by, it.created_at, it.updated_at, it.is_draft';
 			$table  = $wpdb->prefix . 'frm_items it ';
 
 			if ( $inc_form ) {
 				$fields = 'it.*, fr.name as form_name,fr.form_key as form_key';
-				$table .= 'LEFT OUTER JOIN ' . $wpdb->prefix . 'frm_forms fr ON it.form_id=fr.id ';
+				$table  .= 'LEFT OUTER JOIN ' . $wpdb->prefix . 'frm_forms fr ON it.form_id=fr.id ';
 			}
 
 			if ( preg_match( '/ meta_([0-9]+)/', $order_by, $order_matches ) ) {
@@ -501,7 +477,7 @@ class FrmEntry {
 			unset( $query );
 
 			FrmDb::set_cache( $cache_key, $entries, 'frm_entry' );
-		}//end if
+		}
 
 		if ( ! $meta || ! $entries ) {
 			self::prepare_entries( $entries );
@@ -520,11 +496,7 @@ class FrmEntry {
 			$meta_where['item_id'] = array_keys( $entries );
 		}
 
-		$metas = FrmDb::get_results(
-			$wpdb->prefix . 'frm_item_metas it LEFT OUTER JOIN ' . $wpdb->prefix . 'frm_fields fi ON it.field_id = fi.id',
-			$meta_where,
-			'item_id, meta_value, field_id, field_key, form_id, fi.type'
-		);
+		$metas = FrmDb::get_results( $wpdb->prefix . 'frm_item_metas it LEFT OUTER JOIN ' . $wpdb->prefix . 'frm_fields fi ON (it.field_id = fi.id)', $meta_where, 'item_id, meta_value, field_id, field_key, form_id' );
 
 		unset( $meta_where );
 
@@ -542,7 +514,7 @@ class FrmEntry {
 				$entries[ $meta_val->item_id ]->metas = array();
 			}
 
-			FrmFieldsHelper::prepare_field_value( $meta_val->meta_value, $meta_val->type );
+			FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
 			$entries[ $meta_val->item_id ]->metas[ $meta_val->field_id ] = $meta_val->meta_value;
 			unset( $m_key, $meta_val );
 		}
@@ -580,12 +552,11 @@ class FrmEntry {
 
 	// Pagination Methods
 	/**
-	 * @param array|int|string $where If int, use the form id.
-	 * @return int|string
+	 * @param int|array|string If int, use the form id.
 	 */
 	public static function getRecordCount( $where = '' ) {
 		global $wpdb;
-		$table_join = $wpdb->prefix . 'frm_items it JOIN ' . $wpdb->prefix . 'frm_forms fr ON it.form_id=fr.id';
+		$table_join = $wpdb->prefix . 'frm_items it LEFT OUTER JOIN ' . $wpdb->prefix . 'frm_forms fr ON it.form_id=fr.id';
 
 		if ( is_numeric( $where ) ) {
 			$table_join = 'frm_items';
@@ -603,10 +574,6 @@ class FrmEntry {
 		return $count;
 	}
 
-	/**
-	 * @param int|string $p_size
-	 * @return int
-	 */
 	public static function getPageCount( $p_size, $where = '' ) {
 		$p_size = (int) $p_size;
 		$count  = 1;
@@ -625,7 +592,7 @@ class FrmEntry {
 	 *
 	 * @since 2.0.16
 	 *
-	 * @param array  $values
+	 * @param array $values
 	 * @param string $type
 	 *
 	 * @return array $new_values
@@ -634,7 +601,7 @@ class FrmEntry {
 
 		self::sanitize_entry_post( $values );
 
-		if ( $type !== 'xml' ) {
+		if ( $type != 'xml' ) {
 			$values = apply_filters( 'frm_pre_create_entry', $values );
 		}
 
@@ -651,7 +618,7 @@ class FrmEntry {
 	 * @param array $values
 	 * @param array $new_values
 	 *
-	 * @return bool|int $entry_id
+	 * @return boolean|int $entry_id
 	 */
 	private static function continue_to_create_entry( $values, $new_values ) {
 		$entry_id = self::insert_entry_into_database( $new_values );
@@ -669,7 +636,7 @@ class FrmEntry {
 	 *
 	 * @since 2.0
 	 *
-	 * @param array $values The POST values by reference.
+	 * @param array $values The POST values by reference
 	 */
 	public static function sanitize_entry_post( &$values ) {
 		$sanitize_method = array(
@@ -762,11 +729,7 @@ class FrmEntry {
 	 * @return int
 	 */
 	private static function get_is_draft_value( $values ) {
-		if ( isset( $values['frm_saving_draft'] ) && FrmEntriesHelper::DRAFT_ENTRY_STATUS === (int) $values['frm_saving_draft'] ) {
-			return FrmEntriesHelper::DRAFT_ENTRY_STATUS;
-		}
-
-		return isset( $values['is_draft'] ) ? absint( $values['is_draft'] ) : FrmEntriesHelper::SUBMITTED_ENTRY_STATUS;
+		return ( ( isset( $values['frm_saving_draft'] ) && $values['frm_saving_draft'] == 1 ) || ( isset( $values['is_draft'] ) && $values['is_draft'] == 1 ) ) ? 1 : 0;
 	}
 
 	/**
@@ -811,7 +774,7 @@ class FrmEntry {
 	 * @return string
 	 */
 	private static function get_entry_description( $values ) {
-		if ( ! empty( $values['description'] ) ) {
+		if ( isset( $values['description'] ) && ! empty( $values['description'] ) ) {
 			$description = FrmAppHelper::maybe_json_encode( $values['description'] );
 		} else {
 			$description = json_encode(
@@ -852,7 +815,7 @@ class FrmEntry {
 	 *
 	 * @param array $new_values
 	 *
-	 * @return bool|int $entry_id
+	 * @return int | boolean $entry_id
 	 */
 	private static function insert_entry_into_database( $new_values ) {
 		global $wpdb;
@@ -891,7 +854,7 @@ class FrmEntry {
 	 * @since 2.0.16
 	 *
 	 * @param array $values
-	 * @param int   $entry_id
+	 * @param int $entry_id
 	 * @return void
 	 */
 	private static function maybe_add_entry_metas( $values, $entry_id ) {
@@ -921,13 +884,12 @@ class FrmEntry {
 	 *
 	 * @since 2.0.16
 	 *
-	 * @param int   $entry_id
-	 * @param array $values
+	 * @param int $entry_id
 	 * @param array $new_values
 	 */
 	private static function after_entry_created_actions( $entry_id, $values, $new_values ) {
-		// This is a child entry.
-		$is_child = isset( $values['parent_nonce'] ) && ! empty( $values['parent_form_id'] ) && wp_verify_nonce( $values['parent_nonce'], 'parent' );
+		// this is a child entry
+		$is_child = isset( $values['parent_form_id'] ) && isset( $values['parent_nonce'] ) && ! empty( $values['parent_form_id'] ) && wp_verify_nonce( $values['parent_nonce'], 'parent' );
 
 		do_action( 'frm_after_create_entry', $entry_id, $new_values['form_id'], compact( 'is_child' ) );
 		do_action( 'frm_after_create_entry_' . $new_values['form_id'], $entry_id, compact( 'is_child' ) );
@@ -940,7 +902,7 @@ class FrmEntry {
 	 *
 	 * @param array $values
 	 * @param array $new_values
-	 * @param int   $entry_id
+	 * @param int $entry_id
 	 */
 	private static function after_insert_entry_in_database( $values, $new_values, $entry_id ) {
 
@@ -958,22 +920,22 @@ class FrmEntry {
 	 *
 	 * @since 2.0.16
 	 *
-	 * @param int    $id
-	 * @param array  $values
+	 * @param int $id
+	 * @param array $values
 	 * @param string $update_type
 	 *
-	 * @return bool $update
+	 * @return boolean $update
 	 */
 	private static function before_update_entry( $id, &$values, $update_type ) {
 		$update = true;
 
 		global $frm_vars;
 
-		if ( isset( $frm_vars['saved_entries'] ) && is_array( $frm_vars['saved_entries'] ) && in_array( (int) $id, $frm_vars['saved_entries'] ) ) {
+		if ( isset( $frm_vars['saved_entries'] ) && is_array( $frm_vars['saved_entries'] ) && in_array( (int) $id, (array) $frm_vars['saved_entries'] ) ) {
 			$update = false;
 		}
 
-		if ( $update && $update_type !== 'xml' ) {
+		if ( $update && $update_type != 'xml' ) {
 			$values = apply_filters( 'frm_pre_update_entry', $values, $id );
 		}
 
@@ -985,7 +947,7 @@ class FrmEntry {
 	 *
 	 * @since 2.0.16
 	 *
-	 * @param int   $id
+	 * @param int $id
 	 * @param array $values
 	 *
 	 * @return array $new_values
@@ -1027,10 +989,10 @@ class FrmEntry {
 	 *
 	 * @since 2.0.16
 	 *
-	 * @param bool|int $query_results
-	 * @param int      $id
-	 * @param array    $values
-	 * @param array    $new_values
+	 * @param boolean|int $query_results
+	 * @param int $id
+	 * @param array $values
+	 * @param array $new_values
 	 */
 	private static function after_update_entry( $query_results, $id, $values, $new_values ) {
 		if ( $query_results ) {
@@ -1060,7 +1022,7 @@ class FrmEntry {
 	 *
 	 * @param array $values
 	 *
-	 * @return bool|int $entry_id
+	 * @return int | boolean $entry_id
 	 */
 	public static function create_entry_from_xml( $values ) {
 		$entry_id = self::create_entry( $values, 'xml' );
@@ -1074,10 +1036,10 @@ class FrmEntry {
 	 *
 	 * @since 2.0.16
 	 *
-	 * @param int   $id
+	 * @param int $id
 	 * @param array $values
 	 *
-	 * @return bool|int $updated
+	 * @return int | boolean $updated
 	 */
 	public static function update_entry_from_xml( $id, $values ) {
 		$updated = self::update_entry( $id, $values, 'xml' );
@@ -1094,21 +1056,5 @@ class FrmEntry {
 		$entry_id = FrmDb::get_var( 'frm_items', array( 'item_key' => sanitize_title( $key ) ) );
 
 		return (int) $entry_id;
-	}
-
-	/**
-	 * Get entries count.
-	 *
-	 * @since 6.8
-	 *
-	 * @return int|string
-	 */
-	public static function get_entries_count() {
-		$args = array(
-			'or'               => 1,
-			'parent_form_id'   => null,
-			'parent_form_id <' => 1,
-		);
-		return self::getRecordCount( $args );
 	}
 }

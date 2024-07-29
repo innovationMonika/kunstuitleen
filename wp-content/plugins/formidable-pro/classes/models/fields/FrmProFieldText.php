@@ -8,17 +8,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 3.0
  */
 class FrmProFieldText extends FrmFieldText {
-	use FrmProFieldAutocompleteField;
 
 	protected function field_settings_for_type() {
 		$settings = parent::field_settings_for_type();
 
 		$settings['autopopulate'] = true;
-		$settings['calc']         = true;
-		$settings['read_only']    = true;
-		$settings['unique']       = true;
-		$settings['prefix']       = true;
-		$settings['autocomplete'] = true;
+		$settings['calc']      = true;
+		$settings['read_only'] = true;
+		$settings['unique']    = true;
+		$settings['prefix']    = true;
 
 		FrmProFieldsHelper::fill_default_field_display( $settings );
 		return $settings;

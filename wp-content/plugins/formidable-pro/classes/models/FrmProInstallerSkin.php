@@ -36,4 +36,5 @@ class FrmProInstallerSkin extends FrmInstallerSkin {
 		}
 		return false;
 	}
+
 }

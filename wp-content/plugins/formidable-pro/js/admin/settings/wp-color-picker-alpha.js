@@ -4,7 +4,7 @@
  * Overwrite Automattic Iris for enabled Alpha Channel in wpColorPicker
  * Only run in input and is defined data alpha in true
  *
- * Version: 3.0.2
+ * Version: 3.0.0
  * https://github.com/kallookoo/wp-color-picker-alpha
  * Licensed under the GPLv2 license or later.
  */
@@ -12,7 +12,7 @@
 ( function( $, undef ) {
 
 	var wpColorPickerAlpha = {
-		'version' : 302
+		'version' : 300
 	};
 
 	// Always try to use the last version of this script.
@@ -542,7 +542,7 @@
 					self.colorAlpha.css( { 'background-color': ui.color.to_s( self.alphaOptions.alphaColorType ) } );
 
 					// fire change callback if we have one
-					if ( typeof self.options.change === 'function' ) {
+					if ( $.isFunction( self.options.change ) ) {
 						self.options.change.call( this, event, ui );
 					}
 				}
@@ -567,7 +567,7 @@
 			 *
 			 * @since 3.0.0
 			 */
-			self.toggler.on( 'click', function() {
+			self.toggler.click( function() {
 				if ( self.toggler.hasClass( 'wp-picker-open' ) ) {
 					self.close();
 				} else {
@@ -585,7 +585,7 @@
 			 *
 			 * @return {void}
 			 */
-			el.on( 'change', function( event ) {
+			el.change( function( event ) {
 				var val = $( this ).val();
 
 				if ( el.hasClass( 'iris-error' ) || val === '' || val.match( /^(#|(rgb|hsl)a?)$/ ) ) {
@@ -596,7 +596,7 @@
 					self.colorAlpha.css( 'background-color', '' );
 
 					// fire clear callback if we have one
-					if ( typeof self.options.clear === 'function' ) {
+					if ( $.isFunction( self.options.clear ) ) {
 						self.options.clear.call( this, event );
 					}
 				}
@@ -611,7 +611,7 @@
 			 *
 			 * @return {void}
 			 */
-			self.button.on( 'click', function( event ) {
+			self.button.click( function( event ) {
 				if ( $( this ).hasClass( 'wp-picker-default' ) ) {
 					el.val( self.options.defaultColor ).change();
 				} else if ( $( this ).hasClass( 'wp-picker-clear' ) ) {
@@ -623,7 +623,7 @@
 					self.colorAlpha.css( 'background-color', '' );
 
 					// fire clear callback if we have one
-					if ( typeof self.options.clear === 'function' ) {
+					if ( $.isFunction( self.options.clear ) ) {
 						self.options.clear.call( this, event );
 					}
 
@@ -632,4 +632,4 @@
 			} );
 		},
 	} );
-} )( jQuery );
+} ( jQuery ) );

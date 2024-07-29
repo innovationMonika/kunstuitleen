@@ -27,10 +27,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<label for="frm_options_field_<?php echo absint( $field['id'] ); ?>">
 		<?php esc_html_e( 'Select a Form', 'formidable-pro' ); ?>
 	</label>
-<select class="frm_options_field_<?php echo absint( $field['id'] ); ?> frm_get_field_selection" name="field_options[get_values_form_<?php echo absint( $field['id']); ?>]" id="frm_options_field_<?php echo absint( $field['id'] ); ?>">
+<select class="frm_options_field_<?php echo absint( $field['id'] ); ?> frm_get_field_selection" id="frm_options_field_<?php echo absint( $field['id'] ); ?>">
 	<option value="">&mdash; <?php esc_html_e( 'Select Form', 'formidable-pro' ); ?> &mdash;</option>
     <?php foreach ( $form_list as $form_opts ) { ?>
-	<option value="<?php echo absint( $form_opts->id ); ?>" <?php selected( $form_opts->id, $selected_form_id ); ?>><?php echo esc_html( FrmAppHelper::truncate( $form_opts->name, 30 ) ); ?></option>
+	<option value="<?php echo absint( $form_opts->id ); ?>" <?php selected( $form_opts->id, $selected_form_id ); ?>><?php echo FrmAppHelper::truncate( $form_opts->name, 30 ); ?></option>
     <?php } ?>
 </select>
 </p>
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php esc_html_e( 'Select a Field', 'formidable-pro' ); ?>
 		</label>
 		<?php
-        include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/field-selection.php';
+        include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/field-selection.php' );
 	} elseif ( $selected_field == 'taxonomy' ) {
     ?>
 	<div class="frm-inline-message">
@@ -54,10 +54,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     }
     ?>
 </p>
-<?php
-// Option Order.
-require FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/order.php';
-?>
 </div>
 
 <p>

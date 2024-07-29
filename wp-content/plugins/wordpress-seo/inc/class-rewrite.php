@@ -28,11 +28,31 @@ class WPSEO_Rewrite {
 	 * Trigger a rewrite_rule flush on shutdown.
 	 *
 	 * @since 1.2.8
-	 *
-	 * @return void
 	 */
 	public function schedule_flush() {
 		add_action( 'shutdown', 'flush_rewrite_rules' );
+	}
+
+	/**
+	 * If the flush option is set, flush the rewrite rules.
+	 *
+	 * @since 1.2.8
+	 * @deprecated 17.4
+	 * @codeCoverageIgnore
+	 *
+	 * @return bool
+	 */
+	public function flush() {
+		_deprecated_function( __METHOD__, 'WPSEO 17.4', __CLASS__ . '::schedule_flush' );
+		if ( get_option( 'wpseo_flush_rewrite' ) ) {
+
+			add_action( 'shutdown', 'flush_rewrite_rules' );
+			delete_option( 'wpseo_flush_rewrite' );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -71,9 +91,9 @@ class WPSEO_Rewrite {
 	/**
 	 * Update the query vars with the redirect var when stripcategorybase is active.
 	 *
-	 * @param array<string> $query_vars Main query vars to filter.
+	 * @param array $query_vars Main query vars to filter.
 	 *
-	 * @return array<string> The query vars.
+	 * @return array
 	 */
 	public function query_vars( $query_vars ) {
 		if ( WPSEO_Options::get( 'stripcategorybase' ) === true ) {
@@ -86,9 +106,9 @@ class WPSEO_Rewrite {
 	/**
 	 * Checks whether the redirect needs to be created.
 	 *
-	 * @param array<string> $query_vars Query vars to check for existence of redirect var.
+	 * @param array $query_vars Query vars to check for existence of redirect var.
 	 *
-	 * @return array<string> The query vars.
+	 * @return array|void The query vars.
 	 */
 	public function request( $query_vars ) {
 		if ( ! isset( $query_vars['wpseo_category_redirect'] ) ) {
@@ -96,13 +116,12 @@ class WPSEO_Rewrite {
 		}
 
 		$this->redirect( $query_vars['wpseo_category_redirect'] );
-		return [];
 	}
 
 	/**
 	 * This function taken and only slightly adapted from WP No Category Base plugin by Saurabh Gupta.
 	 *
-	 * @return array<string> The category rewrite rules.
+	 * @return array
 	 */
 	public function category_rewrite_rules() {
 		global $wp_rewrite;
@@ -113,10 +132,8 @@ class WPSEO_Rewrite {
 		$permalink_structure = get_option( 'permalink_structure' );
 
 		$blog_prefix = '';
-		if ( strpos( $permalink_structure, '/blog/' ) === 0 ) {
-			if ( ( is_multisite() && ! is_subdomain_install() ) || is_main_site() || is_main_network() ) {
-				$blog_prefix = 'blog/';
-			}
+		if ( is_multisite() && ! is_subdomain_install() && is_main_site() && strpos( $permalink_structure, '/blog/' ) === 0 ) {
+			$blog_prefix = 'blog/';
 		}
 
 		$categories = get_categories( [ 'hide_empty' => false ] );
@@ -159,20 +176,17 @@ class WPSEO_Rewrite {
 	/**
 	 * Adds required category rewrites rules.
 	 *
-	 * @param array<string> $rewrites        The current set of rules.
-	 * @param string        $category_name   Category nicename.
-	 * @param string        $blog_prefix     Multisite blog prefix.
-	 * @param string        $pagination_base WP_Query pagination base.
+	 * @param array  $rewrites        The current set of rules.
+	 * @param string $category_name   Category nicename.
+	 * @param string $blog_prefix     Multisite blog prefix.
+	 * @param string $pagination_base WP_Query pagination base.
 	 *
-	 * @return array<string> The added set of rules.
+	 * @return array The added set of rules.
 	 */
 	protected function add_category_rewrites( $rewrites, $category_name, $blog_prefix, $pagination_base ) {
 		$rewrite_name = $blog_prefix . '(' . $category_name . ')';
 
-		global $wp_rewrite;
-		$feed_regex = '(' . implode( '|', $wp_rewrite->feeds ) . ')';
-
-		$rewrites[ $rewrite_name . '/(?:feed/)?' . $feed_regex . '/?$' ]         = 'index.php?category_name=$matches[1]&feed=$matches[2]';
+		$rewrites[ $rewrite_name . '/(?:feed/)?(feed|rdf|rss|rss2|atom)/?$' ]    = 'index.php?category_name=$matches[1]&feed=$matches[2]';
 		$rewrites[ $rewrite_name . '/' . $pagination_base . '/?([0-9]{1,})/?$' ] = 'index.php?category_name=$matches[1]&paged=$matches[2]';
 		$rewrites[ $rewrite_name . '/?$' ]                                       = 'index.php?category_name=$matches[1]';
 

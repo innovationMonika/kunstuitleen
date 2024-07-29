@@ -18,7 +18,7 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 }
 if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_color'] !== $defaults['progress_border_color'] ) {
 	?>
-	--progress-border-color-b: <?php echo esc_html( FrmStylesHelper::adjust_brightness( $settings['progress_border_color'], -10 ) ); ?>;
+	--progress-border-color-b: <?php echo esc_html( FrmStylesHelper::adjust_brightness( $settings['progress_border_color'], -10 ) ) ?>;
 <?php } ?>
 }
 
@@ -71,18 +71,17 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 }
 <?php } ?>
 
-<?php if ( FrmProAppHelper::use_chosen_js() ) { ?>
 /* Start Chosen */
 
 .<?php echo esc_html( $settings['style_class'] ); ?> .chosen-container-single .chosen-single{
 	padding-top:0 <?php esc_html( $important ); ?>;
-	<?php if ( $settings['field_height'] != 'auto' && $settings['field_height'] != '' ) { ?>
+<?php if ( $settings['field_height'] != 'auto' && $settings['field_height'] != '' ) { ?>
 	height:<?php echo esc_html( $settings['field_height'] . $important ); ?>;
 	line-height:<?php echo esc_html( $settings['field_height'] . $important ); ?>;
-	<?php } ?>
+<?php } ?>
 }
 
-	<?php if ( is_numeric( $top_margin ) && $pad_unit === 'px' ) { ?>
+<?php if ( is_numeric( $top_margin ) && $pad_unit === 'px' ) { ?>
 .<?php echo esc_html( $settings['style_class'] ); ?> .chosen-container-single .chosen-single abbr{
 	top:<?php echo esc_attr( 6 + (int) $top_margin ); ?>px <?php esc_html( $important ); ?>;
 }
@@ -90,7 +89,7 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 .<?php echo esc_html( $settings['style_class'] ); ?> .chosen-container-single .chosen-single div{
 	top:<?php echo esc_html( $top_margin . $pad_unit . $important ); ?>;
 }
-	<?php } ?>
+<?php } ?>
 
 .<?php echo esc_html( $settings['style_class'] ); ?> .chosen-container-single .chosen-search input[type="text"]{
 	height:<?php echo esc_html( ( $settings['field_height'] == 'auto' || $settings['field_height'] == '' ) ? 'auto' : $settings['field_height'] ); ?>;
@@ -100,7 +99,6 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 	height:15px<?php echo esc_html( $important ); ?>;
 }
 /* End Chosen */
-<?php } ?>
 
 <?php if ( isset( $settings['progress_color'] ) ) { ?>
 /* Progress Bars */
@@ -152,6 +150,12 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 	border-right-color: <?php echo esc_html( FrmStylesHelper::adjust_brightness( $settings['progress_border_color'], -20 ) . $important ); ?>;
 }
 
+.<?php echo esc_html( $settings['style_class'] ); ?> .frm_rootline.frm_show_lines:before {
+	border-color: <?php echo esc_html( $settings['progress_border_color'] . $important ); ?>;
+	border-top-width: <?php echo esc_html( $settings['progress_border_size'] . $important ); ?>;
+	top: <?php echo esc_html( absint( $settings['progress_size'] ) / 2 ); ?>px;
+}
+
 .<?php echo esc_html( $settings['style_class'] ); ?> .frm_rootline input,
 .<?php echo esc_html( $settings['style_class'] ); ?> .frm_rootline input:hover {
 	width: <?php echo esc_html( $settings['progress_size'] . $important ); ?>;
@@ -160,24 +164,13 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 	padding: 0<?php echo esc_html( $important ); ?>;
 }
 
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm_rootline .frm_current_page input[type="button"],
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm_page_bar input.frm_rootline_show_more_btn.active {
-	border-color: <?php echo esc_html( FrmStylesHelper::adjust_brightness( $settings['progress_active_bg_color'], -20 ) ); ?> !important;
-	background-color: <?php echo esc_html( $settings['progress_active_bg_color'] ); ?> !important;
-	color: <?php echo esc_html( $settings['progress_active_color'] ); ?> !important;
+.<?php echo esc_html( $settings['style_class'] ); ?> .frm_rootline .frm_current_page input[type="button"] {
+	border-color: <?php echo esc_html( FrmStylesHelper::adjust_brightness( $settings['progress_active_bg_color'], -20 ) . $important ); ?>;
+	background-color: <?php echo esc_html( $settings['progress_active_bg_color'] . $important ); ?>;
+	color: <?php echo esc_html( $settings['progress_active_color'] . $important ); ?>;
 }
 
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm_rootline.frm_no_numbers input.frm_rootline_show_more_btn.active {
-	border-color: <?php echo esc_html( FrmStylesHelper::adjust_brightness( $settings['progress_active_bg_color'], -20 ) ); ?>;
-	background-color: <?php echo esc_html( $settings['progress_active_bg_color'] ); ?>;
-	color: <?php echo esc_html( $settings['progress_active_color'] . '!important' ); ?>;
-}
-
-.<?php echo esc_html( $settings['style_class'] ); ?> ul.frm_rootline_hidden_steps li:hover .frm_rootline_title {
-	color: <?php echo esc_html( $settings['progress_active_bg_color'] ); ?>;
-}
-
-<?php } // End if ( isset( $settings['progress_color'] ) ) { ?>
+<?php } ?>
 
 /* Start Range slider */
 
@@ -189,18 +182,18 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 
 .<?php echo esc_html( $settings['style_class'] ); ?> input[type=range]::-webkit-slider-thumb {
 	<?php
-	$thumb_color = $settings['slider_color'];
-	echo $thumb = 'border: 1px solid ' . esc_html( $thumb_color ) . $important . ';
+	$thumb_color = $settings['slider_color'] . $important;
+	echo $thumb = 'border: 1px solid ' . esc_html( $thumb_color ) . ';
 	color:' . esc_html( $settings['progress_active_color'] . $important ) . ';';
 	?>
 }
 
 .<?php echo esc_html( $settings['style_class'] ); ?> input[type=range]::-ms-fill-lower {
-	background-color: <?php echo esc_html( $thumb_color . $important ); ?>;
+	background-color: <?php echo esc_html( $thumb_color ) . $important; ?>;
 }
 
 .<?php echo esc_html( $settings['style_class'] ); ?> input[type=range]::-moz-range-progress {
-	background-color: <?php echo esc_html( $thumb_color . $important ); ?>;
+	background-color: <?php echo esc_html( $thumb_color ) . $important; ?>;
 }
 
 .<?php echo esc_html( $settings['style_class'] ); ?> input[type=range]::-moz-range-thumb {
@@ -233,17 +226,17 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 /* End other */
 
 /* Start Password field */
-.<?php echo esc_html( $settings['style_class'] ); ?> span.frm-pass-verified .frmsvg {
+.<?php echo esc_html( $settings['style_class'] ); ?> span.frm-pass-verified::before {
 	color:<?php echo esc_html( $settings['success_text_color'] . $important ); ?>;
 }
 
-.<?php echo esc_html( $settings['style_class'] ); ?> span.frm-pass-req .frmsvg {
+.<?php echo esc_html( $settings['style_class'] ); ?> span.frm-pass-req::before {
 	color:<?php echo esc_html( $settings['error_text'] . $important ); ?>;
 }
 /* End Password field */
 
 /* Sections */
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm-show-form  .frm_section_heading h3[class*="frm_pos_"]{
+.<?php echo esc_html( $settings['style_class'] ); ?> .frm-show-form  .frm_section_heading h3{
 	border<?php echo esc_html( $settings['section_border_loc'] ); ?>:<?php echo esc_html( $settings['section_border_width'] . ' ' . $settings['section_border_style'] . ' ' . $settings['section_border_color'] . $important ); ?>;
 }
 
@@ -254,7 +247,7 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 	display:none;
 }
 
-.menu-edit #post-body-content .<?php echo esc_html( $settings['style_class'] ); ?> .frm_section_heading h3[class*="frm_pos_"]{
+.menu-edit #post-body-content .<?php echo esc_html( $settings['style_class'] ); ?> .frm_section_heading h3{
 	margin:0;
 }
 
@@ -280,7 +273,7 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 		--bg-image-url: url( '<?php echo esc_html( $bg_image_url ); ?>' );
 	}
 
-	<?php if ( ! empty( $bg_image_opacity ) || ( isset( $bg_image_opacity ) && 0.0 === $bg_image_opacity ) ) { ?>
+	<?php if ( ! empty( $bg_image_opacity ) ) { ?>
 		.<?php echo esc_html( $settings['style_class'] ); ?> .frm_form_fields > fieldset:before {
 			opacity: <?php echo esc_html( $bg_image_opacity ); ?>;
 		}
@@ -288,56 +281,9 @@ if ( isset( $settings['progress_border_color'] ) && $settings['progress_border_c
 <?php } ?>
 
 /* Datepicker */
-<?php if ( empty( $defaults['theme_css'] ) || 'ui-lightness' === $defaults['theme_css'] ) { ?>
-.<?php echo esc_html( $settings['style_class'] ); ?> .ui-datepicker-title > select {
+.<?php echo esc_html( $settings['style_class'] ); ?> ~ .ui-datepicker .ui-datepicker-title > select,
+.<?php echo esc_html( $settings['style_class'] ); ?> .ui-datepicker .ui-datepicker-title > select{
 	color: <?php echo esc_html( $settings['text_color'] ) . esc_html( $important ); ?>;
 	background-color:<?php echo esc_html( $settings['bg_color'] . $important ); ?>;
 }
-.<?php echo esc_html( $settings['style_class'] ); ?> .ui-datepicker-month,
-.<?php echo esc_html( $settings['style_class'] ); ?> .ui-datepicker-year {
-	color: <?php echo esc_html( $settings['text_color'] ); ?>;
-}
-.<?php echo esc_html( $settings['style_class'] ); ?> span.ui-datepicker-month,
-.<?php echo esc_html( $settings['style_class'] ); ?> span.ui-datepicker-year {
-	color: <?php echo esc_html( $settings['date_head_color'] ); ?>;
-}
-.<?php echo esc_html( $settings['style_class'] ); ?> .ui-widget-header,
-.<?php echo esc_html( $settings['style_class'] ); ?> .ui-datepicker-header {
-	<?php if ( '' !== $settings['date_head_bg_color'] ) { ?>
-	background: <?php echo esc_html( $settings['date_head_bg_color'] ); ?> !important;
-	<?php } ?>
-	color: <?php echo esc_html( $settings['date_head_color'] ); ?> !important;
-}
-	<?php if ( '' !== $settings['date_band_color'] ) : ?>
-.<?php echo esc_html( $settings['style_class'] ); ?> td.ui-datepicker-today {
-	background: rgba(<?php echo esc_html( FrmStylesHelper::hex2rgb( $settings['date_band_color'] ) ); ?>,0.15) !important;
-}
-	<?php endif; ?>
-.<?php echo esc_html( $settings['style_class'] ); ?> td.ui-datepicker-current-day,
-.<?php echo esc_html( $settings['style_class'] ); ?> td .ui-state-hover,
-.<?php echo esc_html( $settings['style_class'] ); ?> thead {
-	<?php if ( '' !== $settings['date_band_color'] ) : ?>
-	background: <?php echo esc_html( $settings['date_band_color'] ); ?> !important;
-	<?php endif; ?>
-	color: <?php echo esc_html( $settings['date_head_color'] ); ?> !important;
-}
-.<?php echo esc_html( $settings['style_class'] ); ?> td.ui-datepicker-current-day .ui-state-default {
-	color: <?php echo esc_html( $settings['date_head_color'] ); ?> !important;
-}
-<?php } // end if empty( $defaults['theme_css'] ) || 'ui-lightness' === $defaults['theme_css'] ?>
 /* End Datepicker */
-
-/* Submit Buttons */
-<?php if ( empty( $settings['submit_style'] ) ) : ?>
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm_button_submit[disabled],
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm_prev_page[disabled],
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm_save_draft[disabled] {
-	opacity: 0.5;
-}
-.<?php echo esc_html( $settings['style_class'] ); ?> input[type=submit][disabled],
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm_submit input[type=button][disabled],
-.<?php echo esc_html( $settings['style_class'] ); ?> .frm_submit button[disabled] {
-	cursor: not-allowed;
-}
-<?php endif; ?>
-/* End Submit Buttons */

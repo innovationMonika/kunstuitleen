@@ -50,14 +50,14 @@
 	function getLayoutBuilderPage() {
 		return {
 			title: __( 'Build a custom layout to display entries', 'formidable-views' ),
-			description: __( 'Create a unique card layout to present form data. This card will repeat for each form entry.', 'formidable-views' ),
+			description: __( 'Create your unique card layout to present your data. This card will repeat for each form entry.', 'formidable-views' ),
 			graphic: 'layout-builder'
 		};
 	}
 
 	function getBoxContentModalPage() {
 		return {
-			title: __( 'Add data to the View', 'formidable-views' ),
+			title: __( 'Add data to your View', 'formidable-views' ),
 			description: __( 'Click the plus icon then add or edit content in each box. The editor modal gives you access to the form data to insert.', 'formidable-views' ),
 			graphic: 'box-content'
 		};
@@ -65,7 +65,7 @@
 
 	function getFilterSortPage() {
 		return {
-			title: __( 'Filter and sort form entries', 'formidable-views' ),
+			title: __( 'Filter and sort your form entries', 'formidable-views' ),
 			description: __( 'Add groups of conditions to get the exact entries you need.', 'formidable-views' ),
 			graphic: 'filter'
 		};
@@ -100,8 +100,6 @@
 				div({
 					text: description,
 					fontSize: '14px',
-					fontWeight: 300,
-					lineHeight: '18px',
 					color: 'rgba(63, 75, 91, 0.8)',
 					margin: '0 0 10px'
 				}),

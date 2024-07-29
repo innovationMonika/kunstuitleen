@@ -8,27 +8,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 3.0
  */
 class FrmProFieldNumber extends FrmFieldNumber {
-	use FrmProFieldAutocompleteField;
 
 	protected function field_settings_for_type() {
 		$settings = parent::field_settings_for_type();
 
 		$settings['autopopulate'] = true;
-		$settings['calc']         = true;
-		$settings['unique']       = true;
-		$settings['read_only']    = true;
-		$settings['prefix']       = true;
-		$settings['autocomplete'] = true;
+		$settings['calc'] = true;
+		$settings['unique'] = true;
+		$settings['read_only'] = true;
+		$settings['prefix']    = true;
 
 		FrmProFieldsHelper::fill_default_field_display( $settings );
 		return $settings;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function get_filter_keys() {
-		return array( 'on', 'off', 'bday-day', 'bday-year', 'postal-code', 'transaction-amount', 'tel-extension' );
 	}
 
 	/**
@@ -43,16 +34,7 @@ class FrmProFieldNumber extends FrmFieldNumber {
 	protected function prepare_display_value( $value, $atts ) {
 
 		$new_val = array();
-		$value = array_filter(
-			(array) $value,
-			/**
-			 * @param string $string
-			 * @return bool
-			 */
-			function ( $string ) {
-				return strlen( $string ) > 0;
-			}
-		);
+		$value = array_filter( (array) $value, 'strlen' );
 
 		foreach ( $value as $v ) {
 			if ( strpos( $v, $atts['sep'] ) ) {
@@ -74,16 +56,7 @@ class FrmProFieldNumber extends FrmFieldNumber {
 
 			unset( $v );
 		}
-		$new_val = array_filter(
-			(array) $new_val,
-			/**
-			 * @param string $string
-			 * @return bool
-			 */
-			function ( $string ) {
-				return strlen( $string ) > 0;
-			}
-		);
+		$new_val = array_filter( (array) $new_val, 'strlen' );
 
 		return implode( $atts['sep'], $new_val );
 	}
@@ -123,7 +96,7 @@ class FrmProFieldNumber extends FrmFieldNumber {
 		$index           = 0;
 
 		while ( $index < $max_length && '0' === $number[ $index ] ) {
-			$index++;
+			$index ++;
 		}
 
 		if ( $index === $max_length ) {

@@ -173,17 +173,14 @@ class FrmViewsEntriesWidgetHelper {
 				echo esc_html( $cat );
 
 				if ( isset( $instance['cat_count'] ) && 1 === (int) $instance['cat_count'] ) {
-					$stats_shortcode_args = array(
-						'id'    => $instance['cat_id'],
-						'type'  => 'count',
-						'value' => $cat,
-					);
-
-					echo ' (';
-					echo FrmProStatisticsController::stats_shortcode( $stats_shortcode_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo ')';
-
-					unset( $stats_shortcode_args );
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo ' (' . FrmProStatisticsController::stats_shortcode(
+						array(
+							'id'    => $instance['cat_id'],
+							'type'  => 'count',
+							'value' => $cat,
+						)
+					) . ')';
 				}
 
 				if ( isset( $instance['cat_name'] ) && 1 === (int) $instance['cat_name'] ) {

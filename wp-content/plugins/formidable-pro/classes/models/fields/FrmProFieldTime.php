@@ -23,11 +23,6 @@ class FrmProFieldTime extends FrmFieldType {
 	 */
 	protected $has_for_label = false;
 
-	/**
-	 * @var bool
-	 */
-	protected $array_allowed = false;
-
 	public function show_on_form_builder( $name = '' ) {
 		$field = FrmFieldsHelper::setup_edit_vars( $this->field );
 		$field['value'] = $field['default_value'];
@@ -67,7 +62,7 @@ class FrmProFieldTime extends FrmFieldType {
 	 */
 	public function show_primary_options( $args ) {
 		$field = $args['field'];
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/clock-settings.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/clock-settings.php' );
 
 		$this->auto_width_setting( $args );
 
@@ -150,59 +145,38 @@ class FrmProFieldTime extends FrmFieldType {
 		$hidden = $this->maybe_include_hidden_values( $values );
 		$this->maybe_format_time( $values['field_value'] );
 
+		$labeled_by = 'aria-labelledby="' . esc_attr( $values['html_id'] ) . '_label" ';
+
 		if ( isset( $field['options']['H'] ) ) {
 			$this->time_string_to_array( $values['field_value'] );
 			$this->time_string_to_array( $values['field']['default_value'] );
 
-			$html  = '<div class="frm_time_wrap">';
-			$html .= '<span dir="ltr">' . "\r\n";
+			$html = '<div class="frm_time_wrap"><span dir="ltr">' . "\r\n";
 
 			$values['combo_name'] = 'H';
-			$html                .= $this->get_time_component_html( $values, $field['name'], __( 'hour', 'formidable-pro' ) );
+			$html .= $this->get_select_box( $values ) . "\r\n";
 
-			// Use aria-hidden so a screen reader doesn't read the colon out loud.
-			$html .= '<span class="frm_time_sep" aria-hidden="true">:</span>' . "\r\n";
+			$html .= '<span class="frm_time_sep">:</span>' . "\r\n";
 
 			$values['combo_name'] = 'm';
-			$html                .= $this->get_time_component_html( $values, $field['name'], __( 'minute', 'formidable-pro' ) );
+			$html .= $this->get_select_box( $values ) . "\r\n";
 
 			$html .= '</span>' . "\r\n";
 
 			if ( isset( $field['options']['A'] ) ) {
 				$values['combo_name'] = 'A';
-				$html                .= $this->get_time_component_html( $values, $field['name'] );
+				$html .= $this->get_select_box( $values ) . "\r\n";
 			}
 
+			$html  = str_replace( '<select ', '<select ' . $labeled_by, $html );
 			$html .= '</div>';
 		} else {
-			$labeled_by = 'aria-labelledby="' . esc_attr( $values['html_id'] ) . '_label" ';
 			$this->time_array_to_string( $values['field_value'] );
 			$html = $this->get_select_box( $values );
 			$html = str_replace( '<select ', '<select ' . $labeled_by, $html );
 		}
 
-		echo $hidden . $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}
-
-	/**
-	 * Composes the html for a single time field, like hour or minute.
-	 *
-	 * @since 6.1.2
-	 *
-	 * @param array $values
-	 * @param string $field_name
-	 * @param string $time_string
-	 *
-	 * @return string
-	 */
-	private function get_time_component_html( $values, $field_name, $time_string = '' ) {
-		$select_box = $this->get_select_box( $values ) . "\r\n";
-		$aria_label = 'aria-label="' . esc_attr( $field_name );
-		if ( $time_string ) {
-			$aria_label .= ' ... ' . esc_attr( $time_string );
-		}
-		$aria_label .= '" ';
-		return str_replace( '<select ', '<select ' . $aria_label, $select_box );
+		echo $hidden . $html;
 	}
 
 	/**
@@ -303,9 +277,9 @@ class FrmProFieldTime extends FrmFieldType {
 		$used = false;
 		$value = FrmProAppHelper::format_time( $value );
 
-		if ( FrmProEntryMetaHelper::value_exists( $this->get_field_column( 'id' ), $value, false ) ) {
+		if ( FrmProEntryMetaHelper::value_exists( $this->get_field_column('id'), $value, false ) ) {
 
-			$first_date_field = FrmProFormsHelper::has_field( 'date', $this->get_field_column( 'form_id' ) );
+			$first_date_field = FrmProFormsHelper::has_field( 'date', $this->get_field_column('form_id') );
 
 			if ( $first_date_field ) {
 
@@ -351,6 +325,7 @@ class FrmProFieldTime extends FrmFieldType {
 				$frm_vars['timepicker_loaded'][ $values['html_id'] ] = true;
 			}
 		}
+
 	}
 
 	public function get_disallowed_times( $values, &$remove ) {
@@ -542,7 +517,7 @@ class FrmProFieldTime extends FrmFieldType {
 	private function format_time( $default, &$time ) {
 		if ( strlen( $time ) === 4 && substr( $time, 1, 1 ) === ':' ) {
 			$time = '0' . $time;
-		} elseif ( ! preg_match( '/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/', $time ) || strlen( $time ) !== 5 || $time === '' ) {
+		} elseif ( strlen( $time ) !== 5 || $time === '' ) {
 			$time = $default;
 		}
 	}
@@ -612,7 +587,7 @@ class FrmProFieldTime extends FrmFieldType {
 		if ( empty( $field ) ) {
 			$field = $this->field;
 		}
-		$time_format = FrmField::get_option( $field, 'clock' );
+		$time_format = FrmField::get_option( $field, 'clock', 12 );
 		return $this->get_time_format_for_setting( $time_format );
 	}
 

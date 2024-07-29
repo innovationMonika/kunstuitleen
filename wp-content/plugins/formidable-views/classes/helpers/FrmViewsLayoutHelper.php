@@ -174,8 +174,8 @@ class FrmViewsLayoutHelper {
 
 		if ( isset( $this->styles_by_box[ $box->id ] ) ) {
 			foreach ( $this->styles_by_box[ $box->id ] as $key => $value ) {
-				if ( $value || '0' === $value ) {
-					$box_style .= self::convert_camel_case_style( $key, 'grid-cell' ) . ': ' . $value . ';';
+				if ( $value ) {
+					$box_style .= self::convert_camel_case_style( $key ) . ': ' . $value . ';';
 				}
 			}
 		}
@@ -184,31 +184,16 @@ class FrmViewsLayoutHelper {
 	}
 
 	/**
-	 * Convert style names from their camel case setting key to the format required to work with CSS.
-	 *
-	 * @since 5.4.1 Added a new $context param.
-	 *
 	 * @param string $key
-	 * @param string $context
 	 * @return string
 	 */
-	public static function convert_camel_case_style( $key, $context = '' ) {
+	public static function convert_camel_case_style( $key ) {
 		switch ( $key ) {
 			case 'backgroundColor':
 				return 'background-color';
 			case 'borderColor':
 				return 'border-color';
 			case 'borderWidth':
-				if ( 'grid-top-level' === $context ) {
-					/**
-					 * @since 5.3.2 this was switched to border-thickness instead of border-width to avoid a WordPress styling conflict.
-					 * The conflict style rule matches anything "border-width" and forces a border-style:
-					 * html :where([style*="border-width"]) { border-style: solid; }
-					 * At the top level this is used to define the --v-tl-border-thickness variable name.
-					 */
-					return 'border-thickness';
-				}
-				// Grid cells use border-width styles directly inside style tags instead of using CSS vars like the top level.
 				return 'border-width';
 			case 'borderRadius':
 				return 'border-radius';
@@ -417,20 +402,6 @@ class FrmViewsLayoutHelper {
 		if ( ! empty( $options['table_classes'] ) ) {
 			$table_class .= ' ' . $options['table_classes'];
 		}
-
-		/**
-		 * Filters the table view CSS class.
-		 *
-		 * @since 5.4
-		 *
-		 * @param string $table_class The table class.
-		 * @param array  $args        {
-		 *     Args.
-		 *
-		 *     @type array $options View options.
-		 * }
-		 */
-		$table_class = apply_filters( 'frm_views_table_class', $table_class, compact( 'options' ) );
 
 		return '<table class="' . esc_attr( $table_class ) . '"><thead>' . $headers . '</thead>';
 	}

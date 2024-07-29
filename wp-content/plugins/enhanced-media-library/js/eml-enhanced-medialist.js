@@ -215,22 +215,17 @@ function emlIsFilterBased( attrs ) {
 
         if ( isFilterBased ) {
 
-            append = '<br class="clear" /><h3>' + eml.l10n.based_on + '</h3><span class="setting eml-filter-based"><ul class="eml-filter-based">';
+            append = '<br class="clear" /><h3>' + eml.l10n.based_on + '</h3><label class="setting eml-filter-based"><ul class="eml-filter-based">';
 
             _.each( eml.l10n.taxonomies, function( attrs, taxonomy ) {
 
                 var terms = library.props.get( taxonomy ),
-                    split, join, 
                     taxonomy_string,
                     terms_to_string = [],
                     key;
 
 
                 if ( terms ) {
-
-                    split = terms.includes( '+' ) ? '+' : ',';
-                    join  = terms.includes( '+' ) ? ' + ' : ', ';
-                    terms = terms.split( split );
 
                     if ( typeof terms !== 'object' ) {
                         terms = [terms];
@@ -247,7 +242,7 @@ function emlIsFilterBased( attrs ) {
                         terms_to_string.push( t.term_name );
                     });
 
-                    taxonomy_string = '<label>' + attrs.singular_name + '</label>: <strong>' + terms_to_string.join( join ) + '</strong>';
+                    taxonomy_string = attrs.singular_name + ': ' + terms_to_string.join(', ');
                     append += '<li>' + taxonomy_string + '</li>';
                 }
             });
@@ -266,7 +261,7 @@ function emlIsFilterBased( attrs ) {
                     append += '<li>' + eml.l10n.uploaded_to + uploadedTo + '</li>';
                 }
             }
-            append += '</ul></span>';
+            append += '</ul></label>';
         }
 
         return append;

@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php esc_html_e( 'Form Closed Message', 'formidable' ); ?>
 		<span class="frm_help frm_icon_font frm_tooltip_icon" data-placement="right" title="<?php esc_attr_e( 'This message is shown when a form is closed for new entries.', 'formidable-pro' ); ?>"></span>
 	</label>
-	<textarea name="options[closed_msg]" id="frm_closed_msg" rows="3"><?php echo FrmAppHelper::esc_textarea( $values['closed_msg'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></textarea>
+	<textarea name="options[closed_msg]" id="frm_closed_msg" rows="3"><?php echo FrmAppHelper::esc_textarea( $values['closed_msg'] ); ?></textarea>
 </p>
 
 <script>

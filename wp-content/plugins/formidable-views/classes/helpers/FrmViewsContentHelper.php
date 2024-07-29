@@ -74,7 +74,7 @@ class FrmViewsContentHelper {
 		}
 		return array_reduce(
 			$this->content,
-			function ( $total, $current ) {
+			function( $total, $current ) {
 				if ( isset( $current['box'] ) ) {
 					$current['box'] = absint( $current['box'] );
 				}

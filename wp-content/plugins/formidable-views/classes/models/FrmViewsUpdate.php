@@ -9,9 +9,10 @@ class FrmViewsUpdate extends FrmAddon {
 	public $plugin_name = 'Visual Views';
 	public $download_id = 28058856;
 
+	public $version = '5.1.05';
+
 	public function __construct() {
-		$this->version     = FrmViewsAppHelper::plugin_version();
-		$this->plugin_file = dirname( __DIR__ ) . '/formidable-views.php';
+		$this->plugin_file = dirname( dirname( __FILE__ ) ) . '/formidable-views.php';
 		parent::__construct();
 	}
 

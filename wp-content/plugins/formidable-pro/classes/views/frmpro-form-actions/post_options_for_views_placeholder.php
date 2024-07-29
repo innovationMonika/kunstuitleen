@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <p class="frm6 frm_form_field frm_dyncontent_opt frm_hidden">
-	<label><?php esc_html_e( 'Select View', 'formidable-pro' ); ?></label>
+	<label><?php esc_html_e( 'Select View', 'formidable-views' ); ?></label>
 	<a href="<?php echo esc_url( $link ); ?>" target="_blank" class="frm_pro_tip">
 		<?php FrmAppHelper::icon_by_class( 'frmfont frm_star_full_icon', array( 'aria-hidden' => 'true' ) ); ?>
 		<span class="pro-tip">

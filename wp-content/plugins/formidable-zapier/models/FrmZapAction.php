@@ -5,38 +5,32 @@ class FrmZapAction extends FrmFormAction {
 
 	public function __construct() {
 		$action_ops = array(
-			'classes'  => 'frmfont frm_zapier_icon',
-			'color'    => '#ff4a00',
-			'limit'    => 99,
-			'active'   => true,
-			'priority' => 41,
-			'event'    => array( 'create', 'delete' ),
-			'tooltip'  => __( 'Send to Zapier', 'frmzap' ),
+			'classes'   => 'frmfont frm_zapier_icon',
+			'color'     => '#ff4a00',
+			'limit'     => 99,
+			'active'    => true,
+			'priority'  => 41,
+			'event'     => array( 'create', 'delete' ),
+			'tooltip'   => __( 'Send to Zapier', 'frmzap' ),
 		);
 
 		$this->FrmFormAction( 'zapier', __( 'Zapier', 'frmzap' ), $action_ops );
 	}
 
-	/**
-	 * @param WP_Post $form_action
-	 * @param array   $args
-	 * @return void
-	 */
 	public function form( $form_action, $args = array() ) {
-		$form           = $args['form'];
+		$form = $args['form'];
 		$action_control = $this;
-		$this->zap_url  = $form_action->post_content['zap_url'];
+		$this->zap_url = $form_action->post_content['zap_url'];
 		include FrmZapAppController::path() . '/views/action-settings/zapier_options.php';
 	}
 
 	/**
-	 * Create a new Zapier form action for a specific form with a URL.
+	 * Create a new Zapier form action for a specific form with a URL
 	 *
 	 * @since 2.0
-	 *
-	 * @param int    $form_id the ID of the form to add an action for.
-	 * @param string $new_url the URL of the Zapier WebHook.
-	 * @param string $event the action trigger(s) that this action should trigger on.
+	 * @param form_id the ID of the form to add an action for
+	 * @param new_url the URL of the Zapier WebHook
+	 * @param event the action trigger(s) that this action should trigger on
 	 * @return FrmZapAction
 	 */
 	public function create_new( $form_id, $new_url, $event ) {
@@ -49,9 +43,6 @@ class FrmZapAction extends FrmFormAction {
 		return $this->save_settings( $action );
 	}
 
-	/**
-	 * @return array
-	 */
 	public function get_defaults() {
 		return array(
 			'zap_url'  => '',

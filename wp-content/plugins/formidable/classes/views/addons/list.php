@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="wrap">
 
 	<?php
-	require FrmAppHelper::plugin_path() . '/classes/views/shared/errors.php';
+	include( FrmAppHelper::plugin_path() . '/classes/views/shared/errors.php' );
 
 	FrmAppHelper::show_search_box(
 		array(
@@ -43,20 +43,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php foreach ( $addons as $slug => $addon ) { ?>
 			<div class="frm-card plugin-card-<?php echo esc_attr( $slug ); ?> frm-no-thumb frm-addon-<?php echo esc_attr( $addon['status']['type'] ); ?>">
 				<div class="plugin-card-top">
+					<?php if ( strtotime( $addon['released'] ) > strtotime( '-90 days' ) ) { ?>
+						<div class="frm_ribbon">
+							<span>New</span>
+						</div>
+					<?php } ?>
 					<h2>
-						<?php
-						echo esc_html( ! empty( $addon['display_name'] ) ? $addon['display_name'] : $addon['title'] );
-
-						if ( ! empty( $addon['is_new'] ) ) {
-							FrmAppHelper::show_pill_text();
-						}
-						?>
+						<?php echo esc_html( $addon['title'] ); ?>
 					</h2>
 					<p>
 						<?php
 						echo FrmAppHelper::kses( $addon['excerpt'], array( 'a' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-						$show_docs = ! empty( $addon['docs'] ) && $addon['installed'];
+						$show_docs = isset( $addon['docs'] ) && ! empty( $addon['docs'] ) && $addon['installed'];
 						?>
 						<?php if ( $show_docs ) { ?>
 							<br/><a href="<?php echo esc_url( $addon['docs'] ); ?>" target="_blank" aria-label="<?php esc_attr_e( 'View Docs', 'formidable' ); ?>">
@@ -92,9 +91,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					?>
 				</div>
 			</div>
-			<?php
-		}//end foreach
-		?>
+		<?php } ?>
 	</div>
 </div>
 </div>

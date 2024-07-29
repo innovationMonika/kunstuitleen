@@ -298,23 +298,11 @@ class FrmViewsLayout {
 	/**
 	 * Duplicate layouts for a view
 	 *
-	 * @since 5.5 Add the third param.
-	 *
-	 * @param int   $original_view_id
-	 * @param int   $new_view_id
-	 * @param mixed $blog_id
+	 * @param int $original_view_id
+	 * @param int $new_view_id
 	 */
-	public static function duplicate_layouts( $original_view_id, $new_view_id, $blog_id = '' ) {
-		if ( $blog_id && is_multisite() ) {
-			switch_to_blog( $blog_id );
-		}
-
+	public static function duplicate_layouts( $original_view_id, $new_view_id ) {
 		$layouts = self::get_layouts_for_view( $original_view_id );
-
-		if ( function_exists( 'restore_current_blog' ) ) {
-			restore_current_blog();
-		}
-
 		foreach ( $layouts as $layout ) {
 			self::create_layout( $new_view_id, $layout->type, $layout->data );
 		}

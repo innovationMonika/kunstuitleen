@@ -24,7 +24,7 @@ echo esc_url(
 
 	?></select><select class="frmcal-dropdown" onchange="window.location='<?php echo esc_url( remove_query_arg( 'frmcal-year', add_query_arg( array( 'frmcal-month' => $month ) ) ) ); ?>&amp;frmcal-year='+this.value+'#frmcal-<?php echo esc_attr( $view->ID ); ?>';">
 		<?php
-		for ( $i = $start_year; $i <= $end_year; $i++ ) {
+		for ( $i = ( $year - 5 ); $i <= ( $year + 5 ); $i++ ) {
 			echo '<option value="' . esc_attr( $i ) . '" ' . selected( $i, $year, false ) . '>' . esc_html( $i ) . '</option>';
 		}
 		unset( $i );

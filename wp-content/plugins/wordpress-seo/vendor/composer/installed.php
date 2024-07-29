@@ -5,27 +5,39 @@
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '6d7c02f005610eceda58a2891fb0b13006fae56b',
+        'reference' => 'f512174439c64534a048012f8810a5727f1cd44e',
         'name' => 'yoast/wordpress-seo',
         'dev' => false,
     ),
     'versions' => array(
         'composer/installers' => array(
-            'pretty_version' => 'v2.2.0',
-            'version' => '2.2.0.0',
+            'pretty_version' => 'v1.12.0',
+            'version' => '1.12.0.0',
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/./installers',
             'aliases' => array(),
-            'reference' => 'c29dc4b93137acb82734f672c37e029dfbd95b35',
+            'reference' => 'd20a64ed3c94748397ff5973488761b22f6d3f19',
             'dev_requirement' => false,
         ),
-        'yoast/whip' => array(
-            'pretty_version' => '2.0.0',
-            'version' => '2.0.0.0',
+        'roundcube/plugin-installer' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
+        ),
+        'shama/baton' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
+        ),
+        'yoast/i18n-module' => array(
+            'pretty_version' => '3.1.1',
+            'version' => '3.1.1.0',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../yoast/whip',
+            'install_path' => __DIR__ . '/../yoast/i18n-module',
             'aliases' => array(),
-            'reference' => '5cfd9c3b433774548ec231fe896d5e85d17ed0d1',
+            'reference' => '9d0a2f6daea6fb42376b023e7778294d19edd85d',
             'dev_requirement' => false,
         ),
         'yoast/wordpress-seo' => array(
@@ -34,7 +46,7 @@
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '6d7c02f005610eceda58a2891fb0b13006fae56b',
+            'reference' => 'f512174439c64534a048012f8810a5727f1cd44e',
             'dev_requirement' => false,
         ),
     ),

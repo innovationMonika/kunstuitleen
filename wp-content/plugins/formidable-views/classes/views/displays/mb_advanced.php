@@ -10,7 +10,7 @@ wp_nonce_field( 'frm_save_display_nonce', 'frm_save_display' );
 	<p class="frm4 frm_form_field">
 		<label>
 			<?php esc_html_e( 'Limit', 'formidable-views' ); ?>
-			<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'If you don’t want all form entries displayed, you can insert the number limit here. Leave blank if you’d like all entries shown.', 'formidable-views' ); ?>"></span>
+			<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'If you don’t want all your entries displayed, you can insert the number limit here. Leave blank if you’d like all entries shown.', 'formidable-views' ); ?>"></span>
 		</label>
 	</p>
 	<p class="frm8 frm_form_field">

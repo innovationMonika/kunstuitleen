@@ -113,16 +113,8 @@ class FrmProContent {
 		$atts['post_id']   = $entry->post_id;
 
 		self::maybe_get_show_from_array( $replace_with, $atts );
-		self::maybe_add_show_value_option_to_shortcode( $atts, $field, $conditional );
 
-		/**
-		 * @param string   $replace_with
-		 * @param string   $tag
-		 * @param array    $atts
-		 * @param stdClass $field
-		 */
-		$replace_with       = apply_filters( 'frmpro_fields_replace_shortcodes', $replace_with, $tag, $atts, $field );
-		$value_was_imploded = false;
+		$replace_with = apply_filters('frmpro_fields_replace_shortcodes', $replace_with, $tag, $atts, $field);
 
 		if ( isset( $atts['show'] ) && $atts['show'] === 'count' ) {
 			$replace_with = is_array( $replace_with ) ? count( $replace_with ) : ! empty( $replace_with );
@@ -138,8 +130,7 @@ class FrmProContent {
 					$sep = '';
 				}
 
-				$value_was_imploded = true;
-				$replace_with       = implode( $sep, $replace_with );
+				$replace_with = implode( $sep, $replace_with );
 			} elseif ( ! $replace_with ) {
 				$replace_with = '';
 			}
@@ -160,17 +151,7 @@ class FrmProContent {
 					$replace_with = '';
 				}
 			} else {
-				if ( $value_was_imploded && ! empty( $sep ) ) {
-					$allow_separator_tags_filter = self::get_allow_separator_tags_filter( $sep );
-					if ( $allow_separator_tags_filter ) {
-						add_filter( 'frm_allowed_form_input_html', $allow_separator_tags_filter );
-					}
-				}
-
 				$replace_with = FrmFieldsHelper::get_display_value( $replace_with, $field, $atts );
-				if ( ! empty( $allow_separator_tags_filter ) ) {
-					remove_filter( 'frm_allowed_form_input_html', $allow_separator_tags_filter );
-				}
 			}
 
 			self::trigger_shortcode_atts( $atts, $display, $args, $replace_with );
@@ -180,87 +161,6 @@ class FrmProContent {
 
 			$content = str_replace( $shortcodes[0][ $short_key ], $replace_with, $content );
 		}
-	}
-
-	/**
-	 * When get_display_value is called, a lot of HTML is stripped from entries submitted by users
-	 * who cannot edit entries. Since the implode happens earlier in self::replace_single_shortcode
-	 * we need to allow for whatever tags amy be in the separator.
-	 *
-	 * @since 6.8
-	 *
-	 * @param string $sep Separator used to implode array values.
-	 * @return Closure|false False when there are no tags to add to the filter.
-	 */
-	private static function get_allow_separator_tags_filter( $sep ) {
-		$tags = self::get_tags_used_in_string( $sep );
-		if ( ! $tags ) {
-			// If there are no tags there is no need to add this filter.
-			return false;
-		}
-
-		return function ( $allowed_html ) use ( $tags ) {
-			foreach ( $tags as $tag ) {
-				if ( ! isset( $allowed_html[ $tag ] ) ) {
-					$allowed_html[ $tag ] = array();
-				}
-			}
-			return $allowed_html;
-		};
-	}
-
-	/**
-	 * Check for HTML tags used in a string.
-	 *
-	 * @since 6.8
-	 *
-	 * @param string $string
-	 * @return array
-	 */
-	private static function get_tags_used_in_string( $string ) {
-		$tag_pattern = '/<\s*([a-zA-Z]+)[^>]*>|<\/\s*([a-zA-Z]+)\s*>/';
-		preg_match_all( $tag_pattern, $string, $matches );
-
-		$tags        = array_filter( array_merge( $matches[1], $matches[2] ) );
-		$unique_tags = array_unique( $tags );
-
-		return array_values( $unique_tags );
-	}
-
-	/**
-	 * Maybe insert the show="value" option to an [if x] shortcode if the field has options
-	 * that are displayed as images.
-	 * This allows you to match [if x equals="Option 1"] even though the output/default compare value is HTML.
-	 *
-	 * @since 6.7
-	 *
-	 * @param array    $atts
-	 * @param stdClass $field
-	 * @param bool     $conditional
-	 * @return void
-	 */
-	private static function maybe_add_show_value_option_to_shortcode( &$atts, $field, $conditional ) {
-		if ( ! $conditional ) {
-			// Only apply this to [if x] shortcodes. A regular [x] shortcode should output an image.
-			return;
-		}
-
-		if ( empty( $field->options ) || empty( $field->field_options['image_options'] ) ) {
-			// This field does not have image options, so exit early.
-			return;
-		}
-
-		if ( isset( $atts['show'] ) || ! isset( $atts['equals'] ) ) {
-			// Do not overwrite any show attributes if one is already set, and only do this for equals conditions.
-			return;
-		}
-
-		if ( false !== strpos( $atts['equals'], 'frm_image_option_container' ) && false !== strpos( $atts['equals'], '<img' ) ) {
-			// If the equals conditions looks like it is trying to match the HTML output leave it alone.
-			return;
-		}
-
-		$atts['show'] = 'value';
 	}
 
 	/**
@@ -322,7 +222,7 @@ class FrmProContent {
 		$event_date = '';
 		if ( isset( $args['event_date'] ) ) {
 			if ( ! isset( $atts['format'] ) ) {
-				$atts['format'] = get_option( 'date_format' );
+				$atts['format'] = get_option('date_format');
 			}
 			$event_date = FrmProFieldsHelper::get_date( $args['event_date'], $atts['format'] );
 		}
@@ -376,7 +276,7 @@ class FrmProContent {
 	}
 
 	private static function rewriting_on() {
-		$permalink_structure = get_option( 'permalink_structure' );
+		$permalink_structure = get_option('permalink_structure');
 		return ( ! empty( $permalink_structure ) );
 	}
 
@@ -444,7 +344,7 @@ class FrmProContent {
 		$replace_with = '';
 		$link_text = isset( $atts['label'] ) ? $atts['label'] : false;
 		if ( ! $link_text ) {
-			$link_text = isset( $atts['link_text'] ) ? $atts['link_text'] : __( 'Edit' );
+			$link_text = isset( $atts['link_text'] ) ? $atts['link_text'] : __( 'Edit');
 		}
 
 		$class = isset( $atts['class'] ) ? $atts['class'] : '';
@@ -459,7 +359,7 @@ class FrmProContent {
 		} else {
 			if ( $args['entry']->post_id ) {
 				$replace_with = get_edit_post_link( $args['entry']->post_id );
-			} else if ( current_user_can( 'frm_edit_entries' ) ) {
+			} else if ( current_user_can('frm_edit_entries') ) {
 				$replace_with = FrmProEntry::admin_edit_link( $args['entry']->id );
 			}
 
@@ -504,27 +404,15 @@ class FrmProContent {
 		$content = str_replace( $shortcodes[0][ $short_key ], $args['entry']->id, $content );
 	}
 
-	/**
-	 * Process a [created-at] shortcode.
-	 *
-	 * @param string $content
-	 * @param array  $atts
-	 * @param array  $shortcodes
-	 * @param array  $args
-	 * @return void
-	 */
 	public static function do_shortcode_created_at( &$content, $atts, $shortcodes, $short_key, $args ) {
 		if ( isset( $atts['format'] ) ) {
 			$time_format = ' ';
 		} else {
-			$atts['format'] = get_option( 'date_format' );
+			$atts['format'] = get_option('date_format');
 			$time_format = '';
 		}
 
 		if ( $args['conditional'] ) {
-			if ( in_array( $args['tag'], array( 'created_at', 'updated_at' ), true ) ) {
-				$atts = self::replace_magic_timestamp_shortcode_values( $atts, $args['tag'], $args['entry'] );
-			}
 			$atts['short_key'] = $shortcodes[0][ $short_key ];
 			self::check_conditional_shortcode( $content, $args['entry']->{$args['tag']}, $atts, $args['tag'] );
 		} else {
@@ -538,30 +426,6 @@ class FrmProContent {
 
 			$content = str_replace( $shortcodes[0][ $short_key ], $date, $content );
 		}
-	}
-
-	/**
-	 * Convert "created_at" used for [if updated_at] tag conditions.
-	 * Also converts "updated_at" used for [if created_at] tag conditions.
-	 * This way you can use a condition like [if updated_at greater_than="created_at"][/if updated_at].
-	 * And [if created_at less_than="updated_at"][/if created_at].
-	 *
-	 * @since 6.7
-	 *
-	 * @param array    $atts
-	 * @param string   $tag
-	 * @param stdClass $entry
-	 * @return array
-	 */
-	private static function replace_magic_timestamp_shortcode_values( $atts, $tag, $entry ) {
-		$value_to_replace = 'created_at' === $tag ? 'updated_at' : 'created_at';
-		$conditions       = array_intersect( array_keys( $atts ), self::get_conditions() );
-		foreach ( $conditions as $att_key ) {
-			if ( $value_to_replace === $atts[ $att_key ] ) {
-				$atts[ $att_key ] = FrmAppHelper::get_localized_date( 'Y-m-d H:i:s', $entry->$value_to_replace );
-			}
-		}
-		return $atts;
 	}
 
 	public static function do_shortcode_get( &$content, $atts, $shortcodes, $short_key, $args ) {
@@ -705,7 +569,7 @@ class FrmProContent {
 			} elseif ( 'foreach' === $condition ) {
 				$content_len    = $end_pos - ( $start_pos + $start_pos_len );
 				$repeat_content = substr( $content, $start_pos + $start_pos_len, $content_len );
-				self::foreach_shortcode( $replace_with, $args, $repeat_content, $atts );
+				self::foreach_shortcode( $replace_with, $args, $repeat_content );
 				$content = substr_replace( $content, $repeat_content, $start_pos, $total_len );
 			} else {
 				$substring = self::get_conditional_substring( $substring_args );
@@ -763,21 +627,12 @@ class FrmProContent {
 	}
 
 	/**
-	 * Loop through each entry linked through a repeating field when using [foreach].
-	 *
-	 * @param array|string $replace_with
-	 * @param array        $args
-	 * @param string       $repeat_content
-	 * @param array        $atts
+	 * Loop through each entry linked through a repeating field when using [foreach]
 	 */
-	public static function foreach_shortcode( $replace_with, $args, &$repeat_content, $atts = array() ) {
+	public static function foreach_shortcode( $replace_with, $args, &$repeat_content ) {
 		$foreach_content = '';
-		$sub_entries     = is_array( $replace_with ) ? $replace_with : explode( ',', $replace_with );
 
-		if ( ! empty( $atts['order'] ) && 'desc' === $atts['order'] ) {
-			$sub_entries = array_reverse( $sub_entries );
-		}
-
+		$sub_entries = is_array( $replace_with ) ? $replace_with : explode( ',', $replace_with );
 		foreach ( $sub_entries as $sub_entry ) {
 			$sub_entry = trim( $sub_entry );
 			if ( ! is_numeric( $sub_entry ) ) {
@@ -802,8 +657,7 @@ class FrmProContent {
 		$repeat_content = $foreach_content;
 	}
 
-	/**
-	 * Returns a list of conditions used in Conditionals.
+	/** Returns a list of conditions used in Conditionals
 	 *
 	 * @return array
 	 */
@@ -811,57 +665,41 @@ class FrmProContent {
 		return array(
 			'equals',
 			'not_equal',
-			'not_equals',
 			'like',
 			'not_like',
-			'contains', // This is an alias of 'like'.
-			'does_not_contain', // This is an alias of 'not_like'.
 			'less_than',
 			'less_than_or_equal_to',
 			'greater_than',
 			'greater_than_or_equal_to',
-			'starts_with',
-			'ends_with',
 		);
 	}
 
-	/**
-	 * @param mixed  $replace_with
-	 * @param array  $atts
-	 * @param mixed  $field
-	 * @param string $tag
-	 * @return mixed
-	 */
 	public static function conditional_replace_with_value( $replace_with, $atts, $field, $tag ) {
 		$conditions = self::get_conditions();
 
 		if ( $field && $field->type === 'data' ) {
-			$show_id = is_numeric( $replace_with ) && ! empty( $atts['show'] ) && 'id' === $atts['show'];
-			// $replace_with is already in the expected format if show="id" is included, so skip all of this display value logic.
-			if ( ! $show_id ) {
-				$old_replace_with = $replace_with;
+			$old_replace_with = $replace_with;
 
-				// Only get the displayed value if it hasn't been set yet.
-				if ( is_numeric( $replace_with ) || ( ! is_null( $replace_with ) && is_numeric( str_replace( array( ',', ' ' ), array( '', '' ), $replace_with ) ) ) || is_array( $replace_with ) ) {
-					$replace_with = FrmFieldsHelper::get_display_value( $replace_with, $field, $atts );
-					if ( $old_replace_with == $replace_with ) {
-						$replace_with = '';
-					}
+			// Only get the displayed value if it hasn't been set yet
+			if ( is_numeric( $replace_with ) || is_numeric( str_replace( array( ',', ' ' ), array( '', '' ), $replace_with ) ) || is_array( $replace_with ) ) {
+				$replace_with = FrmFieldsHelper::get_display_value( $replace_with, $field, $atts );
+				if ( $old_replace_with == $replace_with ) {
+					$replace_with = '';
 				}
+			}
 
-				// Get the linked field to properly evaluate conditions.
-				if ( $replace_with !== '' && ! empty( $atts['show'] ) ) {
-					$show_field = FrmField::getOne( $atts['show'] );
-					if ( $show_field && in_array( $show_field->type, array( 'time', 'date', 'user_id' ), true ) ) {
-						$field = $show_field;
-						unset( $atts['show'] );
-					}
+			// Get the linked field to properly evaluate conditions
+			if ( $replace_with !== '' && isset( $atts['show'] ) && ! empty( $atts['show'] ) ) {
+				$show_field = FrmField::getOne( $atts['show'] );
+				if ( $show_field && in_array( $show_field->type, array( 'time', 'date', 'user_id' ), true ) ) {
+					$field = $show_field;
+					unset( $atts['show'] );
 				}
 			}
 		}
 
 		if ( ( $field && $field->type === 'user_id' ) || in_array( $tag, array( 'updated_by', 'created_by' ), true ) ) {
-			// Check if conditional is for current user.
+			// check if conditional is for current user
 			if ( isset( $atts['equals'] ) && $atts['equals'] === 'current' ) {
 				$atts['equals'] = get_current_user_id();
 			}
@@ -892,11 +730,11 @@ class FrmProContent {
 					}
 				}
 			}
-		} elseif ( $field && 'file' === $field->type && is_numeric( $replace_with ) ) {
-			$replace_with = FrmFieldsHelper::get_display_value( $replace_with, $field, $atts );
-		} elseif ( is_callable( 'FrmAppHelper::decode_specialchars' ) ) {
+		} else {
 			// Compare properly with &.
-			FrmAppHelper::decode_specialchars( $replace_with );
+			if ( is_callable( 'FrmAppHelper::decode_specialchars' ) ) {
+				FrmAppHelper::decode_specialchars( $replace_with );
+			}
 		}
 
 		self::eval_conditions( $conditions, $atts, $replace_with, $field );
@@ -910,7 +748,7 @@ class FrmProContent {
 
 	private static function prepare_date_for_eval( $conditions, $tag, &$atts ) {
 		foreach ( $conditions as $att_name ) {
-			if ( isset( $atts[ $att_name ] ) && $atts[ $att_name ] != '' && ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', trim( $atts[ $att_name ] ) ) ) {
+			if ( isset( $atts[ $att_name ] ) && $atts[ $att_name ] != '' && ! preg_match('/^\d{4}-\d{2}-\d{2}$/', trim( $atts[ $att_name ] ) ) ) {
 				if ( self::is_timestamp_tag( $tag ) ) {
 					self::get_gmt_for_filter( $att_name, $atts[ $att_name ] );
 				} elseif ( $atts[ $att_name ] == 'NOW' ) {
@@ -923,15 +761,10 @@ class FrmProContent {
 		}
 	}
 
-	/**
-	 * @param string $compare
-	 * @param string $where_val
-	 * @return void
-	 */
 	public static function get_gmt_for_filter( $compare, &$where_val ) {
 		$original_value = $where_val;
 
-		if ( $where_val === 'NOW' ) {
+		if ( $where_val == 'NOW' ) {
 			$where_val = current_time( 'mysql', 1 );
 		}
 
@@ -939,84 +772,30 @@ class FrmProContent {
 		if ( strpos( $compare, 'like' ) === false ) {
 			$where_val = gmdate( 'Y-m-d H:i:s', strtotime( $where_val ) );
 
-			// If using less than or equal to, set the time to the end of the day.
-			if ( $compare === '<=' || $compare === 'less_than' ) {
+			// If using less than or equal to, set the time to the end of the day
+			if ( $compare == '<=' || $compare == 'less_than' ) {
 				$where_val = str_replace( '00:00:00', '23:59:59', $where_val );
 			}
 
-			// Convert date to GMT since that is the format in the DB.
-			if ( self::should_convert_to_gmt( $original_value ) ) {
+			// Convert date to GMT since that is the format in the DB
+			if ( strpos( $original_value, 'hour' ) === false ) {
 				$where_val = get_gmt_from_date( $where_val );
 			}
 		}
 	}
 
-	/**
-	 * Avoid converting the value twice if the compare value was a relative value like
-	 * '-1 hour', '-10 minutes', or '-30 seconds'.
-	 *
-	 * @since 6.7.1
-	 *
-	 * @param string $value The original value being passed as a shortcode compare value.
-	 * @return bool
-	 */
-	private static function should_convert_to_gmt( $value ) {
-		$substrings = array( 'hour', 'minute', 'second' );
-		foreach ( $substrings as $substring ) {
-			if ( false !== stripos( $value, $substring ) ) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Run all of the eval functions beginning with eval_ and ending with _condition.
-	 *
-	 * @param array    $conditions
-	 * @param array    $atts
-	 * @param string   $replace_with
-	 * @param stdClass $field
-	 * @return void
-	 */
 	private static function eval_conditions( $conditions, $atts, &$replace_with, $field ) {
 		foreach ( $conditions as $condition ) {
 			if ( ! isset( $atts[ $condition ] ) ) {
 				continue;
 			}
 
-			self::maybe_swap_condition_alias( $condition, $atts );
-
-			if ( 'param' === $atts[ $condition ] && isset( $atts['param'] ) ) {
+			if ( 'param' == $atts[ $condition ] && isset( $atts['param'] ) ) {
 				$atts[ $condition ] = FrmFieldsHelper::process_get_shortcode( $atts );
 			}
 
 			$function = 'eval_' . $condition . '_condition';
 			self::$function( $atts, $replace_with, $field );
-		}
-	}
-
-	/**
-	 * Map 'contains' to 'like' and 'does_not_contain' to 'not_like'.
-	 *
-	 * @since 6.8
-	 *
-	 * @param string $condition
-	 * @param array  $atts
-	 * @return void
-	 */
-	private static function maybe_swap_condition_alias( &$condition, &$atts ) {
-		if ( 'contains' === $condition ) {
-			$condition    = 'like';
-			$atts['like'] = $atts['contains'];
-			unset( $atts['contains'] );
-			return;
-		}
-
-		if ( 'does_not_contain' === $condition ) {
-			$condition        = 'not_like';
-			$atts['not_like'] = $atts['does_not_contain'];
-			unset( $atts['does_not_contain'] );
 		}
 	}
 
@@ -1052,22 +831,6 @@ class FrmProContent {
 	}
 
 	/**
-	 * Not equals term is exactly dose what not equal and it's added for convention only.
-	 *
-	 * @since 5.4.3.
-	 * @param array    $atts condition attributes.
-	 * @param string   $replace_with string to check condition against.
-	 * @param stdClass $field field.
-	 *
-	 * @return void
-	 */
-	private static function eval_not_equals_condition( $atts, &$replace_with, $field ) {
-		$atts['not_equal'] = $atts['not_equals'];
-		unset( $atts['not_equals'] );
-		self::eval_not_equal_condition( $atts, $replace_with, $field );
-	}
-
-	/**
 	 * @param array    $atts
 	 * @param string   $replace_with
 	 * @param stdClass $field
@@ -1095,26 +858,16 @@ class FrmProContent {
 		}
 	}
 
-	/**
-	 * @param array       $atts
-	 * @param string|null $replace_with
-	 * @return void
-	 */
 	private static function eval_like_condition( $atts, &$replace_with ) {
 		if ( $atts['like'] == '' ) {
 			return;
 		}
 
-		if ( ! is_string( $replace_with ) || stripos( $replace_with, $atts['like'] ) === false ) {
+		if ( stripos( $replace_with, $atts['like'] ) === false ) {
 			$replace_with = '';
 		}
 	}
 
-	/**
-	 * @param array       $atts
-	 * @param string|null $replace_with
-	 * @return void
-	 */
 	private static function eval_not_like_condition( $atts, &$replace_with ) {
 		if ( $atts['not_like'] == '' ) {
 			return;
@@ -1122,7 +875,7 @@ class FrmProContent {
 
 		if ( $replace_with == '' ) {
 			$replace_with = true;
-		} else if ( stripos( $replace_with, $atts['not_like'] ) !== false ) {
+		} else if ( strpos( $replace_with, $atts['not_like'] ) !== false ) {
 			$replace_with = '';
 		}
 	}
@@ -1155,83 +908,17 @@ class FrmProContent {
 		}
 	}
 
-	/**
-	 * Perform a case-insensitive starts with check.
-	 *
-	 * @since 6.8
-	 *
-	 * @param array        $atts
-	 * @param string|array $replace_with
-	 * @return void
-	 */
-	private static function eval_starts_with_condition( $atts, &$replace_with ) {
-		if ( ! is_string( $replace_with ) ) {
-			$replace_with = '';
-			return;
-		}
-
-		$haystack = $replace_with;
-		$needle   = $atts['starts_with'];
-		if ( $needle && stripos( $haystack, $needle ) !== 0 ) {
-			$replace_with = '';
-		}
-	}
-
-	/**
-	 * Perform a case-insensitive ends with check.
-	 *
-	 * @since 6.8
-	 *
-	 * @param array        $atts
-	 * @param string|array $replace_with
-	 * @return void
-	 */
-	private static function eval_ends_with_condition( $atts, &$replace_with ) {
-		if ( ! is_string( $replace_with ) ) {
-			$replace_with = '';
-			return;
-		}
-
-		$haystack = strtolower( $replace_with );
-		$needle   = strtolower( $atts['ends_with'] );
-
-		if ( $needle && substr( $haystack, -strlen( $needle ) ) !== $needle ) {
-			$replace_with = '';
-		}
-	}
-
 	public static function trigger_shortcode_atts( $atts, $display, $args, &$replace_with ) {
 		$frm_atts = array(
-			'remove_accents',
-			'sanitize',
-			'sanitize_url',
-			'truncate',
-			'clickable',
+			'sanitize', 'sanitize_url',
+			'truncate', 'clickable',
 		);
-
 		$included_atts = array_intersect( $frm_atts, array_keys( $atts ) );
 
 		foreach ( $included_atts as $included_att ) {
-			if ( '0' === $atts[ $included_att ] ) {
-				// Skip any option that uses 0 so sanitize_url=0 does not encode.
-				continue;
-			}
 			$function = 'atts_' . $included_att;
 			$replace_with = self::$function( $replace_with, $atts, $display, $args );
 		}
-	}
-
-	/**
-	 * Converts all accent characters to ASCII characters.
-	 *
-	 * @since 6.3.1
-	 *
-	 * @param string $replace_with The text to remove accents from.
-	 *
-	 * @return string
-	 */
-	public static function atts_remove_accents( $replace_with ) {
-		return remove_accents( $replace_with );
 	}
 
 	public static function atts_sanitize( $replace_with ) {
@@ -1249,7 +936,7 @@ class FrmProContent {
 			$more_link_text = isset( $atts['more_link_text'] ) ? $atts['more_link_text'] : '. . .';
 		}
 
-		if ( ! empty( $atts['no_link'] ) ) {
+		if ( isset( $atts['no_link'] ) && $atts['no_link'] ) {
 			return FrmAppHelper::truncate( $replace_with, (int) $atts['truncate'], 3, $more_link_text );
 		}
 

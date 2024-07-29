@@ -1,0 +1,311 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+input[type="tel"] 
+{
+    border: 1px solid #e1e8f1;
+    border-radius: 4px;
+    height: 50px;
+    background-color: #ffffff;
+    font-size: 18px;
+}
+
+
+
+ #sign-up {
+    height: 550px;
+    overflow-y: auto;
+}
+#sign-up .mr-jonas {
+    margin-top: 0;
+}
+a.kucrm_logout_btn {
+    background-color: red;
+    color: #fff !important;
+    padding: 10px 15px;
+    line-height: 18px;
+}
+a.kucrm_logout_btn:hover {  
+    color: #fff;
+}
+
+.lostpassword-submit input {
+    background-image: none !important;
+    text-align: center !important;
+    font-size: 20px !important;
+    text-transform: capitalize !important;
+}
+.lostpassword-submit input:hover {
+    background-image: none !important;
+    background-color: #3161d5 !important;
+}
+.btn-info:hover {
+    background-color: #3161d5 !important;
+}
+
+
+
+
+
+
+/* 26-7-2021 */
+
+
+
+.collection_favorites {
+    z-index: 21 !important;
+}
+
+
+/*-------- Login form , Ragistration form and forget form css ------------*/
+div#login .form-title h2.mr-jonas strong {
+    color: #607ff2;
+}
+div#login .row.title .h4 strong {
+    color: #74869d !important;
+}
+div#login h2.mr-jonas {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    margin-left: 0px !important;
+}
+.modal-content .login .title {
+    line-height: 0px;
+}
+div#login form.kucrm_login_form input.form-control::placeholder, input.form-control,div#forget-pass form.lostpasswordform input,div#forget-pass form.lostpasswordform input::placeholder,.modal-content div#sign-up input,.modal-content div#sign-up input::placeholder {
+    font-style: normal !important;
+}
+div#form_one {
+    top: calc(100% + 15px) !important;
+}
+form.kucrm_login_form .row.text-right.forget-pass a {
+    margin-right: 0px;
+    text-transform: capitalize;
+}
+form.kucrm_login_form  .forget-pass {
+    margin-bottom: 20px;
+}
+form.kucrm_login_form button.kucrm_login_btn,div#forget-pass input.lostpassword-button.confirm,.modal-content div#sign-up button.crm_signup_btn {
+    background-color: #607ff2d9;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 0;
+    margin-bottom: 15px;
+    color: #fff;
+   /*  text-transform: capitalize; */
+}
+.social-media-icons div a {
+    background-color: #ffff !important;
+    font-size: 20px;
+    color: #2d3a4d !important;
+}
+div#forget-pass .form-title h2 strong ,.modal-content div#sign-up h2 strong  {
+    color: #607ff2;
+    margin-bottom: 0;
+    font-family: "MrJones-Book", sans-serif;
+}
+.modal-content div#forget-pass  strong,.modal-content div#sign-up .title strong{
+     font-family: "MrJones-Book", sans-serif;
+    color: #74869d;
+    margin: 0;
+    margin-bottom: 25px;
+    line-height: 24px;
+}
+div#forget-pass form.lostpasswordform input, .modal-content div#sign-up input {
+    font-family: 'MrJones-Book', sans-serif;
+    border: 1px solid #e1e8f1;
+    border-radius: 4px;
+    height: 56px;
+    background-color: #ffffff;
+    font-size: 16px;
+    color: #9fb1c3;
+}
+div#forget-pass form.lostpasswordform input.lostpassword-button.confirm {
+    background-image: none !important;
+    text-align: center;
+}
+div#forget-pass form.lostpasswordform .form-group, div#forget-pass .title, div#forget-pass p.lostpassword-submit input.lostpassword-button.confirm {
+    margin-bottom: 0px !important;
+    outline: none !important;
+}
+form.lostpasswordform{
+    margin: 0px !important;
+}
+.modal-content img.kucrm_loader {
+    margin: 10px 0px 0px;
+}
+div#forget-pass form.lostpasswordform p.lostpassword-submit input.lostpassword-button.confirm {
+    font-size: 18px !important;
+    white-space: break-spaces;
+    height: unset !important;
+    padding: 17px 15px !important;
+}
+div#forget-pass .form-title h2.mr-jonas {
+    margin-bottom: 0px;
+}
+.modal-content div#confirm strong {
+    line-height: 24px;
+}
+.modal-content div#confirm button.btn {
+    margin: 25px 0px 0px !important;
+}
+.modal-content div#confirm  h2.mr-jonas {
+    margin-top: 0px !important;
+}
+div#sign-up .form-title h2.mr-jonas {
+    margin-bottom: 0px;
+}
+div#sign-up a.sign-in strong {
+    font-size: 20px;
+    color: #2d3a4d;
+    font-family: Roboto;
+}
+div#sign-up .social-media-icons {
+    display: block !important;
+}
+form.kucrm_register_form {
+    margin-bottom: 0px !important;
+}
+
+.modal-content {
+    border: 1px solid #e8e5e4 !important;
+    box-shadow: none !important;
+}
+div#login .social-media-icons a strong,div#sign-up  a strong{
+    font-size: 16px !important;
+    color: #2d3a4d !important;
+    font-family: Roboto !important;
+    padding: 15px !important;
+    display: block;
+    background-color:#F6FAFC !important;
+}
+div#sign-up .social-media-icons {
+    margin-top: 15px;
+}
+
+div#forget-pass .lostpassword-submit {
+    margin-bottom: 0px !important;
+}
+div#sign-up button.crm_signup_btn ~ div {
+    text-align: center !important;
+}
+div#sign-up-complete .row.title,div#sign-up-complete .social-media-icons .row {
+    padding: 0px 15px;
+}
+p.update_password_submit input.confirm {
+    background-image: none !important;
+    text-align: center;
+    max-width: 150px !important;
+    background-color: #607ff2 !important;
+    height: 50px !important;
+    font-size: 20px !important;
+    border-radius: 7px !important;
+    border: 0 !important;
+    margin-bottom: 15px !important;
+    margin-top: 20px !important;
+    color: #fff !important;
+    cursor:pointer;
+}
+p.update_password_submit input.confirm:hover{
+    background-color: #3161d5 !important;
+}
+
+form.update_password_form .form-group input::placeholder {
+    font-style: none !important;
+    font-style: normal;
+}
+form.update_password_form .form-group input {
+    margin-bottom: 16px;
+    font-family: 'MrJones-Book', sans-serif;
+    border: 1px solid #e1e8f1;
+    border-radius: 4px;
+    height: 50px;
+    background-color: #ffffff;
+    font-size: 18px;
+    color: #9fb1c3;
+}
+article.column.page-content h1 {
+    font-family: 'MrJones-Book', sans-serif;
+    font-size: 40px;
+    margin: 0 0 30px 0;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+div#sign-up::-webkit-scrollbar,div#form_one div.after_login::-webkit-scrollbar,
+.art_work_mailsend form.my_artworks_form ul.multiselect-container::-webkit-scrollbar{
+  width: 5px;
+}
+div#sign-up::-webkit-scrollbar-track,div#form_one div.after_login::-webkit-scrollbar-track,
+.art_work_mailsend form.my_artworks_form ul.multiselect-container::-webkit-scrollbar-track{
+  background: #f1f1f1; 
+}
+div#sign-up::-webkit-scrollbar-thumb,div#form_one div.after_login::-webkit-scrollbar-thumb,
+.art_work_mailsend form.my_artworks_form ul.multiselect-container::-webkit-scrollbar-thumb{
+  background: #8080809e !important; 
+}
+.modal-body {
+    padding: 45px !important;
+}
+div#sign-up-complete label.h4,div#sign-up-complete h2.mr-jonas {
+    margin-top: 0px !important;
+} 
+div#form_one .modal-content  div.after_login{
+         height: 485px !important;
+    }
+    div#form_one .modal-content  div.after_login {
+    height: 550px;
+    overflow-y: auto;
+}
+div#form_one .modal-content {
+    padding: 0px;
+    border: none !important;
+}
+div#login .row.title > label.h4 {
+    margin-top: 0px;
+}
+.modal-body .form-group {
+    margin-bottom: 25px !important;
+}
+.kucrm_register_form .kucrm_error, .lostpasswordform .kucrm_error,.kucrm_register_form .kucrm-message-wrapper, .lostpasswordform .kucrm-message-wrapper, .kucrm_login_form .kucrm-message-wrapper {
+    color: red !important;
+    display: block;
+    text-align: left;
+    margin-top: 8px;
+}
+.kucrm_login_form .form-control.input-error {
+    border-color: red !important;
+}
+@media(max-width: 1400px){
+     #sign-up {
+         height: 550px !important;
+    }
+}
+ @media(max-width: 1280px){
+     #sign-up{
+         height: 485px !important;
+    }
+}
+@media(max-width: 767px){
+     div#form_one .modal-body {
+         padding: 30px 50px 30px !important;
+    }
+    div#form_one .modal-body {
+         padding: 30px 50px 30px !important;
+    }
+}
+ @media(max-width: 575px){
+     div#form_one .modal-body {
+         padding: 8% 10% 8% !important;
+    }
+     .modal-content {
+         padding: 0px 0px !important;
+    }
+}
+/*-------- Login form , Ragistration form and forget form css ------------*/
+
+

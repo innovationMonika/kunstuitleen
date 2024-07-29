@@ -1,15 +1,8 @@
 <?php
 
 class FrmZapApiController {
-
-	/**
-	 * @var int $timeout
-	 */
 	public static $timeout = 10;
 
-	/**
-	 * @return void
-	 */
 	public static function load_hooks() {
 		$uri = self::get_server_value( 'REQUEST_URI' );
 		if ( false !== strpos( $uri, '/frm-api/' ) ) {
@@ -20,15 +13,13 @@ class FrmZapApiController {
 	}
 
 	/**
-	 * Get the entry array from the entry and call send_to_zapier.
+	 * Get the entry array from the entry and call send_to_zapier()
 	 *
 	 * @since 2.0
-	 *
-	 * @param WP_Post  $action
-	 * @param stdClass $entry
-	 * @param stdClass $form
-	 * @param string   $event
-	 * @return void
+	 * @param action a FrmZapAction object
+	 * @param entry a FrmEntry object
+	 * @param form a FrmForm object
+	 * @param event string
 	 */
 	public static function send_entry_to_zapier( $action, $entry, $form, $event ) {
 		$body = self::get_entry_array( $entry );
@@ -36,14 +27,12 @@ class FrmZapApiController {
 	}
 
 	/**
-	 * Get the form, action, and entry objects from entry and form ID and pass it on.
+	 * Get the form, action, and entry objects from entry and form ID and pass it on
 	 *
 	 * @since 2.0
-	 *
-	 * @param int|string $entry_id
-	 * @param int|string $form_id
-	 * @param string     $event
-	 * @return void
+	 * @param entry_id (int) an entry ID
+	 * @param form_id (int) a form ID
+	 * @param event (string)
 	 */
 	private static function send_entry( $entry_id, $form_id, $event ) {
 		$form = FrmForm::getOne( $form_id );
@@ -56,11 +45,9 @@ class FrmZapApiController {
 	 * Remote POST the entry array to the Zapier WebHook contained in $action
 	 *
 	 * @since 2.0
-	 *
-	 * @param array   $body Entry data.
-	 * @param WP_Post $action a FrmZapAction object
-	 * @param string  $event
-	 * @return void
+	 * @param body an entry array
+	 * @param action a FrmZapAction object
+	 * @param event string
 	 */
 	private static function send_to_zapier( $body, $action, $event ) {
 		$headers = array();
@@ -94,12 +81,8 @@ class FrmZapApiController {
 		do_action( 'frm_zap_sent', $log_args );
 	}
 
-	/**
-	 * @param array|WP_Error $response
-	 * @return array
-	 */
 	private static function process_response( $response ) {
-		$body      = wp_remote_retrieve_body( $response );
+		$body = wp_remote_retrieve_body( $response );
 		$processed = array(
 			'message' => '',
 			'code'    => 'FAIL',
@@ -107,7 +90,7 @@ class FrmZapApiController {
 		if ( is_wp_error( $response ) ) {
 			$processed['message'] = $response->get_error_message();
 		} elseif ( $body == 'error' || is_wp_error( $body ) ) {
-			$processed['message'] = __( 'You had an HTTP connection error', 'frmzap' );
+			$processed['message'] = __( 'You had an HTTP connection error', 'formidable-api' );
 		} elseif ( isset( $response['response'] ) && isset( $response['response']['code'] ) ) {
 			$processed['code'] = $response['response']['code'];
 			$processed['message'] = $response['body'];
@@ -117,12 +100,10 @@ class FrmZapApiController {
 	}
 
 	/**
-	 * Write a message to the FrmLog (if it exists).
+	 * Write a message to the FrmLog (if it exists)
 	 *
 	 * @since 2.0
-	 *
-	 * @param array $atts Values to print to the log.
-	 * @return void
+	 * @param atts array of values to print to the log
 	 */
 	private static function log_results( $atts ) {
 		if ( ! class_exists( 'FrmLog' ) ) {
@@ -153,21 +134,12 @@ class FrmZapApiController {
 		);
 	}
 
-	/**
-	 * @param array  $array
-	 * @param string $list
-	 * @return void
-	 */
 	private static function array_to_list( $array, &$list ) {
 		foreach ( $array as $k => $v ) {
 			$list .= "\r\n" . $k . ': ' . $v;
 		}
 	}
 
-	/**
-	 * @param stdClass $entry
-	 * @return array
-	 */
 	private static function get_entry_array( $entry ) {
 		if ( ! method_exists( 'FrmEntriesController', 'show_entry_shortcode' ) ) {
 			return array();
@@ -185,63 +157,53 @@ class FrmZapApiController {
 		);
 
 		$data = maybe_unserialize( $entry->description );
-		if ( ! is_array( $data ) ) {
-			$data = array();
-		}
 
 		$entry_array = array(
-			'id'         => $entry->id,
-			'ip'         => $entry->ip,
-			'browser'    => isset( $data['browser'] ) ? $data['browser'] : '',
-			'referrer'   => isset( $data['referrer'] ) ? $data['referrer'] : '',
-			'user_id'    => FrmFieldsHelper::get_user_display_name( $entry->user_id, 'user_login' ),
-			'form_id'    => $entry->form_id,
-			'is_draft'   => $entry->is_draft,
+			'id' => $entry->id,
+			'ip' => $entry->ip,
+			'browser' => $data['browser'],
+			'referrer' => $data['referrer'],
+			'user_id'  => FrmFieldsHelper::get_user_display_name( $entry->user_id, 'user_login' ),
+			'form_id' => $entry->form_id,
+			'is_draft' => $entry->is_draft,
 			'updated_by' => FrmFieldsHelper::get_user_display_name( $entry->updated_by, 'user_login' ),
-			'post_id'    => $entry->post_id,
-			'key'        => $entry->item_key,
+			'post_id' => $entry->post_id,
+			'key' => $entry->item_key,
 			'created_at' => get_date_from_gmt( $entry->created_at ),
 			'updated_at' => get_date_from_gmt( $entry->updated_at ),
 		);
 
-		if ( is_array( $meta ) ) {
-			foreach ( $meta as $k => $m ) {
-				$is_id = is_numeric( $k );
-				$this_key = $k;
-				$other_key = $is_id ? FrmField::get_key_by_id( $k ) : FrmField::get_id_by_key( $k );
-				if ( $is_id ) {
-					$other_key = 'x' . $other_key;
-				} else {
-					$this_key = 'x' . $this_key;
-				}
-
-				$entry_array[ $this_key ] = $m;
-
-				if ( $other_key ) {
-					$entry_array[ $other_key ] = $m;
-				}
-
-				unset( $k, $m );
+		foreach ( $meta as $k => $m ) {
+			$is_id = is_numeric( $k );
+			$this_key = $k;
+			$other_key = $is_id ? FrmField::get_key_by_id( $k ) : FrmField::get_id_by_key( $k );
+			if ( $is_id ) {
+				$other_key = 'x' . $other_key;
+			} else {
+				$this_key = 'x' . $this_key;
 			}
+
+			$entry_array[ $this_key ] = $m;
+
+			if ( $other_key ) {
+				$entry_array[ $other_key ] = $m;
+			}
+
+			unset( $k, $m );
 		}
 
-		return (array) apply_filters( 'frmzap_entry_array', $entry_array );
+		return apply_filters( 'frmzap_entry_array', $entry_array );
 	}
 
 	/**
 	 * Send dates in Y-m-d format for maximum compatibility
 	 *
 	 * @since 1.0.1
-	 *
-	 * @return string
 	 */
 	public static function set_date_format() {
 		return 'Y-m-d';
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function api_route() {
 		// allow without API key for testing
 		if ( ! is_user_logged_in() || ! current_user_can( 'administrator' ) ) {
@@ -277,18 +239,10 @@ class FrmZapApiController {
 		header( 'Cache-Control: no-cache, must-revalidate' );
 		header( 'Pragma: no-cache' );
 
-		// Only allow for v1 for now.
-		$uri   = self::get_server_value( 'REQUEST_URI' );
-		$split = explode( '/frm-api/v1/', strtok( $uri, '?' ), 2 );
+		//only allow for v1 for now
+		$uri = self::get_server_value( 'REQUEST_URI' );
+		list( $url, $request ) = explode( '/frm-api/v1/', strtok( $uri, '?' ), 2 );
 
-		if ( count( $split ) < 2 ) {
-			status_header( 400 );
-			$response = array( 'error' => 'Invalid API URL' );
-			echo json_encode( $response, 999 );
-			die();
-		}
-
-		list( $url, $request ) = $split;
 		$data = json_decode( file_get_contents( 'php://input' ) );
 		$request = untrailingslashit( $request );
 		if ( strpos( $request, '/' ) ) {
@@ -314,8 +268,6 @@ class FrmZapApiController {
 	 * php-cgi under Apache does not pass HTTP Basic user/pass to PHP by default
 	 * For this workaround to work, add this line to your .htaccess file:
 	 * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-	 *
-	 * @return void
 	 */
 	private static function setup_basic_auth() {
 		if ( isset( $_SERVER['PHP_AUTH_USER'] ) ) {
@@ -338,7 +290,6 @@ class FrmZapApiController {
 	 * in another param.
 	 *
 	 * @since 1.06
-	 * @return void
 	 */
 	private static function maybe_check_http_auth() {
 		if ( isset( $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ) && ! isset( $_SERVER['HTTP_AUTHORIZATION'] ) ) {
@@ -361,7 +312,6 @@ class FrmZapApiController {
 	 * If no API key is found, maybe check the URL for ?frmzap=KEYHERE.
 	 *
 	 * @since 1.06
-	 * @return void
 	 */
 	private static function maybe_check_url_auth() {
 		if ( isset( $_SERVER['PHP_AUTH_USER'] ) ) {
@@ -385,9 +335,6 @@ class FrmZapApiController {
 		}
 	}
 
-	/**
-	 * @return void
-	 */
 	private static function check_api_key() {
 		$api_key = get_option( 'frm_api_key' );
 		$check_key = self::get_server_value( 'PHP_AUTH_USER' );
@@ -407,31 +354,20 @@ class FrmZapApiController {
 	 * Get and sanitize a SERVER parameter.
 	 *
 	 * @since 1.06
-	 *
 	 * @param string $value The server parameter name.
-	 * @return string
 	 */
 	private static function get_server_value( $value ) {
 		return isset( $_SERVER[ $value ] ) ? wp_strip_all_tags( wp_unslash( $_SERVER[ $value ] ) ) : '';
 	}
 
-	/**
-	 * Route /ping.
-	 *
-	 * @return array
-	 */
+	// route /ping
 	private static function ping() {
 		return array(
 			'status' => 'verified',
 		);
 	}
 
-	/**
-	 * Route /forms.
-	 *
-	 * @param object $data
-	 * @return array
-	 */
+	// route /forms
 	private static function forms( $data ) {
 		// published and not template
 		$forms = array(
@@ -446,15 +382,8 @@ class FrmZapApiController {
 		return $forms;
 	}
 
-	/**
-	 * Route /form/:id.
-	 * Get form HTML.
-	 *
-	 * @param object $data
-	 * @param mixed  $user
-	 * @param array  $atts
-	 * @return array
-	 */
+	// route /form/:id
+	// get form HTML
 	private static function form( $data, $user, $atts ) {
 		if ( ! isset( $atts[0] ) ) {
 			status_header( 409 );
@@ -467,19 +396,11 @@ class FrmZapApiController {
 		} else {
 			$shortcode_atts = array( 'key' => $id );
 		}
-
-		$form = FrmFormsController::get_form_shortcode( $shortcode_atts );
+		$form = FrmAppController::get_form_shortcode( $shortcode_atts );
 		return (array) $form;
 	}
 
-	/**
-	 * Route /fields/:id
-	 *
-	 * @param object $data
-	 * @param mixed  $user
-	 * @param array  $atts
-	 * @return array
-	 */
+	// route /fields/:id
 	private static function fields( $data, $user, $atts ) {
 		if ( ! isset( $atts[0] ) ) {
 			status_header( 409 );
@@ -497,15 +418,8 @@ class FrmZapApiController {
 		return $fields;
 	}
 
-	/**
-	 * Route /zap_fields/:id.
-	 * Get custom fields in Zapier format.
-	 *
-	 * @param object $data
-	 * @param mixed  $user
-	 * @param array  $atts
-	 * @return array
-	 */
+	// get custom fields in Zapier format
+	// route /zap_fields/:id
 	private static function zap_fields( $data, $user, $atts ) {
 		if ( ! isset( $atts[0] ) ) {
 			status_header( 409 );
@@ -513,42 +427,37 @@ class FrmZapApiController {
 		}
 		$id = $atts[0];
 
-		$fields     = FrmField::get_all_for_form( $id, '', 'include', 'include' );
+		$fields = FrmField::get_all_for_form( $id, '', 'include', 'include' );
 		$zap_fields = array();
-		$field_map  = array(
-			'rte'      => 'text',
+
+		$field_map = array(
+			'rte' => 'text',
 			'textarea' => 'text',
-			'number'   => 'decimal',
-			'date'     => 'datetime',
-			'scale'    => 'int',
+			'number' => 'decimal',
+			'date' => 'datetime',
+			'scale' => 'int',
 		);
-		$field_map = (array) apply_filters( 'frmzap_map_fields', $field_map, $fields, $id );
+		$field_map = apply_filters( 'frmzap_map_fields', $field_map, $fields, $id );
 
 		foreach ( $fields as $f ) {
-			if ( in_array( $f->type, array( 'divider', 'captcha', 'break', 'html' ), true ) ) {
+			if ( in_array( $f->type, array( 'divider', 'captcha', 'break', 'html' ) ) ) {
 				continue;
 			}
 
 			$zap_fields[] = array(
-				'type'      => ( isset( $field_map['type'] ) ? $field_map['type'] : 'unicode' ),
-				'key'       => 'x' . $f->field_key, // Make sure key starts with an alpha.
-				'required'  => (bool) $f->required,
-				'label'     => $f->name,
+				'type' => ( isset( $field_map['type'] ) ? $field_map['type'] : 'unicode' ),
+				'key' => 'x' . $f->field_key, //make sure key starts with an alpha
+				'required' => ( $f->required ? true : false ),
+				'label' => $f->name,
 				'help_text' => $f->description,
-				'default'   => $f->default_value,
+				'default' => $f->default_value,
 			);
 		}
 		return $zap_fields;
 	}
 
-	/**
-	 * Route /subscribe.
-	 * Save the url in a form action.
-	 *
-	 * @param object $data
-	 * @param mixed  $user
-	 * @return array
-	 */
+	// route /subscribe
+	// save the url in a form action
 	private static function subscribe( $data, $user ) {
 		if ( ! isset( $data->target_url ) ) {
 			status_header( 409 );
@@ -581,15 +490,12 @@ class FrmZapApiController {
 				$new_event = 'delete';
 			}
 
-			$action    = new FrmZapAction();
+			include_once self::path() . '/models/FrmZapAction.php';
+			$action = new FrmZapAction();
 			$action_id = $action->create_new( $form_id, $zap_url, $new_event );
 
 			if ( is_numeric( $action_id ) ) {
 				status_header( 201 );
-
-				if ( ! empty( $data->form->_zap_static_hook_code ) ) {
-					add_post_meta( $action_id, 'frm_zapier_test_hook', 1, true );
-				}
 			}
 
 			self::send_poll_entry( $form_id, $zap_url );
@@ -602,13 +508,7 @@ class FrmZapApiController {
 		}
 	}
 
-	/**
-	 * Route /unsubscribe.
-	 * Delete zap.
-	 *
-	 * @param object $data
-	 * @return array
-	 */
+	// delete zap
 	private static function unsubscribe( $data ) {
 		if ( ! isset( $data->target_url ) ) {
 			status_header( 409 );
@@ -642,22 +542,19 @@ class FrmZapApiController {
 	}
 
 	/**
-	 * Get an entry from a particular form and send the entry array to the specified WebHook.
+	 * Get an entry from a particular form and send the entry array to the specified WebHook
 	 *
 	 * @since 2.0
-	 *
-	 * @param int    $form_id
-	 * @param string $zap_url
-	 * @return void
+	 * @param form_id (int) a form ID
+	 * @param zap_url (string)
 	 */
 	private static function send_poll_entry( $form_id, $zap_url ) {
 		global $wpdb;
 
-		$entries = FrmEntry::getAll( array( 'form_id' => $form_id ), ' ORDER BY it.id DESC', 1 );
-		if ( ! $entries ) {
+		$entries = FrmEntry::getAll( array( 'form_id' => $form_id ), '', 1 );
+		if ( empty( $entries ) ) {
 			return;
 		}
-
 		$latest_entry = array_pop( $entries );
 
 		$body = self::get_entry_array( $latest_entry );
@@ -686,12 +583,10 @@ class FrmZapApiController {
 	}
 
 	/**
-	 * Log subscribe, unsubscribe, and poll events if FrmLog exists.
+	 * Log subscribe, unsubscribe, and poll events if FrmLog exists
 	 *
 	 * @since 2.0
-	 *
-	 * @param array $atts Message parameters.
-	 * @return void
+	 * @param atts (array) message parameters
 	 */
 	private static function log_subscribe_status( $atts ) {
 		if ( ! class_exists( 'FrmLog' ) ) {
@@ -711,24 +606,20 @@ class FrmZapApiController {
 	}
 
 	/**
-	 * Get current filepath.
+	 * Get current filepath
 	 *
 	 * @since 2.0
-	 *
-	 * @return string
 	 */
 	public static function path() {
 		return dirname( dirname( __FILE__ ) );
 	}
 
 	/**
-	 * Log a quick message if FrmLog exists.
+	 * Log a quick message if FrmLog exists
 	 *
 	 * @since 2.0
-	 *
-	 * @param string $title
-	 * @param string $msg
-	 * @return void
+	 * @param title (string)
+	 * @param msg (string)
 	 */
 	private static function log_debug( $title, $msg ) {
 		if ( ! class_exists( 'FrmLog' ) ) {
@@ -746,10 +637,6 @@ class FrmZapApiController {
 
 	/**
 	 * @deprecated 2.0
-	 *
-	 * @param mixed $entry_id
-	 * @param mixed $form_id
-	 * @return void
 	 */
 	public static function send_new_entry( $entry_id, $form_id ) {
 		_deprecated_function( __FUNCTION__, '2.0', 'send_entry_to_zapier' );
@@ -758,10 +645,6 @@ class FrmZapApiController {
 
 	/**
 	 * @deprecated 2.0
-	 *
-	 * @param mixed $entry_id
-	 * @param mixed $form_id
-	 * @return void
 	 */
 	public static function send_updated_entry( $entry_id, $form_id ) {
 		_deprecated_function( __FUNCTION__, '2.0', 'send_entry_to_zapier' );
@@ -770,10 +653,6 @@ class FrmZapApiController {
 
 	/**
 	 * @deprecated 2.0
-	 *
-	 * @param mixed          $entry_id
-	 * @param stdClass|false $entry
-	 * @return void
 	 */
 	public static function send_deleted_entry( $entry_id, $entry = false ) {
 		_deprecated_function( __FUNCTION__, '2.0', 'send_entry_to_zapier' );

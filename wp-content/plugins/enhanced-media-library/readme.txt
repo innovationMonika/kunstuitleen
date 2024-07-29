@@ -1,26 +1,20 @@
 === Enhanced Media Library ===
 Contributors: webbistro
-Donate link: https://wpuxsolutions.com/plugins/enhanced-media-library-pro
-Tags: media library, media folders, media tags, media categories, mime types
-Requires at least: 6.0
-Tested up to: 6.5.5
+Tags: media library, media category, media categories, media gallery, gallery shortcode, media tag, media tags, media taxonomy, media taxonomies, media uploader, mime type, mime, mime types, file types, media types, media filter, attachment, gallery, image, images, media, ux, user experience, wp-admin, admin, taxonomy, taxonomies
+Requires at least: 5.0
+Tested up to: 5.8.3
 Requires PHP: 5.6
-Stable tag: 2.9.4
+Stable tag: 2.8.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin would be handy for those who need to manage a lot of media files.
+
 
 ## Description ##
 
-**Handy for those who need to manage a lot of media files.**
+**The plugin will be handy for those who need to manage a lot of media files.**
 
-[Known Issues :: Support](https://wpuxsolutions.com/support) | [Changelog](https://wpuxsolutions.com/documents/enhanced-media-library/changelog) | [Usage Guide :: How to](https://wpuxsolutions.com/documents/enhanced-media-library) | [FAQs](https://wpuxsolutions.com/documents/enhanced-media-library/faqs-2) | [Premium Features](https://wpuxsolutions.com/plugins/enhanced-media-library-pro)
-
-
-### Officially! **EML 3.0 Early Beta** is available for testing ###
-
-* [Give it a try](https://wpuxsolutions.com/plugins/enhanced-media-library-3-0), share feedback, report bugs, and **help the developer** to deliver it promptly!
+[SUPPORT](https://wpuxsolutions.com/support) | [DOCUMENTATION](https://wpuxsolutions.com/documents/enhanced-media-library) | [FAQs](https://wpuxsolutions.com/documents/enhanced-media-library/faqs) | [PREMIUM FEATURES](https://wpuxsolutions.com/plugins/enhanced-media-library-pro)
 
 
 ### Categorize by Anything! ###
@@ -30,7 +24,7 @@ This plugin would be handy for those who need to manage a lot of media files.
 * Unlimited **third-party taxonomies:** assign to the media library
 
 
-### Configurable Filters ###
+### Configurable Filters ### 
 
 * **Show / hide** data, author, taxonomy filters
 * **Per taxonomy** filters
@@ -117,6 +111,7 @@ Support is free for both versions of the plugin. "PRO"-users do not have priorit
 * [Justified Gallery](https://wordpress.org/plugins/justified-gallery/)
 * [Meow Gallery](https://wordpress.org/plugins/meow-gallery/)
 * [Meow Lightbox](https://wordpress.org/plugins/meow-lightbox/)
+* [Slick Slider](https://wordpress.org/plugins/slick-slider/)
 * [MetaSlider](https://wordpress.org/plugins/ml-slider/)
 * [Responsive Lightbox & Gallery](https://wordpress.org/plugins/responsive-lightbox/)
 * [Compress JPEG & PNG Images](https://wordpress.org/plugins/tiny-compress-images/) (TinyPNG)
@@ -136,6 +131,8 @@ Please notice that you use Enhanced Media Library with other plugins that add me
 * [PRO version: more details](https://wpuxsolutions.com/plugins/enhanced-media-library-pro)
 * [Documentation](https://www.wpuxsolutions.com/documents/enhanced-media-library)
 * [FAQs](https://www.wpuxsolutions.com/documents/enhanced-media-library/faqs)
+* [Contribute to Translation](https://www.wpuxsolutions.com/l10n/projects/enhanced-media-library)
+
 
 
 ## Installation ##
@@ -150,9 +147,9 @@ Please notice that you use Enhanced Media Library with other plugins that add me
 
 
 
-## Frequently Asked Questions ##
+## Frequently Asked Questions ==
 
-> [FAQs](https://www.wpuxsolutions.com/documents/enhanced-media-library/faqs-2/) | [Documentation](https://www.wpuxsolutions.com/documents/enhanced-media-library/)
+> [FAQs](https://www.wpuxsolutions.com/documents/enhanced-media-library/faqs/) | [Documentation](https://www.wpuxsolutions.com/documents/enhanced-media-library/)
 
 
 
@@ -183,144 +180,6 @@ Please notice that you use Enhanced Media Library with other plugins that add me
 
 
 ## Changelog ##
-
-### 2.9.4 ###
-*Release Date - July 15, 2024*
-
-= Improvement = 
-* Validation and transliteration on the Media Taxonomies admin page improved, minor bugs fixed
-
-= Bugfixes =
-* A fatal error bug while JetPack VideoPress syncing is probably fixed, requires confirmation
-
-= 3.0 Early Beta is available for testing! =
-* [Take a look &raquo;](https://wpuxsolutions.com/blog/enhanced-media-library-3-0-is-coming)
-
-= SECURITY UPDATE =
-* Security issue related to MIME types upload has been fixed since v2.8.10. Please update to the latest version on all your websites.
-
-= Notes =
-* EML is compatible with PHP 5.6, 7, and 8. Don't hesitate to update. If you previously had issues because of the PHP version, it's not the case anymore.
-
-= Thank you! =
-For being EML users for so many years.
-* *This update has been issued in Ukraine under everyday missile attacks.*
-* *Please do not buy into ruzzian lies and propaganda. This aggression is unprovoked, illegal, and unfair. The people of Ukraine have all the right to live peacefully without ungrounded ruzzian claims and crimes committed.* 
-* *Support Ukraine. It would be self-deception to believe that a neighboring country with the Nazi and anti-Western ideology, they are raising their young in, is heavily militarizing its economy and population so as never to pose a threat and never to attack the West.*
-
-
-### 2.9.3 ###
-*Release Date - June 19, 2024*
-
-= Improvement = 
-* `xlsm` file type upload ensured if allowed
-
-
-### 2.9.2 ###
-*Release Date - June 14, 2024*
-
-= Bugfixes =
-* Elementor compatibility bug of v2.9.1 (not showing filters in Elementor's media popup) fixed
-
-
-### 2.9.1 ###
-*Release Date - May 27, 2024*
-
-= New =
-* WP native search performance improved for both free and PRO versions in Media Library Grid Mode
-* PRO only: new options added: `Search on enter`, `Auto search`, and `Minimun number of letters`
-
-= Bugfixes =
-* PRO only: plugin update module PHP-warnings issue fixed
-
-
-### 2.9 ###
-*Release Date - May 16, 2024*
-
-= New =
-* `Uploaded to this post by default` option added to the `Media` > `Media Library` > `Filters` section
-  *Enable the option to get media files initially filtered by "Uploaded to this post" in a Media Popup while adding or editing them for a post, page, or custom post type.*
-* Some changes made to the plugin's code and the PRO version updating mechanism in preparation for an upcoming major update EML v3.0
-
-= Bugfixes =
-* Tiny bugs fixed
-
-
-### 2.8.15 ###
-*Release Date - May 10, 2024*
-
-= Improvements =
-* Gallery / playlist shortcodes improved for better compatibility with other plugins
-* `AND` logic within a single taxonomy implemented for `[gallery]` and `[playlist]` shortcodes
-
-***Examples:***
-
-`[gallery media_category="california+flowers" genre="landscape"]`
-*— Displays images having **both** categories "california" **AND** "flowers" AND also from the genre "landscape"*
-
-`[gallery media_category="flowers,mosses" genre="garden"]`
-*— Displays imager **either** from "flowers" **OR** "mosses" category AND also from the genre "garden"*
-
-*Note: For performance it's better to use IDs instead of slugs in the gallery shortcodes.*
-
-= Bugfixes =
-* Layout issues fixed for the **media popup** with the `Infinite scrolling` option enabled
-* `Fatal Error – Too Few Arguments to function` fixed for two plugins: "cred-frontend-editor" and AJAX Thumbnail Rebuild
-* Minor CSS fixes
-
-
-### 2.8.14 ###
-*Release Date - April 30, 2024*
-
-= Improvements =
-* Divi Builder compatibility ensured on uploading font files
-*Note: Font files are allowed for upload with Divi Builder even if you haven't added them with the EML settings because Divi adds its own allowed file types.*
-
-
-### 2.8.13 ###
-*Release Date - April 26, 2024*
-
-= Bugfixes =
-* A bug since v2.8.10 with the right sidebar covering media library files when `Infinite scrolling` option is enabled fixed
-
-
-### 2.8.12 ###
-*Release Date - April 23, 2024*
-
-= Bugfixes =
-* A critical error bug of v2.8.11 with filtering by media taxonomies in the media library List View fixed
-
-
-### 2.8.11 ###
-*Release Date - April 19, 2024*
-
-= Improvements =
-* Database queries for taxonomies improved
-* A mechanism for vetting allowed mime types added
-
-= Bugfixes =
-* Deprecated notices for author filter fixed
-* Issue with uploading font mime types fixed (Report other mime types you experience issues uploading, please)
-* PRO only: Search issue fixed and the mechanism improved to ensure compatibility with other plugins
-
-
-### 2.8.10 ###
-*Release Date - April 11, 2024*
-
-= Improvements =
-* Plugin admin menu items order and compatibility improved
-* `Right sidebar width` and `Ideal column width` options added
-* Caption (grid mode) is no longer cropped when it is a filename
-* Caption lenght before crop depends on the thumbnail side - added
-* PRO only: Enhanced search mechanism in media library improved + `filenames` option added
-* Minor improvements to desltop/mobile layout made
-* PHP 8 compatibility ensured (no deprecated notices anymore)
-* Latest jQuery standards compatibility ensured (no deprecated notices anymore)
-
-= Bugfixes =
-* Duplicate listings when editing a single image edit in the list mode fixed
-* WP excess utility taxonomies hidden in the settings
-
 
 ### 2.8.9 ###
 *Release Date - January 09, 2022*
@@ -423,6 +282,87 @@ For being EML users for so many years.
 * ACF attachment custom fields - better compatibility
 * Enfold Theme: added `[av_masonry_gallery]` shortcode compatibility with media category parameters like `media_category='10'`, `tag='21'`
 * PRO only: The bulk Save Changes button is disabled by default since v2.8 for new plugin installations. All changes are being made on the fly. If you prefer the button, you can enable it at Settings > Media Taxonomies > Bulk Edit > Save Changes button. 
+
+= Apology =
+My sincere apologies to everyone hurt by the absence of EML updates last year. The plugin is not abandoned, its development will continue.
+
+
+### 2.7.2 ###
+*Release Date - September 13, 2018*
+
+= Improvements =
+* Compatibility with Smush (WP SmushIt) plugin ensured
+
+
+### 2.7.1 ###
+*Release Date - September 11, 2018*
+*v2.7 bugfixes*
+
+= Bugfixes =
+* `[playlist]` broken shortcode bug fixed
+* "Image not uploading", "Can't add featured image", "Media library right sidebar gone" and possibly some other situations common bug fixed.
+* PRO only: hidden filters bug fixed
+* A few minor bugs fixed, some minor code improvements made
+
+
+### 2.7 ###
+*Release Date - September 10, 2018*
+
+= New =
+* Better workflow for saving categories in both single item and bulk edit: everything is being saved on the fly by default (Save Changes button is now optional)
+* Better layout for the Media Library
+* `[gallery]` and `[playlist]` shortcodes now understand media category slugs, not only IDs
+* Multisite "Unify Media Settings over Network" option added
+
+= Improvements =
+* Taxonomy fields are now always at the end of other fields in Attachment Details
+* Admin Menu Editor compatibility added
+
+= Bugfixes =
+* Multisite performance issue fixed
+* Admin titles for plugin settings pages fixed
+* Natural sort order bug - not showing media items with the same titles - fixed
+* `data[caption_type]` not found bug fixed
+
+
+### 2.6.4 ###
+*Release Date - May 23, 2018*
+*Addresses various issues of all previous 2.6.x versions*
+
+= Bugfixes =
+* Various multisite bugs fixed, including the user deletion bug
+* A bug causing memory leak on websites with thousands of users fixed
+* A few bugs causing admin crash in PHP less than 5.5 fixed
+* PRO only: a few update issues fixed including persistent update message bug
+
+= Improvements =
+* Elementor CSS-compatibility added (a temporary solution, we are still working on the full compatibility)
+
+
+### 2.6 ###
+*Release Date - May 18, 2018*
+
+= New =
+* Filter by authors added
+* "Filters to show" option added: show/hide filters by File Type Date, Author, Media Taxonomies
+* "Include children" option added: include (or not) media items of child media categories when filtering
+* PRO only: Search options added: what to (or not to) include to the default search: Titles, Captions, Descriptions, Authors, Media Taxonomies
+* "Show caption" option added for the Grid Mode
+* Full multisite support added (documentation is coming)
+
+= Improvements =
+* Natural sort order for galleries and archive pages ensured
+* Plugin's menu improved
+* Plugin options are re-grouped to be more consistent
+* PRO only: Updating mechanism improved
+* Media taxonomies creation mechanism revised to allow non-ASCII characters like Chinese in taxonomy names
+* Taxonomy archive pages disabled by default since this version (for new installations)
+* A lot of small security improvements
+
+= Bugfixes =
+* Custom order for a taxonomy archive page fixed
+* Position of WordPress core messages in the Grid Mode fixed
+* A lot of small bugs fixed
 
 
 ### Previous releases... ###

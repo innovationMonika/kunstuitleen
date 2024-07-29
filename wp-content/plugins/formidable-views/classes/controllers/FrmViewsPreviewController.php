@@ -85,14 +85,14 @@ class FrmViewsPreviewController {
 		);
 		$tab                = FrmAppHelper::get_param( 'tab', '', 'post', 'sanitize_text_field' );
 		if ( 'listing' === $tab ) {
-			$before_content = $this->maybe_replace_before_after_content( FrmAppHelper::get_param( 'beforeContent', '', 'post' ) );
+			$before_content = FrmAppHelper::get_param( 'beforeContent', '', 'post' );
 			if ( $before_content ) {
-				$additional_details['beforeContent'] = $before_content;
+				$additional_details['beforeContent'] = do_shortcode( $before_content );
 			}
 
-			$after_content = $this->maybe_replace_before_after_content( FrmAppHelper::get_param( 'afterContent', '', 'post' ) );
+			$after_content = FrmAppHelper::get_param( 'afterContent', '', 'post' );
 			if ( $after_content ) {
-				$additional_details['afterContent'] = $after_content;
+				$additional_details['afterContent'] = do_shortcode( $after_content );
 			}
 
 			if ( ! empty( $this->names ) ) {
@@ -102,44 +102,6 @@ class FrmViewsPreviewController {
 		$additional_details = $this->maybe_add_google_graphs_to_additional_details( $additional_details );
 		$response_data[]    = $additional_details;
 		wp_send_json_success( $response_data );
-	}
-
-	/**
-	 * @param string $content
-	 * @return string
-	 */
-	private function maybe_replace_before_after_content( $content ) {
-		if ( ! $content ) {
-			return '';
-		}
-
-		$form = $this->maybe_get_form_from_request( $content );
-		if ( is_object( $form ) ) {
-			$content = FrmViewsDisplaysHelper::maybe_replace_form_name_shortcodes( $content, $form );
-		}
-
-		return do_shortcode( $content );
-	}
-
-	/**
-	 * Check request for Form data for [form_name] shortcode in before and after content.
-	 *
-	 * @param string $content
-	 * @return stdClass|false Form name if the content requires a [form_name] and a valid name is available.
-	 */
-	private function maybe_get_form_from_request( $content ) {
-		if ( false === strpos( $content, '[form_name]' ) ) {
-			return false;
-		}
-		$form_id = FrmAppHelper::get_param( 'form', '', 'post', 'absint' );
-		if ( ! $form_id ) {
-			return false;
-		}
-		$form = FrmForm::getOne( $form_id );
-		if ( ! $form ) {
-			return false;
-		}
-		return $form;
 	}
 
 	/**
@@ -168,16 +130,14 @@ class FrmViewsPreviewController {
 	private function set_entries_for_preview() {
 		$filter    = FrmViewsPreviewHelper::sanitize_filter( FrmAppHelper::get_param( 'filter', '', 'post' ) );
 		$sort      = FrmViewsPreviewHelper::sanitize_sort( FrmAppHelper::get_param( 'sort', '', 'post' ) );
-
 		$limit     = $this->get_limit_value_from_post_request();
 		$page_size = $this->get_page_size_value_from_post_request();
-		$offset    = $this->get_offset_value_from_post_request();
 
 		$preview_limit = FrmViewsAppHelper::get_visual_views_preview_limit();
 		$limit         = min( $limit, $preview_limit );
 		$page_size     = min( $page_size, $preview_limit );
 
-		$entry_ids = FrmViewsPreviewHelper::get_ordered_entry_ids( $this->form->id, $filter, $sort, $limit, $page_size, $offset );
+		$entry_ids = FrmViewsPreviewHelper::get_ordered_entry_ids( $this->form->id, $filter, $sort, $limit, $page_size );
 
 		if ( ! $entry_ids ) {
 			$this->entries = array();
@@ -201,13 +161,6 @@ class FrmViewsPreviewController {
 	 */
 	private function get_page_size_value_from_post_request() {
 		return $this->get_absint_value_from_post_request_with_empty_string_support( 'pageSize' );
-	}
-
-	/**
-	 * @return int|string
-	 */
-	private function get_offset_value_from_post_request() {
-		return $this->get_absint_value_from_post_request_with_empty_string_support( 'offset' );
 	}
 
 	/**
@@ -243,7 +196,7 @@ class FrmViewsPreviewController {
 			$box_id      = 0;
 			$entry_index = 0;
 			foreach ( $this->entries as $entry ) {
-				$response_data[ $entry_index++ ][ $box_id ] = '';
+				$response_data[ $entry_index ++ ][ $box_id ] = '';
 			}
 		} elseif ( ! is_array( $data ) ) {
 			// handle single column format (backwards compatibility)
@@ -251,7 +204,7 @@ class FrmViewsPreviewController {
 			$entry_index = 0;
 			$content     = $data;
 			foreach ( $this->entries as $entry ) {
-				$response_data[ $entry_index++ ][ $box_id ] = $this->process_shortcodes( $entry, $content );
+				$response_data[ $entry_index ++ ][ $box_id ] = $this->process_shortcodes( $entry, $content );
 			}
 		} else {
 			// handle layout format
@@ -273,7 +226,7 @@ class FrmViewsPreviewController {
 				}
 
 				foreach ( $this->entries as $entry ) {
-					$response_data[ $entry_index++ ][ $box_id ] = $this->process_shortcodes( $entry, $content, $include_detail_link );
+					$response_data[ $entry_index ++ ][ $box_id ] = $this->process_shortcodes( $entry, $content, $include_detail_link );
 				}
 			}
 		}
@@ -299,16 +252,14 @@ class FrmViewsPreviewController {
 
 		$shortcodes      = FrmProDisplaysHelper::get_shortcodes( $content, $this->form->id );
 		$args            = array(
-			'count'     => $this->shortcode_count++,
+			'count'     => $this->shortcode_count ++,
 			'entry_ids' => array_keys( $this->entries ),
 		);
 		$preview_content = $this->replace_event_date_shortcode( $entry, $content );
-		add_filter( 'frm_keep_address_value_array', '__return_true' );
 		$preview_content = apply_filters( 'frm_display_entry_content', $preview_content, $entry, $shortcodes, $this->view, 'all', 'odd', $args );
 		FrmProFieldsHelper::replace_non_standard_formidable_shortcodes( array(), $preview_content );
 		$filter = FrmAppHelper::get_param( 'activePreviewFilter', '', 'post', 'sanitize_text_field' );
 		FrmViewsDisplaysController::maybe_filter_content( array( 'filter' => $filter ), $preview_content );
-		$preview_content = FrmViewsDisplaysHelper::maybe_replace_form_name_shortcodes( $preview_content, $this->form );
 
 		return $preview_content;
 	}

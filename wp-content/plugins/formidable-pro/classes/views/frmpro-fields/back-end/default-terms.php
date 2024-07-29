@@ -24,8 +24,8 @@ FrmAppHelper::show_search_box(
 		?>
 		<li class="search-terms">
 			<a href="javascript:void(0)" data-code="<?php echo esc_attr( $tag ); ?>" class="show_dyn_default_value frm_insert_code" data-shortcode="0">
-				<?php echo esc_html( $label ); ?>
 				<span><?php echo esc_html( $tag ); ?></span>
+				<?php echo esc_html( $label ); ?>
 			</a>
 		</li>
 		<?php

@@ -2,12 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'You are not allowed to call this page directly.' );
 }
-
-FrmAppHelper::include_svg();
-$svg_args = array(
-	'width'  => '1em',
-	'height' => '1em',
-);
 ?>
 <div class="frm_form_field frm_section_heading form-field frm_half frm_first">
 	<h3 class="frm_pos_top frm_section_spacing"><?php esc_html_e( 'Repeatable Section', 'formidable-pro' ); ?></h3>
@@ -15,8 +9,8 @@ $svg_args = array(
         <div class="frm_repeat_sec">
 
 			<div class="frm_form_field form-field <?php echo esc_attr( $pos_class ); ?>">
-				<label for="field_aq7w5ep" class="frm_primary_label"><?php esc_html_e( 'Text Area', 'formidable-pro' ); ?></label>
-				<textarea id="field_aq7w5ep"></textarea>
+				<label class="frm_primary_label"><?php esc_html_e( 'Text Area', 'formidable-pro' ); ?></label>
+				<textarea></textarea>
 				<div class="frm_description"><?php esc_html_e( 'Another field with a description', 'formidable-pro' ); ?></div>
 			</div>
 
@@ -24,11 +18,11 @@ $svg_args = array(
 				<label class="frm_primary_label"><?php esc_html_e( 'Radio Buttons', 'formidable-pro' ); ?></label>
 				<div class="frm_opt_container">
 					<div class="frm_radio">
-						<label><input type="radio" name="item_meta[1029]" />
+						<label><input type="radio" />
 						<?php esc_html_e( 'Option 1', 'formidable-pro' ); ?></label>
 					</div>
 					<div class="frm_radio">
-						<label><input type="radio" name="item_meta[1029]" />
+						<label><input type="radio" />
 						<?php esc_html_e( 'Option 2', 'formidable-pro' ); ?></label>
 					</div>
 				</div>
@@ -46,12 +40,12 @@ $svg_args = array(
 				</div>
 			</div>
             <div class="frm_form_field frm_repeat_buttons frm_hidden_container">
-				<a href="javascript:void(0)" class="frm_button frm_add_form_row">
-					<?php FrmAppHelper::icon_by_class( 'frmfont frm_plus1_icon', $svg_args ); ?>
+				<a href="javascript:void(0)" class="frm_button">
+					<i class="frm_icon_font frm_plus_icon"> </i>
 					<?php esc_html_e( 'Add', 'formidable-pro' ); ?>
 				</a>
-				<a href="javascript:void(0)" class="frm_button frm_remove_form_row">
-					<?php FrmAppHelper::icon_by_class( 'frmfont frm_minus1_icon', $svg_args ); ?>
+				<a href="javascript:void(0)" class="frm_button">
+					<i class="frm_icon_font frm_minus_icon"> </i>
 					<?php esc_html_e( 'Remove', 'formidable-pro' ); ?>
 				</a>
             </div>
@@ -64,7 +58,7 @@ $svg_args = array(
     <div class="frm_toggle_container">
 
 		<div class="frm_form_field form-field">
-			<div id="datepicker_sample" class="frm-datepicker" style="margin-bottom:<?php echo esc_attr( $style->post_content['field_margin'] ); ?>;"></div>
+			<div id="datepicker_sample" style="margin-bottom:<?php echo esc_attr( $style->post_content['field_margin'] ); ?>;"></div>
 		</div>
 
     </div>
@@ -79,18 +73,13 @@ $svg_args = array(
 		<?php esc_html_e( 'Toggle', 'formidable-pro' ); ?>
 	</label>
 	<div>
-		<?php
-		FrmProHtmlHelper::toggle(
-			'sample-toggle',
-			'',
-			array(
-				'off_label'   => 'No',
-				'on_label'    => 'Yes',
-				'show_labels' => true,
-				'echo'        => true,
-			)
-		);
-		?>
+		<label class="frm_switch_block">
+			<span class="frm_off_label frm_switch_opt">No</span>
+			<input type="checkbox" value="Yes" data-off="No" data-invmsg="I am trading in a car is invalid" />
+			<span class="frm_switch">
+				<span class="frm_slider"></span>
+			</span><span class="frm_on_label frm_switch_opt">Yes</span>
+		</label>
 	</div>
 </div>
 

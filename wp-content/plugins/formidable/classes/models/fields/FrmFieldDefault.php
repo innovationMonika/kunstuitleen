@@ -15,9 +15,7 @@ class FrmFieldDefault extends FrmFieldType {
 	protected $holds_email_values = true;
 
 	/**
-	 * @param string $type
-	 *
-	 * @return void
+	 * @param $type string
 	 */
 	protected function set_type( $type ) {
 		if ( empty( $type ) ) {
@@ -26,9 +24,6 @@ class FrmFieldDefault extends FrmFieldType {
 		parent::set_type( $type );
 	}
 
-	/**
-	 * @return void
-	 */
 	public function show_on_form_builder( $name = '' ) {
 		$field = FrmFieldsHelper::setup_edit_vars( $this->field );
 
@@ -45,10 +40,6 @@ class FrmFieldDefault extends FrmFieldType {
 		}
 	}
 
-	/**
-	 * @param array $args
-	 * @return string
-	 */
 	public function front_field_input( $args, $shortcode_atts ) {
 		$pass_args = array(
 			'errors'  => $args['errors'],
@@ -60,6 +51,6 @@ class FrmFieldDefault extends FrmFieldType {
 		$input_html = ob_get_contents();
 		ob_end_clean();
 
-		return is_string( $input_html ) ? $input_html : '';
+		return $input_html;
 	}
 }

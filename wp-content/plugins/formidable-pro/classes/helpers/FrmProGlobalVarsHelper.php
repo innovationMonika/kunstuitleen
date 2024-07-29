@@ -117,9 +117,9 @@ class FrmProGlobalVarsHelper {
 	public function set_included_fields( $atts ) {
 		global $frm_vars;
 
-		if ( isset( $atts['fields'] ) && ! is_array( $atts['fields'] ) ) {
+		if ( ! empty( $atts['fields'] ) && ! is_array( $atts['fields'] ) ) {
 			$frm_vars['show_fields'] = array_map(
-				function ( $field_id_or_key ) {
+				function( $field_id_or_key ) {
 					return is_numeric( $field_id_or_key ) ? (int) $field_id_or_key : $field_id_or_key;
 				},
 				explode( ',', $atts['fields'] )

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ class Ai1wm_Database_Mysql extends Ai1wm_Database {
 	}
 
 	/**
-	 * Escape string input for MySQL query
+	 * Escape string input for mysql query
 	 *
 	 * @param  string $input String to escape
 	 * @return string
@@ -90,51 +90,51 @@ class Ai1wm_Database_Mysql extends Ai1wm_Database {
 	}
 
 	/**
-	 * Return server info
+	 * Return server version
 	 *
 	 * @return string
 	 */
-	public function server_info() {
+	public function version() {
 		return mysql_get_server_info( $this->wpdb->dbh );
 	}
 
 	/**
 	 * Return the result from MySQL query as associative array
 	 *
-	 * @param  mixed $result MySQL resource
+	 * @param  resource $result MySQL resource
 	 * @return array
 	 */
-	public function fetch_assoc( &$result ) {
+	public function fetch_assoc( $result ) {
 		return mysql_fetch_assoc( $result );
 	}
 
 	/**
 	 * Return the result from MySQL query as row
 	 *
-	 * @param  mixed $result MySQL resource
+	 * @param  resource $result MySQL resource
 	 * @return array
 	 */
-	public function fetch_row( &$result ) {
+	public function fetch_row( $result ) {
 		return mysql_fetch_row( $result );
 	}
 
 	/**
 	 * Return the number for rows from MySQL results
 	 *
-	 * @param  mixed $result MySQL resource
+	 * @param  resource $result MySQL resource
 	 * @return integer
 	 */
-	public function num_rows( &$result ) {
+	public function num_rows( $result ) {
 		return mysql_num_rows( $result );
 	}
 
 	/**
 	 * Free MySQL result memory
 	 *
-	 * @param  mixed $result MySQL resource
+	 * @param  resource $result MySQL resource
 	 * @return boolean
 	 */
-	public function free_result( &$result ) {
+	public function free_result( $result ) {
 		return mysql_free_result( $result );
 	}
 }

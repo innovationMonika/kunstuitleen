@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class FrmViewsDb {
 
 	public static function uninstall() {
-		if ( ! current_user_can( 'administrator' ) ) { // phpcs:ignore WordPress.WP.Capabilities.RoleFound
+		if ( ! current_user_can( 'administrator' ) ) {
 			$frm_settings = FrmAppHelper::get_settings();
 			wp_die( esc_html( $frm_settings->admin_permission ) );
 		}

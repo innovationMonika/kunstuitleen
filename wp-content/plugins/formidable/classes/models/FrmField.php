@@ -5,247 +5,202 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmField {
 
-	public static $use_cache      = true;
+	public static $use_cache = true;
 	public static $transient_size = 200;
 
 	public static function field_selection() {
 		$fields = array(
-			'text'                      => array(
+			'text'     => array(
 				'name' => __( 'Text', 'formidable' ),
 				'icon' => 'frm_icon_font frm_text2_icon',
 			),
-			'textarea'                  => array(
+			'textarea' => array(
 				'name' => __( 'Paragraph', 'formidable' ),
 				'icon' => 'frm_icon_font frm_paragraph_icon',
 			),
-			'checkbox'                  => array(
+			'checkbox' => array(
 				'name' => __( 'Checkboxes', 'formidable' ),
 				'icon' => 'frm_icon_font frm_check_square_icon',
 			),
-			'radio'                     => array(
+			'radio'    => array(
 				'name' => __( 'Radio Buttons', 'formidable' ),
 				'icon' => 'frm_icon_font frm_radio_checked_icon',
 			),
-			'select'                    => array(
+			'select'   => array(
 				'name' => __( 'Dropdown', 'formidable' ),
 				'icon' => 'frm_icon_font frm_caret_square_down_icon',
 			),
-			'email'                     => array(
+			'email'    => array(
 				'name' => __( 'Email', 'formidable' ),
 				'icon' => 'frm_icon_font frm_email_icon',
 			),
-			'url'                       => array(
+			'url'      => array(
 				'name' => __( 'Website/URL', 'formidable' ),
 				'icon' => 'frm_icon_font frm_link_icon',
 			),
-			'number'                    => array(
+			'number'   => array(
 				'name' => __( 'Number', 'formidable' ),
 				'icon' => 'frm_icon_font frm_hashtag_icon',
 			),
-			'name'                      => array(
+			'name'     => array(
 				'name' => __( 'Name', 'formidable' ),
 				'icon' => 'frm_icon_font frm_user_name_icon',
 			),
-			'phone'                     => array(
+			'phone'    => array(
 				'name' => __( 'Phone', 'formidable' ),
 				'icon' => 'frm_icon_font frm_phone_icon',
 			),
-			'html'                      => array(
+			'html'     => array(
 				'name' => __( 'HTML', 'formidable' ),
 				'icon' => 'frm_icon_font frm_code_icon',
 			),
-			'hidden'                    => array(
+			'hidden'   => array(
 				'name' => __( 'Hidden', 'formidable' ),
 				'icon' => 'frm_icon_font frm_eye_slash_icon',
 			),
-			'user_id'                   => array(
+			'user_id'  => array(
 				'name' => __( 'User ID', 'formidable' ),
 				'icon' => 'frm_icon_font frm_user_icon',
 			),
-			'captcha'                   => array(
-				'name' => self::get_captcha_field_name(),
+			'captcha'  => array(
+				'name' => __( 'reCAPTCHA', 'formidable' ),
 				'icon' => 'frm_icon_font frm_shield_check_icon',
-			),
-			'credit_card'               => array(
-				'name' => __( 'Payment', 'formidable' ),
-				'icon' => 'frm_icon_font frm_credit_card_icon',
-			),
-			FrmSubmitHelper::FIELD_TYPE => array(
-				'name' => __( 'Submit', 'formidable' ),
-				'hide' => true,
 			),
 		);
 
-		/**
-		 * @param array $fields
-		 */
 		return apply_filters( 'frm_available_fields', $fields );
-	}
-
-	/**
-	 * Get the name of the Captcha field based on the global Captcha setting.
-	 *
-	 * @return string
-	 */
-	private static function get_captcha_field_name() {
-		return 'Captcha';
 	}
 
 	public static function pro_field_selection() {
 		$images_url = FrmAppHelper::plugin_url() . '/images/';
 		$fields     = array(
-			'file'            => array(
-				'name'    => __( 'File Upload', 'formidable' ),
-				'icon'    => 'frm_icon_font frm_upload_icon',
+			'file'           => array(
+				'name' => __( 'File Upload', 'formidable' ),
+				'icon' => 'frm_icon_font frm_upload_icon',
 				'message' => 'Add file uploads to save time and cut down on back-and-forth. Upgrade to Pro to get Upload fields and more.',
 			),
-			'ranking'         => array(),
-			'rte'             => array(
+			'rte'            => array(
 				'name' => __( 'Rich Text', 'formidable' ),
 				'icon' => 'frm_icon_font frm_align_right_icon',
 			),
-			'date'            => array(
+			'date'           => array(
 				'name' => __( 'Date', 'formidable' ),
 				'icon' => 'frm_icon_font frm_calendar_icon',
 			),
-			'time'            => array(
+			'time'           => array(
 				'name' => __( 'Time', 'formidable' ),
 				'icon' => 'frm_icon_font frm_clock_icon',
 			),
-			'scale'           => array(
-				'name'    => __( 'Scale', 'formidable' ),
-				'icon'    => 'frm_icon_font frm_linear_scale_icon',
-				'message' => 'Add a set of radio buttons with whatever range you choose. <img src="' . esc_url( $images_url ) . 'scale_field.png" alt="Scale Field" />',
+			'scale'          => array(
+				'name' => __( 'Scale', 'formidable' ),
+				'icon' => 'frm_icon_font frm_linear_scale_icon',
+				'message' => 'Add a set of radio buttons with whatever range you choose. <img src="' . esc_attr( $images_url ) . 'scale_field.png" alt="Scale Field" />',
 			),
-			'star'            => array(
+			'star'           => array(
 				'name' => __( 'Star Rating', 'formidable' ),
 				'icon' => 'frm_icon_font frm_star_icon',
 			),
-			'range'           => array(
+			'range'          => array(
 				'name' => __( 'Slider', 'formidable' ),
 				'icon' => 'frm_icon_font frm_code_commit_icon',
 			),
-			'toggle'          => array(
+			'toggle'         => array(
 				'name' => __( 'Toggle', 'formidable' ),
 				'icon' => 'frm_icon_font frm_toggle_on_icon',
 			),
-			'data'            => array(
-				'name'    => __( 'Dynamic', 'formidable' ),
-				'icon'    => 'frm_icon_font frm_sitemap_icon',
+			'data'           => array(
+				'name' => __( 'Dynamic', 'formidable' ),
+				'icon' => 'frm_icon_font frm_sitemap_icon',
 				'message' => 'Create relationships between multiple forms. You can link a member to a team, a rating to a product, a comment to a submission, and much more.',
 			),
-			'lookup'          => array(
-				'name'    => __( 'Lookup', 'formidable' ),
-				'icon'    => 'frm_icon_font frm_search_icon',
-				'message' => 'Filter the options in the next field and automatically add values to other fields. Upgrade to Pro to get Lookup fields and more. <img src="' . esc_url( $images_url ) . 'look-up_year-make-model.gif" alt="cascading lookup fields" />',
+			'lookup'         => array(
+				'name' => __( 'Lookup', 'formidable' ),
+				'icon' => 'frm_icon_font frm_search_icon',
+				'message' => 'Filter the options in the next field and automatically add values to other fields. Upgrade to Pro to get Lookup fields and more. <img src="' . esc_attr( $images_url ) . 'look-up_year-make-model.gif" alt="cascading lookup fields" />',
 			),
-			'divider|repeat'  => array(
-				'name'    => __( 'Repeater', 'formidable' ),
-				'icon'    => 'frm_icon_font frm_repeater_icon',
-				'message' => 'Allow your visitors to add new sets of fields while filling out forms. Increase conversions while saving building time and server resources. <img src="' . esc_url( $images_url ) . 'repeatable-section_frontend.gif" alt="Dynamically Add Form Fields with repeatable sections" />',
+			'divider|repeat' => array(
+				'name' => __( 'Repeater', 'formidable' ),
+				'icon' => 'frm_icon_font frm_repeater_icon',
+				'message' => 'Allow your visitors to add new sets of fields while filling out forms. Increase conversions while saving building time and server resources. <img src="' . esc_attr( $images_url ) . 'repeatable-section_frontend.gif" alt="Dynamically Add Form Fields with repeatable sections" />',
 			),
-			'end_divider'     => array(
+			'end_divider'    => array(
 				'name'        => __( 'Section Buttons', 'formidable' ),
 				'switch_from' => 'divider',
 			),
-			'divider'         => array(
+			'divider'        => array(
 				'name' => __( 'Section', 'formidable' ),
 				'icon' => 'frm_icon_font frm_header_icon',
 			),
-			'break'           => array(
-				'name'    => __( 'Page Break', 'formidable' ),
-				'icon'    => 'frm_icon_font frm_page_break_icon',
+			'break'          => array(
+				'name' => __( 'Page Break', 'formidable' ),
+				'icon' => 'frm_icon_font frm_page_break_icon',
 				'message' => 'Get multi-paged forms with progress bars. Did you know you can upgrade to PRO to unlock multi-step forms with more awesome features?',
 			),
-			'form'            => array(
+			'form'           => array(
 				'name' => __( 'Embed Form', 'formidable' ),
 				'icon' => 'frm_icon_font frm_file_text_icon',
 			),
-			'likert'          => array(
+			'likert'         => array(
 				'name'  => __( 'Likert Scale', 'formidable' ),
 				'icon'  => 'frm_icon_font frm_likert_scale frm_show_upgrade',
 				'addon' => 'surveys',
 			),
-			'nps'             => array(
+			'nps'            => array(
 				'name'  => __( 'NPS', 'formidable' ),
 				'icon'  => 'frm_icon_font frm_nps frm_show_upgrade',
 				'addon' => 'surveys',
 			),
-			'password'        => array(
+			'password'       => array(
 				'name' => __( 'Password', 'formidable' ),
 				'icon' => 'frm_icon_font frm_lock_open_icon',
 			),
-			'tag'             => array(
+			'tag'            => array(
 				'name' => __( 'Tags', 'formidable' ),
 				'icon' => 'frm_icon_font frm_price_tags_icon',
 			),
-			// This is no longer a Pro field, but without this here, Pro triggers "undefined index" notices.
-			// Right now it leaves a gap. Maybe we can skip anything without a name or something.
-			'credit_card'     => array(
-				'name' => '',
-				'icon' => '',
+			'credit_card'    => array(
+				'name'  => __( 'Credit Card', 'formidable' ),
+				'icon'  => 'frm_icon_font frm_credit_card_icon frm_show_upgrade',
+				'addon' => 'stripe',
 			),
-			'address'         => array(
+			'address'        => array(
 				'name' => __( 'Address', 'formidable' ),
 				'icon' => 'frm_icon_font frm_location_icon',
 			),
-			'summary'         => array(
-				'name'    => __( 'Summary', 'formidable' ),
-				'icon'    => 'frm_icon_font frm_file_text_icon',
+			'summary' => array(
+				'name'  => __( 'Summary', 'formidable' ),
+				'icon'  => 'frm_icon_font frm_file_text_icon',
 				'message' => 'Allow visitors to review their responses before a form is submitted. Upgrade to Pro to get Summary fields and more.',
 			),
-			'signature'       => array(
+			'signature' => array(
 				'name'  => __( 'Signature', 'formidable' ),
 				'icon'  => 'frm_icon_font frm_signature_icon frm_show_upgrade',
 				'addon' => 'signature',
-			),
-			'ai'              => array(
-				'name'    => __( 'AI', 'formidable' ),
-				'icon'    => 'frm_icon_font frm_eye_icon frm_show_upgrade',
-				'addon'   => 'ai',
-				'message' => 'Streamline workflows and reclaim valuable time with the power of AI. You can effortlessly respond to your visitors in real-time with ChatGPT as your automated assistant. Upgrade to Pro and unlock AI-powered fields.',
 			),
 			'ssa-appointment' => array(
 				'name'    => __( 'Appointment', 'formidable' ),
 				'icon'    => 'frm_icon_font frm_calendar_icon frm_show_upgrade',
 				'require' => 'Simply Schedule Appointments',
 				'message' => 'Appointment fields are an integration with <a href="https://simplyscheduleappointments.com/meet/formidable/">Simply Schedule Appointments</a>. Get started now to schedule appointments directly from your forms.
-					<img src="' . esc_url( $images_url ) . 'appointments.png" alt="Scheduling" />',
+					<img src="' . esc_attr( $images_url ) . 'appointments.png" alt="Scheduling" />',
 				'link'    => 'https://simplyscheduleappointments.com/meet/formidable/',
 			),
-			'product'         => array(
+			'product' => array(
 				'name'    => __( 'Product', 'formidable' ),
 				'icon'    => 'frm_icon_font frm_product_icon',
 				'section' => 'pricing',
 			),
-			'quantity'        => array(
+			'quantity' => array(
 				'name'    => __( 'Quantity', 'formidable' ),
 				'icon'    => 'frm_icon_font frm_quantity_icon',
 				'section' => 'pricing',
 			),
-			'total'           => array(
+			'total' => array(
 				'name'    => __( 'Total', 'formidable' ),
 				'icon'    => 'frm_icon_font frm_total_icon',
 				'section' => 'pricing',
 			),
 		);
-
-		if ( self::include_ranking_fields() ) {
-			$fields['ranking'] = array(
-				'name'         => __( 'Ranking', 'formidable' ),
-				'icon'         => 'frm_icon_font frm_chart_bar_icon frm_show_upgrade',
-				'message'      => 'Now you can effortlessly gather insights, preferences, and opinions by allowing users to rank options.',
-				'upsell_image' => $images_url . 'ranking-field.svg',
-				'addon'        => 'surveys',
-				'is_new'       => self::field_is_new( 'ranking' ),
-			);
-		} else {
-			unset( $fields['ranking'] );
-		}
-
-		if ( ! FrmAppHelper::show_new_feature( 'ai' ) ) {
-			unset( $fields['ai'] );
-		}
 
 		// Since the signature field may be in a different section, don't show it twice.
 		$lite_fields = self::field_selection();
@@ -257,113 +212,13 @@ class FrmField {
 	}
 
 	/**
-	 * Check if we should show ranking fields in the builder.
-	 * This is based on the active version coming from our API data.
-	 * If Surveys v1.1 is not released yet, we don't want to display ranking fields yet.
-	 *
-	 * @since 6.8.3
-	 *
-	 * @return bool
-	 */
-	private static function include_ranking_fields() {
-		if ( class_exists( 'FrmSurveys\models\fields\Ranking' ) ) {
-			// Always return true if Ranking fields exist.
-			return true;
-		}
-
-		$plugin           = 'formidable-surveys/formidable-surveys.php';
-		$expected_version = '1.1';
-
-		return self::installed_plugin_meets_version( $plugin, $expected_version ) || self::api_meets_version( $plugin, $expected_version );
-	}
-
-	/**
-	 * @since 6.8.3
-	 *
-	 * @param string $plugin
-	 * @param string $expected_version
-	 * @return bool
-	 */
-	private static function installed_plugin_meets_version( $plugin, $expected_version ) {
-		$installed_version = self::get_installed_version( $plugin );
-		return $installed_version && version_compare( $installed_version, $expected_version, '>=' );
-	}
-
-	/**
-	 * @since 6.8.3
-	 *
-	 * @param string $plugin
-	 * @return false|string String version. False if the plugin is not installed.
-	 */
-	private static function get_installed_version( $plugin ) {
-		if ( ! function_exists( 'get_plugins' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-		$plugins = get_plugins();
-		if ( isset( $plugins[ $plugin ] ) && ! empty( $plugins[ $plugin ]['Version'] ) ) {
-			return $plugins[ $plugin ]['Version'];
-		}
-		return false;
-	}
-
-	/**
-	 * @since 6.8.3
-	 *
-	 * @param string $plugin
-	 * @param string $expected_version
-	 * @return bool
-	 */
-	private static function api_meets_version( $plugin, $expected_version ) {
-		$api     = new FrmFormApi();
-		$addons  = $api->get_api_info();
-		$matches = wp_list_filter( $addons, array( 'plugin' => $plugin ) );
-		if ( ! $matches ) {
-			return false;
-		}
-
-		$match = reset( $matches );
-		if ( empty( $match['new_version'] ) ) {
-			return false;
-		}
-
-		$api_version = $match['new_version'];
-		return version_compare( $api_version, $expected_version, '>=' );
-	}
-
-	/**
-	 * Consider a field new for 90 days after the release date.
-	 *
-	 * @since 6.8.3
-	 *
-	 * @param string $type
-	 * @return bool
-	 */
-	private static function field_is_new( $type ) {
-		if ( 'ranking' === $type ) {
-			$ranking_release_date       = '2024-03-12';
-			$three_months_after_release = gmdate( 'Y-m-d', strtotime( $ranking_release_date . ' + 90 days' ) );
-			return gmdate( 'Y-m-d' ) < $three_months_after_release;
-		}
-		return false;
-	}
-
-	/**
 	 * @since 4.0
-	 *
-	 * @return array
 	 */
 	public static function all_field_selection() {
 		$pro_field_selection = self::pro_field_selection();
 		return array_merge( $pro_field_selection, self::field_selection() );
 	}
 
-	/**
-	 * Create a field.
-	 *
-	 * @param array $values
-	 * @param bool  $return
-	 * @return false|int
-	 */
 	public static function create( $values, $return = true ) {
 		global $wpdb, $frm_duplicate_ids;
 
@@ -403,23 +258,25 @@ class FrmField {
 		}
 
 		$query_results = $wpdb->insert( $wpdb->prefix . 'frm_fields', $new_values );
-
-		if ( ! $query_results ) {
-			return false;
+		$new_id        = 0;
+		if ( $query_results ) {
+			self::delete_form_transient( $new_values['form_id'] );
+			$new_id = $wpdb->insert_id;
 		}
-
-		self::delete_form_transient( $new_values['form_id'] );
-		$new_id = $wpdb->insert_id;
 
 		if ( ! $return ) {
 			return false;
 		}
 
-		if ( isset( $values['id'] ) ) {
-			$frm_duplicate_ids[ $values['id'] ] = $new_id;
-		}
+		if ( $query_results ) {
+			if ( isset( $values['id'] ) ) {
+				$frm_duplicate_ids[ $values['id'] ] = $new_id;
+			}
 
-		return $new_id;
+			return $new_id;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -525,14 +382,9 @@ class FrmField {
 			$frm_duplicate_ids[ $field->id ]        = $new_id;
 			$frm_duplicate_ids[ $field->field_key ] = $new_id;
 			unset( $field );
-		}//end foreach
+		}
 	}
 
-	/**
-	 * @param int|string $id
-	 * @param array      $values
-	 * @return false|int
-	 */
 	public static function update( $id, $values ) {
 		global $wpdb;
 
@@ -550,19 +402,7 @@ class FrmField {
 		self::preserve_format_option_backslashes( $values );
 
 		if ( isset( $values['type'] ) ) {
-			if ( 'dropdown' === $values['type'] ) {
-				// To avoid conflicts with security plugins the value "dropdown" is sent for select fields.
-				// This is because "select" gets matched for SQL injection attempts.
-				$values['type'] = 'select';
-			}
-
-			/**
-			 * @since 6.9 The Field ID param was added.
-			 *
-			 * @param array $values
-			 * @param int   $id Field ID.
-			 */
-			$values = apply_filters( 'frm_clean_' . $values['type'] . '_field_options_before_update', $values, $id );
+			$values = apply_filters( 'frm_clean_' . $values['type'] . '_field_options_before_update', $values );
 
 			if ( $values['type'] === 'hidden' && isset( $values['field_options'] ) && isset( $values['field_options']['clear_on_focus'] ) ) {
 				// don't keep the old placeholder setting for hidden fields
@@ -612,7 +452,7 @@ class FrmField {
 	 *
 	 * @since 2.0.8
 	 *
-	 * @param array $values Pass by reference.
+	 * @param $values array - pass by reference
 	 */
 	private static function preserve_format_option_backslashes( &$values ) {
 		if ( isset( $values['field_options']['format'] ) ) {
@@ -658,9 +498,6 @@ class FrmField {
 
 	/**
 	 * If $field is numeric, get the field object
-	 *
-	 * @param int|object|string $field
-	 * @return void
 	 */
 	public static function maybe_get_field( &$field ) {
 		if ( ! is_object( $field ) ) {
@@ -669,8 +506,8 @@ class FrmField {
 	}
 
 	/**
-	 * @param int|string $id The field id or key.
-	 * @param bool       $filter When true, run the frm_field filter.
+	 * @param string|int $id The field id or key.
+	 * @param bool $filter When true, run the frm_field filter.
 	 */
 	public static function getOne( $id, $filter = false ) {
 		if ( empty( $id ) ) {
@@ -718,8 +555,8 @@ class FrmField {
 	/**
 	 * Get the field type by key or id
 	 *
-	 * @param int|string $id  The field id or key.
-	 * @param mixed      $col The name of the column in the fields database table.
+	 * @param int|string The field id or key
+	 * @param mixed $col The name of the column in the fields database table
 	 */
 	public static function get_type( $id, $col = 'type' ) {
 		$field = FrmDb::check_cache( $id, 'frm_field' );
@@ -737,12 +574,6 @@ class FrmField {
 		return $type;
 	}
 
-	/**
-	 * @param int|string $form_id
-	 * @param string     $type
-	 * @param int|string $limit
-	 * @param string     $inc_sub
-	 */
 	public static function get_all_types_in_form( $form_id, $type, $limit = '', $inc_sub = 'exclude' ) {
 		if ( ! $form_id ) {
 			return array();
@@ -764,7 +595,7 @@ class FrmField {
 				}
 
 				$fields[ $result->id ] = $result;
-				++$count;
+				$count ++;
 				if ( $limit == 1 ) {
 					$fields = $result;
 					break;
@@ -778,7 +609,7 @@ class FrmField {
 			}
 
 			return wp_unslash( $fields );
-		}//end if
+		}
 
 		self::$use_cache = false;
 
@@ -794,13 +625,6 @@ class FrmField {
 		return $results;
 	}
 
-	/**
-	 * @param int|string $form_id
-	 * @param int|string $limit
-	 * @param string     $inc_embed
-	 * @param string     $inc_repeat
-	 * @return array
-	 */
 	public static function get_all_for_form( $form_id, $limit = '', $inc_embed = 'exclude', $inc_repeat = 'include' ) {
 		if ( ! (int) $form_id ) {
 			return array();
@@ -815,7 +639,7 @@ class FrmField {
 			$fields = array();
 			$count  = 0;
 			foreach ( $results as $result ) {
-				++$count;
+				$count ++;
 				$fields[ $result->id ] = $result;
 				if ( ! empty( $limit ) && $count >= $limit ) {
 					break;
@@ -846,10 +670,10 @@ class FrmField {
 	 * If repeating fields should be included, adjust $where accordingly
 	 *
 	 * @param string $inc_repeat
-	 * @param array  $where      Pass by reference.
+	 * @param array $where - pass by reference
 	 */
 	private static function maybe_include_repeating_fields( $inc_repeat, &$where ) {
-		if ( $inc_repeat === 'include' ) {
+		if ( $inc_repeat == 'include' ) {
 			$form_id = $where['fi.form_id'];
 			$where[] = array(
 				'or'                => 1,
@@ -866,7 +690,7 @@ class FrmField {
 			return;
 		}
 
-		$form_fields         = $results;
+		$form_fields = $results;
 		$should_get_subforms = ( $type !== 'all' && $type !== 'form' && ! empty( $form_id ) );
 		if ( $should_get_subforms ) {
 			$form_fields = self::get_all_types_in_form( $form_id, 'form' );
@@ -878,14 +702,14 @@ class FrmField {
 				continue;
 			}
 
-			if ( $type === 'all' ) {
+			if ( $type == 'all' ) {
 				$sub_fields = self::get_all_for_form( $field->field_options['form_select'] );
 			} else {
 				$sub_fields = self::get_all_types_in_form( $field->field_options['form_select'], $type );
 			}
 
 			if ( ! empty( $sub_fields ) ) {
-				$index         = $k + $index_offset;
+				$index        = $k + $index_offset;
 				$index_offset += count( $sub_fields );
 				array_splice( $results, $index, 0, $sub_fields );
 			}
@@ -927,7 +751,7 @@ class FrmField {
 		$limit = FrmDb::esc_limit( $limit );
 
 		$query      = "SELECT fi.*, fr.name as form_name  FROM {$table_name} fi LEFT OUTER JOIN {$form_table_name} fr ON fi.form_id=fr.id";
-		$query_type = $limit === ' LIMIT 1' || $limit == 1 ? 'row' : 'results';
+		$query_type = ( $limit == ' LIMIT 1' || $limit == 1 ) ? 'row' : 'results';
 
 		if ( is_array( $where ) ) {
 			$args    = array(
@@ -939,7 +763,7 @@ class FrmField {
 			// if the query is not an array, then it has already been prepared
 			$query .= FrmDb::prepend_and_or_where( ' WHERE ', $where ) . $order_by . $limit;
 
-			$function_name = $query_type === 'row' ? 'get_row' : 'get_results';
+			$function_name = ( $query_type == 'row' ) ? 'get_row' : 'get_results';
 			$results       = $wpdb->$function_name( $query );
 		}
 		unset( $where );
@@ -993,7 +817,7 @@ class FrmField {
 	}
 
 	/**
-	 * If a form has too many fields, they won't all save into a single transient.
+	 * If a form has too many fields, thay won't all save into a single transient.
 	 * We'll break them into groups of 200
 	 *
 	 * @since 2.0.1
@@ -1019,7 +843,7 @@ class FrmField {
 
 			if ( count( $next_fields ) >= self::$transient_size ) {
 				// if this transient is full, check for another
-				++$next;
+				$next ++;
 				self::get_next_transient( $fields, $base_name, $next );
 			}
 		}
@@ -1047,23 +871,16 @@ class FrmField {
 				return;
 			}
 
-			++$next;
+			$next ++;
 		}
 	}
 
-	/**
-	 * @param string $type
-	 * @return bool
-	 */
 	public static function is_no_save_field( $type ) {
-		return in_array( $type, self::no_save_fields(), true );
+		return in_array( $type, self::no_save_fields() );
 	}
 
-	/**
-	 * @return string[]
-	 */
 	public static function no_save_fields() {
-		return array( 'divider', 'end_divider', 'captcha', 'break', 'html', 'form', 'summary', FrmSubmitHelper::FIELD_TYPE );
+		return array( 'divider', 'end_divider', 'captcha', 'break', 'html', 'form', 'summary' );
 	}
 
 	/**
@@ -1073,7 +890,7 @@ class FrmField {
 	 *
 	 * @param array|object $field
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	public static function is_field_with_multiple_values( $field ) {
 		if ( ! $field ) {
@@ -1084,7 +901,7 @@ class FrmField {
 
 		$is_multi_value_field = (
 			self::is_checkbox( $field ) ||
-			$field_type === 'address' ||
+			$field_type == 'address' ||
 			self::is_multiple_select( $field )
 		);
 
@@ -1093,7 +910,6 @@ class FrmField {
 
 	/**
 	 * @since 3.0
-	 * @param array|object $field
 	 * @return string
 	 */
 	public static function get_field_type( $field ) {
@@ -1109,8 +925,7 @@ class FrmField {
 		$original_type = self::get_option( $field, 'original_type' );
 
 		if ( ! empty( $original_type ) && $original_type != $field_type ) {
-			// Check the original type for arrays.
-			$field_type = $original_type;
+			$field_type = $original_type; // check the original type for arrays
 		}
 
 		return $field_type;
@@ -1120,7 +935,7 @@ class FrmField {
 	 * Check if this is a multiselect dropdown field
 	 *
 	 * @since 2.0.9
-	 * @return bool
+	 * @return boolean
 	 */
 	public static function is_multiple_select( $field ) {
 		$field_type  = self::get_field_type( $field );
@@ -1134,112 +949,67 @@ class FrmField {
 	 * but disabled with the shortcode options
 	 *
 	 * @since 2.0.9
-	 *
-	 * @param array|object $field
-	 * @return bool
 	 */
 	public static function is_read_only( $field ) {
 		global $frm_vars;
-		return self::is_option_true( $field, 'read_only' ) && ( ! isset( $frm_vars['readonly'] ) || $frm_vars['readonly'] !== 'disabled' );
+
+		return ( self::is_option_true( $field, 'read_only' ) && ( ! isset( $frm_vars['readonly'] ) || $frm_vars['readonly'] != 'disabled' ) );
 	}
 
 	/**
 	 * @since 2.0.9
-	 *
-	 * @param array $field
-	 * @return bool
 	 */
 	public static function is_required( $field ) {
-		$required = $field['required'] != '0';
-
-		/**
-		 * @param bool  $required
-		 * @param array $field
-		 */
-		$required = (bool) apply_filters( 'frm_is_field_required', $required, $field );
+		$required = ( $field['required'] != '0' );
+		$required = apply_filters( 'frm_is_field_required', $required, $field );
 
 		return $required;
 	}
 
 	/**
 	 * @since 2.0.9
-	 *
-	 * @param array|object $field
-	 * @param string       $option
-	 * @return bool
 	 */
 	public static function is_option_true( $field, $option ) {
 		if ( is_array( $field ) ) {
 			return self::is_option_true_in_array( $field, $option );
+		} else {
+			return self::is_option_true_in_object( $field, $option );
 		}
-		return self::is_option_true_in_object( $field, $option );
 	}
 
 	/**
 	 * @since 2.0.9
-	 *
-	 * @param array|object $field
-	 * @param string       $option
-	 * @return bool
 	 */
 	public static function is_option_empty( $field, $option ) {
 		if ( is_array( $field ) ) {
 			return self::is_option_empty_in_array( $field, $option );
+		} else {
+			return self::is_option_empty_in_object( $field, $option );
 		}
-		return self::is_option_empty_in_object( $field, $option );
 	}
 
-	/**
-	 * @param array  $field
-	 * @param string $option
-	 * @return bool
-	 */
 	public static function is_option_true_in_array( $field, $option ) {
-		return ! empty( $field[ $option ] );
+		return isset( $field[ $option ] ) && $field[ $option ];
 	}
 
-	/**
-	 * @param object $field
-	 * @param string $option
-	 * @return bool
-	 */
 	public static function is_option_true_in_object( $field, $option ) {
 		return isset( $field->field_options[ $option ] ) && $field->field_options[ $option ];
 	}
 
-	/**
-	 * @param array  $field
-	 * @param string $option
-	 * @return bool
-	 */
 	public static function is_option_empty_in_array( $field, $option ) {
-		return empty( $field[ $option ] );
+		return ! isset( $field[ $option ] ) || empty( $field[ $option ] );
 	}
 
-	/**
-	 * @param object $field
-	 * @param string $option
-	 * @return bool
-	 */
 	public static function is_option_empty_in_object( $field, $option ) {
-		return empty( $field->field_options[ $option ] );
+		return ! isset( $field->field_options[ $option ] ) || empty( $field->field_options[ $option ] );
 	}
 
-	/**
-	 * @param stdClass $field
-	 * @param string   $option
-	 * @return bool
-	 */
 	public static function is_option_value_in_object( $field, $option ) {
 		return isset( $field->field_options[ $option ] ) && $field->field_options[ $option ] != '';
 	}
 
 	/**
 	 * @since 2.0.18
-	 *
-	 * @param array|object $field
-	 * @param string       $option
-	 * @return mixed
 	 */
 	public static function get_option( $field, $option ) {
 		if ( is_array( $field ) ) {
@@ -1251,12 +1021,8 @@ class FrmField {
 		return $option;
 	}
 
-	/**
-	 * @param array  $field
-	 * @param string $option
-	 * @return mixed
-	 */
 	public static function get_option_in_array( $field, $option ) {
+
 		if ( isset( $field[ $option ] ) ) {
 			$this_option = $field[ $option ];
 		} elseif ( isset( $field['field_options'] ) && is_array( $field['field_options'] ) && isset( $field['field_options'][ $option ] ) ) {
@@ -1268,29 +1034,21 @@ class FrmField {
 		return $this_option;
 	}
 
-	/**
-	 * @param object $field
-	 * @param string $option
-	 * @return mixed
-	 */
 	public static function get_option_in_object( $field, $option ) {
 		return isset( $field->field_options[ $option ] ) ? $field->field_options[ $option ] : '';
 	}
 
 	/**
 	 * @since 2.0.09
-	 *
-	 * @param array|object $field
-	 * @return bool
 	 */
 	public static function is_repeating_field( $field ) {
 		if ( is_array( $field ) ) {
-			$is_repeating_field = ( 'divider' === $field['type'] );
+			$is_repeating_field = ( 'divider' == $field['type'] );
 		} else {
-			$is_repeating_field = ( 'divider' === $field->type );
+			$is_repeating_field = ( 'divider' == $field->type );
 		}
 
-		return $is_repeating_field && self::is_option_true( $field, 'repeat' );
+		return ( $is_repeating_field && self::is_option_true( $field, 'repeat' ) );
 	}
 
 	/**
@@ -1307,7 +1065,7 @@ class FrmField {
 	/**
 	 * @param string $id
 	 *
-	 * @return string|null
+	 * @return string
 	 */
 	public static function get_key_by_id( $id ) {
 		return FrmDb::get_var( 'frm_fields', array( 'id' => $id ), 'field_key' );
@@ -1316,7 +1074,7 @@ class FrmField {
 	public static function is_image( $field ) {
 		$type = self::get_field_type( $field );
 
-		return ( $type === 'url' && self::get_option( $field, 'show_image' ) );
+		return ( $type == 'url' && self::get_option( $field, 'show_image' ) );
 	}
 
 	/**
@@ -1326,7 +1084,7 @@ class FrmField {
 	 *
 	 * @param array|object $field
 	 *
-	 * @return bool true if field type is radio or Dynamic radio
+	 * @return boolean true if field type is radio or Dynamic radio
 	 */
 	public static function is_radio( $field ) {
 		return self::is_field_type( $field, 'radio' );
@@ -1339,7 +1097,7 @@ class FrmField {
 	 *
 	 * @param array|object $field
 	 *
-	 * @return bool true if field type is checkbox or Dynamic checkbox
+	 * @return boolean true if field type is checkbox or Dynamic checkbox
 	 */
 	public static function is_checkbox( $field ) {
 		return self::is_field_type( $field, 'checkbox' );
@@ -1351,9 +1109,9 @@ class FrmField {
 	 * @since 3.0
 	 *
 	 * @param array|object $field
-	 * @param string       $is_type Options include radio, checkbox, text.
+	 * @param string $is_type Options include radio, checkbox, text
 	 *
-	 * @return bool true if field type is checkbox or Dynamic checkbox
+	 * @return boolean true if field type is checkbox or Dynamic checkbox
 	 */
 	public static function is_field_type( $field, $is_type ) {
 		$field_type = self::get_original_field_type( $field );

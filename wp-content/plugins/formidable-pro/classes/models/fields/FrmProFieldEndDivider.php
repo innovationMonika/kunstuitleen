@@ -61,7 +61,7 @@ class FrmProFieldEndDivider extends FrmFieldType {
 	 */
 	public function show_primary_options( $args ) {
 		$field = $args['field'];
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/repeat-buttons.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/repeat-buttons.php' );
 
 		parent::show_primary_options( $args );
 	}

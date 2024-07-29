@@ -13,6 +13,7 @@ class FrmFieldEmail extends FrmFieldType {
 	 * @since 3.0
 	 */
 	protected $type = 'email';
+	protected $display_type = 'text';
 
 	/**
 	 * @var bool
@@ -20,14 +21,6 @@ class FrmFieldEmail extends FrmFieldType {
 	 */
 	protected $holds_email_values = true;
 
-	/**
-	 * @var bool
-	 */
-	protected $array_allowed = false;
-
-	/**
-	 * @return bool[]
-	 */
 	protected function field_settings_for_type() {
 		return array(
 			'size'           => true,
@@ -54,8 +47,6 @@ class FrmFieldEmail extends FrmFieldType {
 
 	/**
 	 * @since 4.0.04
-	 *
-	 * @return void
 	 */
 	public function sanitize_value( &$value ) {
 		FrmAppHelper::sanitize_value( 'sanitize_email', $value );

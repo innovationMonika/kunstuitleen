@@ -414,6 +414,8 @@ window.eml = window.eml || { l10n: {} };
                     filterable         : 'all',
 
                     // autoSelect         : false, // true,
+                    idealColumnWidth   : $( window ).width() < 640 ? 135 : 175
+  
                     // editable:   true,
                 })
             ]);

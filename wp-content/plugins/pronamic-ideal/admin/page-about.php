@@ -3,14 +3,18 @@
  * Page about
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2024 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay
- * @wordpress
- * Version: 5.8.0
  */
 
 use Pronamic\WordPress\Pay\Plugin;
+
+/**
+ * Page about
+ *
+ * @version 5.8.0
+ */
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -19,14 +23,14 @@ if ( ! defined( 'WPINC' ) ) {
 
 ?>
 <div class="wrap about-wrap">
-	<h1><?php esc_html_e( 'Welcome to Pronamic Pay', 'pronamic-ideal' ); ?></h1>
+	<h1><?php esc_html_e( 'Welcome to Pronamic Pay', 'pronamic_ideal' ); ?></h1>
 
 	<div class="about-text">
 		<?php
 
 		printf(
 			/* translators: %s: Plugin version number */
-			esc_html__( 'Thanks for installing Pronamic Pay. Version %s is more powerful, stable and secure than ever before. We hope you enjoy using it.', 'pronamic-ideal' ),
+			esc_html__( 'Thanks for installing Pronamic Pay. Version %s is more powerful, stable and secure than ever before. We hope you enjoy using it.', 'pronamic_ideal' ),
 			esc_html( $this->plugin->get_version() )
 		);
 
@@ -38,7 +42,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 		printf(
 			/* translators: %s: Plugin version number */
-			esc_html__( 'Version: %s', 'pronamic-ideal' ),
+			esc_html__( 'Version: %s', 'pronamic_ideal' ),
 			esc_html( $this->plugin->get_version() )
 		);
 
@@ -48,16 +52,16 @@ if ( ! defined( 'WPINC' ) ) {
 	<h2 class="nav-tab-wrapper">
 		<?php
 
-		$nav_tabs = [
-			'new'             => __( 'What is new?', 'pronamic-ideal' ),
-			'getting-started' => __( 'Getting started', 'pronamic-ideal' ),
-		];
+		$nav_tabs = array(
+			'new'             => __( 'What is new?', 'pronamic_ideal' ),
+			'getting-started' => __( 'Getting started', 'pronamic_ideal' ),
+		);
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not necessary because this parameter does not trigger an action.
-		$current_tab = \array_key_exists( 'tab', $_GET ) ? \sanitize_title( \wp_unslash( $_GET['tab'] ) ) : 'new';
+		$current_tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
+		$current_tab = empty( $current_tab ) ? key( $nav_tabs ) : $current_tab;
 
 		foreach ( $nav_tabs as $tab_id => $tab_title ) {
-			$classes = [ 'nav-tab' ];
+			$classes = array( 'nav-tab' );
 
 			if ( $current_tab === $tab_id ) {
 				$classes[] = 'nav-tab-active';

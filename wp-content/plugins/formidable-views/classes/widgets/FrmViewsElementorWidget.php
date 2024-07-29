@@ -25,7 +25,7 @@ if ( class_exists( '\Elementor\Widget_Base' ) ) {
 			return array( 'general' );
 		}
 
-		protected function register_controls() {
+		protected function _register_controls() {
 			$this->start_controls_section(
 				'section_form_dropdown',
 				array(

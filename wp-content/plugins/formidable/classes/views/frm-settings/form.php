@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div id="form_global_settings" class="frm_wrap">
 	<form name="frm_settings_form" method="post" class="frm_settings_form"
 		action="?page=formidable-settings<?php echo esc_html( $current ? '&amp;t=' . $current : '' ); ?>">
-		<div>
+		<div class="frm_page_container">
 
 			<?php
 			FrmAppHelper::get_admin_header(
@@ -18,13 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 
 			<div class="columns-2">
-				<div class="frm-right-panel frm-scrollbar-wrapper">
-					<?php require FrmAppHelper::plugin_path() . '/classes/views/frm-settings/tabs.php'; ?>
+				<div class="frm-right-panel">
+					<?php include( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/tabs.php' ); ?>
 				</div>
 
 				<div id="post-body-content" class="frm-fields">
 
-								<?php require FrmAppHelper::plugin_path() . '/classes/views/shared/errors.php'; ?>
+								<?php require( FrmAppHelper::plugin_path() . '/classes/views/shared/errors.php' ); ?>
 								<input type="hidden" name="frm_action" value="process-form"/>
 								<input type="hidden" name="action" value="process-form"/>
 								<?php wp_nonce_field( 'process_form_nonce', 'process_form' ); ?>
@@ -57,9 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										do_action( 'frm_' . $section['anchor'] . '_form', $frm_settings );
 										?>
 									</div>
-									<?php
-								}//end foreach
-								?>
+								<?php } ?>
 				</div>
 			</div>
 		</div>

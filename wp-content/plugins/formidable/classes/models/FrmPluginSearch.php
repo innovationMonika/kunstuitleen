@@ -26,10 +26,9 @@ class FrmPluginSearch {
 	/**
 	 * Add actions and filters only if this is the plugin installation screen and it's the first page.
 	 *
-	 * @since 4.12
 	 * @param object $screen WP Screen object.
 	 *
-	 * @return void
+	 * @since 4.12
 	 */
 	public function start( $screen ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -48,8 +47,6 @@ class FrmPluginSearch {
 	 * @param object $result Plugin search results.
 	 * @param string $action unused.
 	 * @param object $args Search args.
-	 *
-	 * @return object
 	 */
 	public function inject_suggestion( $result, $action, $args ) {
 		// Looks like a search query; it's matching time.
@@ -74,22 +71,17 @@ class FrmPluginSearch {
 
 		$inject    = (array) $this->get_plugin_data();
 		$overrides = array(
-			// Helps to determine if that an injected card.
-			'plugin-search'     => true,
-			'name'              => sprintf(
+			'plugin-search'       => true, // Helps to determine if that an injected card.
+			'name'                => sprintf(
 				/* translators: Formidable addon name */
 				esc_html_x( 'Formidable %s', 'Formidable Addon Name', 'formidable' ),
 				$addon_list[ $matching_addon ]['name']
 			),
-			'addon'             => $addon_list[ $matching_addon ]['slug'],
-			'short_description' => $addon_list[ $matching_addon ]['excerpt'],
-			'slug'              => self::$slug,
-			'version'           => $addon_list[ $matching_addon ]['version'],
+			'addon'               => $addon_list[ $matching_addon ]['slug'],
+			'short_description'   => $addon_list[ $matching_addon ]['excerpt'],
+			'slug'                => self::$slug,
+			'version'             => $addon_list[ $matching_addon ]['version'],
 		);
-
-		if ( ! empty( $addon_list[ $matching_addon ]['external'] ) ) {
-			unset( $overrides['name'] );
-		}
 
 		// Splice in the base addon data.
 		$inject = array_merge( $inject, $addon_list[ $matching_addon ], $overrides );
@@ -105,10 +97,7 @@ class FrmPluginSearch {
 	 *
 	 * @since 4.12
 	 *
-	 * @param array $addon_list
-	 * @param array $normalized_term
-	 *
-	 * @return int|null
+	 * @return int
 	 */
 	private function matching_addon( $addon_list, $normalized_term ) {
 		$matching_addon = null;
@@ -119,15 +108,20 @@ class FrmPluginSearch {
 				continue;
 			}
 
+			/*
+			* Does the site's current plan support the feature?
+			*/
+			$is_supported_by_plan = ! empty( $addon_opts['url'] );
+
 			if ( ! isset( $addon_opts['search_terms'] ) ) {
 				$addon_opts['search_terms'] = '';
 			}
 
-			$addon_terms = $this->search_to_array( $addon_opts['search_terms'] . ' ' . $addon_opts['name'] );
+			$addon_terms = $this->search_to_array( $addon_opts['search_terms'] . ', ' . $addon_opts['name'] );
 
-			$matched_terms = array_intersect( $addon_terms, $normalized_term );
+			$matches = ! empty( array_intersect( $addon_terms, $normalized_term ) );
 
-			if ( count( $matched_terms ) === count( $normalized_term ) ) {
+			if ( $matches && $is_supported_by_plan ) {
 				$matching_addon = $addon_id;
 				break;
 			}
@@ -143,8 +137,7 @@ class FrmPluginSearch {
 	 */
 	private function get_addons() {
 		$api    = new FrmFormApi();
-		$addons = $api->get_api_info();
-		return apply_filters( 'frm_plugin_search', $addons );
+		return $api->get_api_info();
 	}
 
 	/**
@@ -182,8 +175,9 @@ class FrmPluginSearch {
 	/**
 	 * Modify URL used to fetch to plugin information so it pulls Formidable plugin page.
 	 *
-	 * @since 4.12
 	 * @param string $url URL to load in dialog pulling the plugin page from wporg.
+	 *
+	 * @since 4.12
 	 *
 	 * @return string The URL with 'formidable' instead of 'frm-plugin-search'.
 	 */
@@ -195,8 +189,6 @@ class FrmPluginSearch {
 
 	/**
 	 * @since 4.12
-	 *
-	 * @return void
 	 */
 	private function maybe_dismiss() {
 		$addon = FrmAppHelper::get_param( 'frm-dismiss', '', 'get', 'absint' );
@@ -275,12 +267,11 @@ class FrmPluginSearch {
 	/**
 	 * @since 4.12
 	 *
-	 * @param string $terms
 	 * @return array
 	 */
 	private function search_to_array( $terms ) {
 		$terms = $this->sanitize_search_term( $terms );
-		return array_filter( explode( ' ', $terms ) );
+		return array_filter( explode( ',', $terms ) );
 	}
 
 	/**
@@ -288,8 +279,6 @@ class FrmPluginSearch {
 	 *
 	 * @param array $links Related links.
 	 * @param array $plugin Plugin result information.
-	 *
-	 * @return array
 	 */
 	public function insert_related_links( $links, $plugin ) {
 		if ( self::$slug !== $plugin['slug'] ) {
@@ -299,16 +288,17 @@ class FrmPluginSearch {
 		// By the time this filter is applied, self_admin_url was already applied and we don't need it anymore.
 		remove_filter( 'self_admin_url', array( $this, 'plugin_details' ) );
 
-		$links        = array();
+		$links = array();
 		$is_installed = $this->is_installed( $plugin['plugin'] );
 		$is_active    = is_plugin_active( $plugin['plugin'] );
+		$has_access   = ! empty( $plugin['url'] );
 
 		// Plugin installed, active, feature not enabled; prompt to enable.
 		if ( ! $is_active && $is_installed ) {
 			if ( current_user_can( 'activate_plugins' ) ) {
-				$activate_url             = add_query_arg(
+				$activate_url = add_query_arg(
 					array(
-						'action'   => 'activate',
+						'action' => 'activate',
 						'_wpnonce' => wp_create_nonce( 'activate-plugin_' . $plugin['plugin'] ),
 						'plugin'   => $plugin['plugin'],
 					),
@@ -331,7 +321,7 @@ class FrmPluginSearch {
 				target="_blank"
 				data-addon="' . esc_attr( $plugin['addon'] ) . '"
 				>' . esc_html__( 'Learn more', 'formidable' ) . '</a>';
-		}//end if
+		}
 
 		// Dismiss link.
 		$dismiss = add_query_arg( array( 'frm-dismiss' => $plugin['id'] ) );
@@ -344,19 +334,18 @@ class FrmPluginSearch {
 		return $links;
 	}
 
-	/**
-	 * @param string $plugin
-	 * @return bool
-	 */
 	protected function is_installed( $plugin ) {
-		$all_plugins = FrmAppHelper::get_plugins();
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$all_plugins = get_plugins();
+
 		return isset( $all_plugins[ $plugin ] );
 	}
 
 	/**
 	 * Load the search scripts and CSS for PSH.
-	 *
-	 * @return void
 	 */
 	public function load_plugins_search_script() {
 		wp_enqueue_script( self::$slug, FrmAppHelper::plugin_url() . '/js/plugin-search.js', array(), FrmAppHelper::plugin_version(), true );

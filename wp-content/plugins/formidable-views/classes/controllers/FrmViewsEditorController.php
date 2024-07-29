@@ -42,7 +42,7 @@ class FrmViewsEditorController {
 		}
 
 		$view = get_post( $view_id );
-		if ( ! $view || ! ( $view instanceof WP_Post ) || FrmViewsDisplaysController::$post_type !== $view->post_type ) {
+		if ( ! $view || FrmViewsDisplaysController::$post_type !== $view->post_type ) {
 			self::handle_invalid_view();
 		}
 
@@ -59,21 +59,18 @@ class FrmViewsEditorController {
 			$form = FrmForm::getOne( $form_id );
 		}
 
-		echo '<div class="frm_wrap">';
-		echo '<div class="frm_page_container frm_forms">';
 		if ( ! empty( $form ) ) {
-			self::render_header( $form, $view );
+			self::render_header( $form );
 		} else {
-			self::render_publish_wrapper( $view );
+			self::render_publish_wrapper();
 		}
 
-		$application_ids          = FrmViewsAppHelper::get_application_ids_for_view( $view_id );
 		$editor_path              = FrmViewsAppHelper::views_path() . '/editor/';
 		$show_count               = get_post_meta( $view_id, 'frm_show_count', true );
 		$include_copy_option      = self::include_copy_option();
 		$is_grid_type             = self::is_grid_type( $view );
 		$show_education           = self::show_education( $is_grid_type ? 'grid' : 'classic' );
-		$start_adding_content_url = admin_url( 'admin.php?page=formidable-entries&frm_action=new&form=0' );
+		$start_adding_content_url = admin_url( 'admin.php?page=formidable-entries&frm_action=new&form=0&frm-full=1' );
 		$active_preview_filter    = self::get_active_preview_filter( $view_id );
 		$check_all_option         = in_array( $show_count, array( 'all', 'dynamic' ), true );
 		$is_grid_type             = self::is_grid_type( $view );
@@ -83,36 +80,9 @@ class FrmViewsEditorController {
 			self::register_welcome_script();
 		}
 
-		self::add_form_name_sidebar_shortcode_option();
-
 		self::register_view_editor_scripts_and_styles();
-		FrmViewsAppHelper::add_view_embed_examples_script();
-
 		FrmAppHelper::include_svg();
 		require $editor_path . 'editor.php';
-		echo '</div>'; // End frm_page_container.
-		echo '</div>'; // End frm_wrap.
-	}
-
-	/**
-	 * Add a [form_name] shortcode option to the bottom of the Advanced "Customization" tab for easy access.
-	 *
-	 * @since 5.3.2
-	 *
-	 * @return void
-	 */
-	public static function add_form_name_sidebar_shortcode_option() {
-		add_filter(
-			'frm_helper_shortcodes',
-			/**
-			 * @param array<string,string> $shortcodes
-			 * @return array<string,string>
-			 */
-			function ( $shortcodes ) {
-				$shortcodes['form_name'] = __( 'Form Name', 'formidable' );
-				return $shortcodes;
-			}
-		);
 	}
 
 	private static function register_welcome_script() {
@@ -140,7 +110,7 @@ class FrmViewsEditorController {
 		echo '<div id="side-sortables">';
 		array_walk(
 			$metaboxes,
-			function ( $metabox ) use ( $view ) {
+			function( $metabox ) use ( $view ) {
 				echo '<div id="' . esc_attr( $metabox['id'] ) . '" class="frm-view-editor-meta-box">';
 					echo '<h3>' . esc_html( $metabox['title'] ) . '</h3>';
 					echo '<div class="inside">';
@@ -157,11 +127,9 @@ class FrmViewsEditorController {
 	/**
 	 * Render the nav header with Builder, Settings, Entries options
 	 *
-	 * @param mixed  $form passed down to header.php view. if falsey nothing will be rendered.
-	 * @param object $view
-	 * @return void
+	 * @param mixed $form passed down to header.php view. if falsey nothing will be rendered.
 	 */
-	private static function render_header( $form, $view ) {
+	private static function render_header( $form ) {
 		if ( ! $form ) {
 			return;
 		}
@@ -186,8 +154,7 @@ class FrmViewsEditorController {
 		);
 	}
 
-	private static function render_publish_wrapper( $view ) {
-		$title = $view->post_title;
+	private static function render_publish_wrapper() {
 		require FrmViewsAppHelper::views_path() . '/editor/header_view_editor_publish_wrapper.php';
 	}
 
@@ -225,12 +192,7 @@ class FrmViewsEditorController {
 		set_current_screen();
 
 		// For third party plugin support, try to enqueue all scripts that normally get added when a post is being edited.
-		try {
-			do_action( 'admin_enqueue_scripts', 'edit.php' );
-		} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
-			// For better stability, ignore any exception that happens when this action is triggered.
-			// The Google Listing and Ads plugin by WooCommerce throws a InvalidAsset exception for example.
-		}
+		do_action( 'admin_enqueue_scripts', 'edit.php' );
 
 		self::register_frontend_scripts();
 		self::include_google_jsapi_for_google_graphs();
@@ -241,7 +203,6 @@ class FrmViewsEditorController {
 
 		self::register_editor_js();
 		$version = FrmViewsAppHelper::plugin_version();
-		wp_enqueue_style( 'formidable_views_index', FrmViewsAppHelper::plugin_url() . '/css/index.css', array(), $version ); // Include css for table fields modal.
 		wp_register_style( 'formidable_views_editor', FrmViewsAppHelper::plugin_url() . '/css/editor.css', array(), $version );
 		wp_enqueue_script( 'formidable_views_editor' );
 		wp_enqueue_style( 'formidable_views_editor' );
@@ -259,12 +220,7 @@ class FrmViewsEditorController {
 			FrmViewsAppHelper::add_dom_script();
 		}
 
-		$js_dependencies = array( 'wp-i18n', 'wp-color-picker' );
-		if ( class_exists( 'FrmApplicationsController' ) ) {
-			$js_dependencies[] = 'formidable_dom';
-		}
-
-		wp_register_script( 'formidable_views_editor', $editor_js_path, $js_dependencies, $version, true );
+		wp_register_script( 'formidable_views_editor', $editor_js_path, array( 'wp-i18n', 'wp-color-picker' ), $version, true );
 	}
 
 	/**
@@ -287,8 +243,7 @@ class FrmViewsEditorController {
 	 * Check for formidable views AJAX requests and handle routing
 	 */
 	public static function route_ajax() {
-		$action = str_replace( 'wp_ajax_', '', current_action() );
-
+		$action   = FrmAppHelper::get_param( 'action', '', 'post', 'sanitize_text_field' );
 		$function = false;
 		switch ( $action ) {
 			case 'frm_views_process_box_preview':
@@ -333,10 +288,6 @@ class FrmViewsEditorController {
 
 			case 'frm_flatten_view':
 				$function = 'flatten_view';
-				break;
-
-			case 'frm_view_dropdown_options':
-				$function = 'get_dropdown_options';
 				break;
 		}
 
@@ -388,7 +339,6 @@ class FrmViewsEditorController {
 			'emptyMessage'         => self::get_option_value( 'empty_msg' ),
 			'limit'                => self::get_option_value( 'limit' ),
 			'pageSize'             => self::get_option_value( 'page_size' ),
-			'offset'               => self::get_option_value( 'offset' ),
 			'filterEntries'        => self::get_filter_entries_data_for_frontend(),
 			'sortEntries'          => self::get_sort_entries_data_for_frontend(),
 			'listingLayout'        => $listing_layout,
@@ -401,7 +351,6 @@ class FrmViewsEditorController {
 			'parameterValue'       => self::get_parameter_value(),
 			'copy'                 => self::get_option_value( 'copy' ),
 			'disablePreview'       => self::get_option_value( 'no_rt' ),
-			'ajaxPagination'       => self::get_option_value( 'ajax_pagination' ),
 		);
 		if ( 'calendar' === get_post_meta( self::$view_id, 'frm_show_count', true ) ) {
 			$response_data = array_merge(
@@ -440,83 +389,17 @@ class FrmViewsEditorController {
 		wp_send_json_success( $response_data );
 	}
 
-	/**
-	 * @since 5.4.2
-	 *
-	 * @return void
-	 */
-	public static function check_license() {
-		if ( FrmViewsAppController::is_expired_outside_grace_period() ) {
-			wp_die( esc_html__( 'Your account license has expired. In order to access more Pro features, please renew your subscription.', 'formidable-views' ) );
-		}
-	}
-
 	private static function create_view() {
-		self::check_license();
-
 		$form_id = FrmAppHelper::get_param( 'form', 0, 'post', 'absint' );
 		$type    = FrmAppHelper::get_param( 'type', 'all', 'post', 'sanitize_key' );
 		$name    = FrmAppHelper::get_param( 'name', '', 'post', 'sanitize_text_field' );
 		$view_id = FrmViewsDisplay::create( $form_id, $type, $name );
-
-		self::maybe_add_application_ids_to_view( $view_id, $form_id );
 
 		$redirect      = FrmViewsAppHelper::get_url_to_view_editor( $view_id );
 		$response_data = array(
 			'redirect' => esc_url_raw( $redirect ),
 		);
 		wp_send_json_success( $response_data );
-	}
-
-	/**
-	 * Maybe add application ids to view on create.
-	 *
-	 * @since 5.2
-	 * @param int $view_id
-	 * @param int $form_id
-	 * @return void
-	 */
-	private static function maybe_add_application_ids_to_view( $view_id, $form_id ) {
-		if ( ! is_callable( 'FrmProApplication::add_post_to_application' ) ) {
-			return;
-		}
-
-		$application_id = FrmAppHelper::get_post_param( 'application_id', 0, 'absint' );
-		if ( $application_id ) {
-			FrmProApplication::add_post_to_application( $application_id, $view_id, 'view' );
-			self::add_application_to_form_if_relation_is_missing( $application_id, $form_id );
-		}
-
-		if ( ! $form_id || ! is_callable( 'FrmProApplicationsHelper::get_application_ids_for_form' ) ) {
-			return;
-		}
-
-		$form_application_ids = FrmProApplicationsHelper::get_application_ids_for_form( $form_id );
-		foreach ( $form_application_ids as $form_application_id ) {
-			if ( $application_id && $application_id === $form_application_id ) {
-				// Avoid adding the set application id twice if it's also assigned to the form.
-				continue;
-			}
-			FrmProApplication::add_post_to_application( $form_application_id, $view_id, 'view' );
-		}
-	}
-
-	/**
-	 * @param int $application_id
-	 * @param int $form_id
-	 * @return void
-	 */
-	private static function add_application_to_form_if_relation_is_missing( $application_id, $form_id ) {
-		if ( ! $form_id ) {
-			return;
-		}
-
-		$current_form_ids = array_map( 'intval', get_term_meta( $application_id, '_frm_form_id' ) );
-		if ( in_array( $form_id, $current_form_ids, true ) ) {
-			return;
-		}
-
-		FrmProApplication::add_form_to_application( $application_id, $form_id );
 	}
 
 	private static function get_table_column_options() {
@@ -576,7 +459,7 @@ class FrmViewsEditorController {
 		$options = array_merge(
 			$options,
 			array_map(
-				function ( $key ) {
+				function( $key ) {
 					return array(
 						'value' => $key,
 						'label' => FrmViewsDisplay::convert_table_option_key_to_label( $key ),
@@ -651,24 +534,14 @@ class FrmViewsEditorController {
 			return array();
 		}
 
-		$data      = array();
-		$order_by  = self::get_option_value( 'order_by' );
-		$field_ids = array_filter( $order_by, 'is_numeric' );
-
-		if ( $field_ids ) {
-			$field_ids = FrmDb::get_col( 'frm_fields', array( 'id' => $field_ids ), 'id' );
-			$field_ids = array_map( 'intval', $field_ids );
+		$data     = array();
+		$order_by = self::get_option_value( 'order_by' );
+		foreach ( $order as $index => $condition ) {
+			$data[] = array(
+				'order' => $condition,
+				'by'    => $order_by[ $index ],
+			);
 		}
-
-		foreach ( $order_by as $index => $order_by_value ) {
-			if ( ! is_numeric( $order_by_value ) || in_array( (int) $order_by_value, $field_ids, true ) ) {
-				$data[] = array(
-					'order' => $order[ $index ],
-					'by'    => $order_by_value,
-				);
-			}
-		}
-
 		return $data;
 	}
 
@@ -725,13 +598,11 @@ class FrmViewsEditorController {
 		}
 
 		$name                   = FrmAppHelper::get_param( 'name', '', 'post', 'sanitize_text_field' );
-		$application_ids        = FrmAppHelper::get_param( 'applicationIds', '', 'post' );
 		$post_name              = FrmAppHelper::get_param( 'viewKey', '', 'post', 'sanitize_text_field' );
 		$form_id                = FrmAppHelper::get_param( 'formId', 0, 'post', 'absint' );
 		$empty_message          = FrmAppHelper::get_param( 'emptyMessage', '', 'post' );
 		$limit                  = FrmAppHelper::get_param( 'limit', '', 'post', 'sanitize_text_field' );
 		$page_size              = FrmAppHelper::get_param( 'pageSize', '', 'post', 'sanitize_text_field' );
-		$offset                 = FrmAppHelper::get_param( 'offset', '', 'post', 'sanitize_text_field' );
 		$listing_layout         = FrmAppHelper::get_param( 'listingLayout', '', 'post' );
 		$detail_layout          = FrmAppHelper::get_param( 'detailLayout', '', 'post' );
 		$listing_content        = self::sanitize_content( FrmAppHelper::get_param( 'listingContent', '', 'post' ) );
@@ -748,15 +619,10 @@ class FrmViewsEditorController {
 		$repeat_event_field_id  = FrmAppHelper::get_param( 'repeatEventFieldId', '', 'post', 'sanitize_text_field' );
 		$repeat_edate_field_id  = FrmAppHelper::get_param( 'repeatEdateFieldId', '', 'post', 'sanitize_text_field' );
 		$disable_preview        = FrmAppHelper::get_param( 'disablePreview', 0, 'post', 'absint' );
-		$ajax_pagination        = $page_size ? FrmAppHelper::get_param( 'ajaxPagination', '0', 'post', 'sanitize_text_field' ) : '0';
 		$active_preview_filter  = FrmAppHelper::get_param( 'activePreviewFilter', '', 'post', 'sanitize_text_field' );
 		$metabox_data           = self::parse_metabox_data( FrmAppHelper::get_param( 'metaboxData', '', 'post' ) );
 		$is_grid_type           = FrmAppHelper::get_param( 'isGridType', 0, 'post', 'absint' );
 		$is_table_type          = FrmAppHelper::get_param( 'isTableType', 0, 'post', 'absint' );
-
-		if ( ! in_array( $ajax_pagination, array( '1', '0', 'load-more', 'infinite-scroll' ), true ) ) {
-			$ajax_pagination = '0';
-		}
 
 		$listing_page_is_json_type = $is_grid_type || $is_table_type;
 		if ( ! $listing_page_is_json_type ) {
@@ -792,9 +658,7 @@ class FrmViewsEditorController {
 			'empty_msg'             => $empty_message,
 			'limit'                 => $limit ? $limit : '',
 			'page_size'             => $page_size ? $page_size : '',
-			'offset'                => $offset ? $offset : '',
 			'no_rt'                 => $disable_preview ? 1 : 0,
-			'ajax_pagination'       => $ajax_pagination,
 		);
 
 		if ( self::include_copy_option() ) {
@@ -814,7 +678,7 @@ class FrmViewsEditorController {
 				if ( $is_table_type ) {
 					$metabox_data['options']['view_export_possible'] = 1;
 				} else {
-					$metabox_data['options']['view_export_possible'] = FrmViewsDisplaysHelper::check_view_data_for_table_type( $show_count, $listing_before_content );
+					$metabox_data['options']['view_export_possible'] = self::check_view_data_for_table_type( $show_count, $listing_before_content );
 				}
 			}
 			$options = array_merge( $options, $metabox_data['options'] );
@@ -856,8 +720,6 @@ class FrmViewsEditorController {
 			acf_save_post( $view_id, $metabox_data['acf'] );
 		}
 
-		self::sync_application_data( $view_id, $application_ids );
-
 		$response_data = array();
 
 		if ( ! $view->post_name || '' === $post_name ) {
@@ -865,14 +727,6 @@ class FrmViewsEditorController {
 		}
 
 		self::prevent_tooltips_in_future_sessions( $is_grid_type ? 'grid' : 'classic' );
-
-		/**
-		 * Trigger frm_create_display so views successfully copy.
-		 *
-		 * @param int   $view_id
-		 * @param array $data
-		 */
-		do_action( 'frm_create_display', $view_id, $data );
 
 		wp_send_json_success( $response_data );
 	}
@@ -1006,36 +860,6 @@ class FrmViewsEditorController {
 		return FrmViewsAppHelper::view_editor_is_active();
 	}
 
-	/**
-	 * Render the <option> tags for Name (First) and Address (Country) types of sort options.
-	 *
-	 * @since 5.5
-	 *
-	 * @param int                  $field_id
-	 * @param string               $field_name
-	 * @param array<string,string> $subfields
-	 * @param bool                 $include_sort_option_class
-	 * @return void
-	 */
-	public static function render_subfield_sort_options( $field_id, $field_name, $subfields, $include_sort_option_class = true ) {
-		$truncated_field_name = FrmAppHelper::truncate( $field_name, 50 );
-		foreach ( $subfields as $type => $label ) {
-			$attributes = array(
-				'value' => $field_id . '_' . $type,
-			);
-			if ( $include_sort_option_class ) {
-				$attributes['class'] = 'frm-views-sort-option';
-			}
-			FrmHtmlHelper::echo_dropdown_option( $truncated_field_name . ' (' . $label . ')', false, $attributes );
-		}
-	}
-
-	/**
-	 * Render <option> tags used for the filter and sort view modals.
-	 *
-	 * @param int $form_id
-	 * @return void
-	 */
 	public static function render_field_select_template_options( $form_id ) {
 		include FrmViewsAppHelper::plugin_path() . '/classes/views/editor/field_select_template_options.php';
 	}
@@ -1130,38 +954,6 @@ class FrmViewsEditorController {
 	}
 
 	/**
-	 * Update application relation data for view.
-	 *
-	 * @param int   $view_id
-	 * @param mixed $application_ids
-	 * @return void
-	 */
-	private static function sync_application_data( $view_id, $application_ids ) {
-		if ( ! taxonomy_exists( 'frm_application' ) || ! is_callable( 'FrmProApplication::add_post_to_application' ) ) {
-			return;
-		}
-
-		$application_ids          = is_array( $application_ids ) ? array_map( 'intval', $application_ids ) : array();
-		$previous_application_ids = FrmViewsAppHelper::get_application_ids_for_view( $view_id );
-
-		$new_application_ids = array_diff( $application_ids, $previous_application_ids );
-		array_walk(
-			$new_application_ids,
-			function ( $application_id ) use ( $view_id ) {
-				FrmProApplication::add_post_to_application( absint( $application_id ), $view_id, 'view' );
-			}
-		);
-
-		$old_application_ids = array_diff( $previous_application_ids, $application_ids );
-		array_walk(
-			$old_application_ids,
-			function ( $application_id ) use ( $view_id ) {
-				FrmProApplication::remove_post_from_application( absint( $application_id ), $view_id, 'view' );
-			}
-		);
-	}
-
-	/**
 	 * @param string $type
 	 * @return int 1 or 0.
 	 */
@@ -1200,7 +992,7 @@ class FrmViewsEditorController {
 	private static function filter_and_flatten_metaboxes( $metaboxes, $view ) {
 		self::$view = $view;
 		$flat       = self::flatten_metaboxes( $metaboxes );
-		$filtered   = array_filter( $flat, self::class . '::filter_metaboxes' );
+		$filtered   = array_filter( $flat, 'self::filter_metaboxes' );
 		return array_values( $filtered );
 	}
 
@@ -1270,7 +1062,34 @@ class FrmViewsEditorController {
 	 * @return bool
 	 */
 	private static function is_legacy_table_type( $view_id ) {
-		return FrmViewsDisplaysHelper::is_legacy_table_type( $view_id );
+		$before_content = self::get_option_value( 'before_content' );
+		if ( $before_content ) {
+			$show_count = get_post_meta( $view_id, 'frm_show_count', true );
+			return (bool) self::check_view_data_for_table_type( $show_count, $before_content );
+		}
+		return false;
+	}
+
+	/**
+	 * @param string $show_count
+	 * @param string $listing_before_content
+	 * @return int 1 or 0.
+	 */
+	private static function check_view_data_for_table_type( $show_count, $listing_before_content ) {
+		return in_array( $show_count, array( 'all', 'dynamic' ), true ) && self::check_if_view_before_content_matches_table_type( $listing_before_content ) ? 1 : 0;
+	}
+
+	/**
+	 * @param string $before_content
+	 * @return bool
+	 */
+	private static function check_if_view_before_content_matches_table_type( $before_content ) {
+		$before_content_begins_a_table = false !== strpos( $before_content, '<table' );
+		if ( ! $before_content_begins_a_table ) {
+			return false;
+		}
+		$before_content_ends_a_table = false !== strpos( $before_content, '</table>' );
+		return ! $before_content_ends_a_table;
 	}
 
 	public static function maybe_highlight_menu() {
@@ -1329,7 +1148,25 @@ class FrmViewsEditorController {
 	 * @return int 1 or 0.
 	 */
 	public static function is_grid_type( $view ) {
-		return FrmViewsDisplaysHelper::is_grid_type( $view );
+		if ( in_array( get_post_meta( $view->ID, 'frm_grid_view', true ), array( '1', 1 ), true ) ) {
+			return 1;
+		}
+		if ( self::is_table_type( $view ) ) {
+			// table types use grid style content, so check for table before checking content for grid data.
+			return 0;
+		}
+		$show_count = get_post_meta( $view->ID, 'frm_show_count', true );
+		if ( ! in_array( $show_count, array( 'all', 'dynamic' ), true ) ) {
+			return 0;
+		}
+		if ( self::content_is_in_grid_format( $view->post_content ) ) {
+			return 1;
+		}
+		$dyncontent = get_post_meta( $view->ID, 'frm_dyncontent', true );
+		if ( self::content_is_in_grid_format( $dyncontent ) ) {
+			return 1;
+		}
+		return 0;
 	}
 
 	/**
@@ -1337,7 +1174,19 @@ class FrmViewsEditorController {
 	 * @return int 1 or 0.
 	 */
 	public static function is_table_type( $view ) {
-		return FrmViewsDisplaysHelper::is_table_type( $view );
+		return in_array( get_post_meta( $view->ID, 'frm_table_view', true ), array( 1, '1' ), true ) ? 1 : 0;
+	}
+
+	/**
+	 * @param string $content post_content or dyncontent value.
+	 * @return bool
+	 */
+	private static function content_is_in_grid_format( $content ) {
+		if ( ! $content ) {
+			return false;
+		}
+		$helper = new FrmViewsContentHelper( $content );
+		return $helper->content_is_an_array();
 	}
 
 	private static function flatten_view() {
@@ -1442,84 +1291,6 @@ class FrmViewsEditorController {
 	}
 
 	/**
-	 * @since 5.3.3
-	 *
-	 * @return void
-	 */
-	private static function get_dropdown_options() {
-		$view_id          = FrmAppHelper::get_post_param( 'viewId', 0, 'absint' );
-		$where            = array(
-			'post_type'     => FrmViewsDisplaysController::$post_type,
-			'post_status !' => 'trash',
-			'ID !'          => $view_id,
-		);
-		$columns          = array( 'ID', 'post_title' );
-		$args             = array( 'order_by' => 'post_title ASC' );
-		$view_names_by_id = wp_list_pluck(
-			FrmDb::get_results( 'posts', $where, 'ID, post_title', $args ),
-			'post_title',
-			'ID'
-		);
-
-		if ( ! $view_names_by_id ) {
-			wp_send_json_success( array( 'options' => array() ) );
-		}
-
-		$view_ids         = array_keys( $view_names_by_id );
-		$views_by_form_id = array_reduce(
-			FrmDb::get_results(
-				'postmeta',
-				array(
-					'post_id'  => $view_ids,
-					'meta_key' => 'frm_form_id',
-				),
-				'post_id, meta_value'
-			),
-			function ( $total, $row ) use ( $view_names_by_id ) {
-				$view_id = $row->post_id;
-				$form_id = $row->meta_value;
-
-				if ( ! isset( $total[ $form_id ] ) ) {
-					$total[ $form_id ] = array();
-				}
-
-				$view_data_for_array             = new stdClass();
-				$view_data_for_array->ID         = $view_id;
-				$view_data_for_array->post_title = $view_names_by_id[ $view_id ];
-
-				$total[ $form_id ][] = $view_data_for_array;
-				return $total;
-			},
-			array()
-		);
-
-		$options = array();
-		if ( $views_by_form_id ) {
-			$all_form_ids = array_keys( $views_by_form_id );
-			$form_data    = FrmDb::get_results( 'frm_forms', array( 'id' => $all_form_ids ), 'id, name', array( 'order_by' => 'name ASC' ) );
-
-			foreach ( $form_data as $row ) {
-				$category  = ( $row->name ? $row->name : __( 'Untitled', 'formidable-views' ) ) . ' (' . __( 'Form', 'formidable-views' ) . ' ' . $row->id . ')';
-				$options[] = array(
-					'categoryHeader' => $category,
-				);
-
-				foreach ( $views_by_form_id[ $row->id ] as $view ) {
-					$options[] = array(
-						'id'       => $view->ID,
-						'name'     => $view->post_title ? $view->post_title : __( 'Untitled', 'formidable-views' ),
-						'editUrl'  => get_edit_post_link( $view->ID ),
-						'category' => $category,
-					);
-				}
-			}
-		}
-
-		$data = compact( 'options' );
-		wp_send_json_success( $data );
-	}
-
-	/**
 	 * @param string $classes
 	 * @return string
 	 */
@@ -1560,27 +1331,11 @@ class FrmViewsEditorController {
 	 * @return array
 	 */
 	private static function get_draft_dropdown_options() {
-		$default_options = array(
+		return array(
 			'both' => __( 'Draft or complete entry', 'formidable-views' ),
 			'0'    => __( 'Complete entry', 'formidable-views' ),
 			'1'    => __( 'Draft', 'formidable-views' ),
 		);
-
-		/**
-		 * Extends the filters drop down options.
-		 *
-		 * @since 5.4.2
-		 *
-		 * @param array $default_options Array of options.
-		 */
-		$extended_options = apply_filters( 'frm_views_entry_status_options', $default_options );
-
-		if ( ! is_array( $extended_options ) ) {
-			_doing_it_wrong( __METHOD__, esc_html__( 'Please return an array of options.', 'formidable-views' ), '5.4.2' );
-			$extended_options = $default_options;
-		}
-
-		return $extended_options;
 	}
 
 	/**
@@ -1603,7 +1358,7 @@ class FrmViewsEditorController {
 				$options            = FrmProFieldsHelper::get_status_options( $status_field, $status_field->options );
 				return array_reduce(
 					$options,
-					function ( $total, $option ) {
+					function( $total, $option ) {
 						$total[ $option['value'] ] = $option['label'];
 						return $total;
 					},
@@ -1663,9 +1418,6 @@ class FrmViewsEditorController {
 		}
 
 		global $hook_suffix;
-		if ( is_null( $hook_suffix ) ) {
-			$hook_suffix = ''; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		}
 
 		set_current_screen();
 		global $current_screen;
@@ -1675,4 +1427,5 @@ class FrmViewsEditorController {
 	public static function call_load_post_action_on_admin_init() {
 		do_action( 'load-post.php' ); // required for ACF to initialize.
 	}
+
 }

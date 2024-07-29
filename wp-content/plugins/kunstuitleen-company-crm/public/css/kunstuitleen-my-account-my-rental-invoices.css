@@ -1,0 +1,136 @@
+/*---------------|| Mijn huurfacturen End ||-------------------*/
+.main .h4{
+    color: #2a374a;
+}
+.main .h3{
+    padding-left: 0;
+    color: #445060;
+}
+.condition{
+    border-left: 1px solid #f3f3f3;
+    margin-top: 30px;
+    border-top: 0;
+}
+.condition .h4{
+    color:#9dafc2
+}
+.table-gift-card .col-md-5 .btn-default{
+    border: 0;
+}
+.table-gift-card .btn-default .h4{
+    cursor: pointer;
+}
+.table-gift-card .col-md-5 .btn-default .fa{
+    padding:10px;
+    font-size: 14px;
+}
+.condition .col-md-10{
+    border-right: 1px solid #f3f3f3;
+    padding-left: 30px;
+}
+#condition{
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 30px;
+}
+.gift-cards{
+    color: #9dafc2;
+}
+.main_account_group .table-gift-card:nth-of-type(2) {
+    margin-top: 10px;
+}
+.main_account_group .panel-body {
+    padding: 0px 15px;
+}
+.kunstuitleen-main-account .row.table-gift-card button.btn.btn-default {
+    padding-bottom: 0px !important;
+}
+.table{
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0 15px; 
+}
+.table thead{
+    border :0;
+}
+.table thead tr th {
+    font-size: 16px;
+    color: #384456;
+    border: 0;
+}
+.table tbody tr th{
+    color: #384456;
+    border:0;
+    font-size: 16px;
+}
+.table tbody tr td{
+    color: #384456;
+    border:0;
+    font-size: 16px;
+}
+.table-borderless .fa{
+    padding-right: 8px;
+    font-size: 15px;
+    color: #384456;
+}
+.table-borderless .fa-sign-in{
+    padding-left: 8px;
+    font-size: 15px;
+    color: #384456;
+}
+.img-download{
+    height: 25px;
+    padding-right: 10px;
+    display: inline-block;
+}
+
+.form-control:focus{
+    border-color: 0;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.form-control{
+    color: #888f9a;
+    font-weight: bold;
+    border: 1px solid #eaeff5;
+    font-size: 18px;
+}
+
+.table-gift-card .btn-default:hover, .table-gift-card .btn-default:focus, .table-gift-card .btn-default:active, .table-gift-card .btn-default.active, .open>.dropdown-toggle.table-gift-card .btn-default{
+    background-color: white;
+}
+.table-gift-card .btn:focus, .table-gift-card .btn:active:focus, .table-gift-card .btn.active:focus{
+    outline: none;
+}
+.table-gift-card .btn:active, .table-gift-card .btn.active {
+    background-image: none;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.table-responsive{
+    border: 0;
+}
+.table-gift-card button.btn.btn-default {
+    border: none !important;
+}
+.kunstuitleen-table table.table {
+    width: 100%;
+    max-width: 100%;
+}
+.kunstuitleen-menu li a .h5 strong {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+@media (max-width: 767px) {
+.table-gift-card .col-md-5 .btn-default .fa {
+    margin-top: 5px;
+}
+}
+@media (max-width: 575px) {
+    .table-gift-card {
+    margin-top: 0px;
+}
+}
+/*---------------|| Mijn huurfacturen End ||-------------------*/

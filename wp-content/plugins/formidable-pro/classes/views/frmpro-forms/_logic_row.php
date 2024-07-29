@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				$selected = isset( $condition['hide_field'] ) && (int) $ff->id === (int) $condition['hide_field'];
 				?>
-				<option value="<?php echo esc_attr( $ff->id ); ?>"<?php selected( $selected ); ?>><?php echo esc_html( $ff->name ); ?></option>
+				<option value="<?php echo esc_attr( $ff->id ); ?>"<?php selected( $selected ); ?>><?php echo esc_html( FrmAppHelper::truncate( $ff->name, 25 ) ); ?></option>
 				<?php
 				unset( $ff );
 			}
@@ -34,35 +34,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p class="frm2 frm_form_field">
 		<select name="<?php echo esc_attr( $names['hide_field_cond'] ); ?>">
 			<option value="==" <?php selected( $condition['hide_field_cond'], '==' ); ?>>
-				<?php esc_html_e( 'equals', 'formidable-pro' ); ?>
+				<?php esc_html_e( 'is equal to', 'formidable-pro' ); ?>
 			</option>
 			<option value="!=" <?php selected( $condition['hide_field_cond'], '!=' ); ?>>
-				<?php esc_html_e( 'does not equal', 'formidable-pro' ); ?> &nbsp;
+				<?php esc_html_e( 'is NOT equal to', 'formidable-pro' ); ?> &nbsp;
 			</option>
 			<option value=">" <?php selected( $condition['hide_field_cond'], '>' ); ?>>
-				<?php esc_html_e( 'is greater than', 'formidable-pro' ); ?>
-			</option>
-			<option value=">=" <?php selected( $condition['hide_field_cond'], '>=' ); ?>>
-				<?php esc_html_e( 'is greater than or equal to', 'formidable-pro' ); ?>
+				<?php esc_html_e( 'greater than', 'formidable-pro' ); ?>
 			</option>
 			<option value="<" <?php selected( $condition['hide_field_cond'], '<' ); ?>>
-				<?php esc_html_e( 'is less than', 'formidable-pro' ); ?>
-			</option>
-			<option value="<=" <?php selected( $condition['hide_field_cond'], '<=' ); ?>>
-				<?php esc_html_e( 'is less than or equal to', 'formidable-pro' ); ?>
+				<?php esc_html_e( 'less than', 'formidable-pro' ); ?>
 			</option>
 			<option value="LIKE" <?php selected( $condition['hide_field_cond'], 'LIKE' ); ?>>
-				<?php esc_html_e( 'contains', 'formidable-pro' ); ?>
+				<?php esc_html_e( 'is like', 'formidable-pro' ); ?>
 			</option>
 			<option value="not LIKE" <?php selected( $condition['hide_field_cond'], 'not LIKE' ); ?>>
-				<?php esc_html_e( 'does not contain', 'formidable-pro' ); ?>
+				<?php esc_html_e( 'is not like', 'formidable-pro' ); ?>
 			</option>
-			<option value="LIKE%" <?php selected( $condition['hide_field_cond'], 'LIKE%' ); ?>>
-				<?php esc_html_e( 'starts with', 'formidable-pro' ); ?>
-			</option>
-			<option value="%LIKE" <?php selected( $condition['hide_field_cond'], '%LIKE' ); ?>>
-				<?php esc_html_e( 'ends with', 'formidable-pro' ); ?>
-			</option>
+			<?php if ( version_compare( FrmAppHelper::plugin_version(), '5.0.04', '>=' ) ) { ?>
+				<option value="LIKE%" <?php selected( $condition['hide_field_cond'], 'LIKE%' ); ?>>
+					<?php esc_html_e( 'starts with', 'formidable-pro' ); ?>
+				</option>
+				<option value="%LIKE" <?php selected( $condition['hide_field_cond'], '%LIKE' ); ?>>
+					<?php esc_html_e( 'ends with', 'formidable-pro' ); ?>
+				</option>
+			<?php } ?>
 		</select>
 	</p>
 	<p class="frm6 frm_form_field">

@@ -6,12 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmProCreditCardsController extends FrmProComboFieldsController {
 
-	/**
-	 * @param array  $field
-	 * @param string $field_name
-	 * @param array  $atts
-	 * @return void
-	 */
 	public static function show_in_form( $field, $field_name, $atts ) {
 		$frm_settings = FrmAppHelper::get_settings();
 
@@ -32,7 +26,7 @@ class FrmProCreditCardsController extends FrmProComboFieldsController {
 		$sub_fields = self::get_sub_fields( $field );
 		$remove_names = ( $field['save_cc'] == -1 );
 
-		include FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/input.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/input.php' );
 	}
 
 	public static function get_sub_fields( $field ) {

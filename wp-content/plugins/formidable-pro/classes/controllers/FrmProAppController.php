@@ -10,6 +10,17 @@ class FrmProAppController {
 		load_plugin_textdomain( 'formidable-pro', false, FrmProAppHelper::plugin_folder() . '/languages/' );
 	}
 
+	/**
+	 * Use in-plugin translations instead of WP.org
+	 *
+	 * @since 2.2.8
+	 * @codeCoverageIgnore
+	 */
+	public static function load_translation( $mo_file, $domain ) {
+		_deprecated_function( __FUNCTION__, '3.0' );
+		return $mo_file;
+	}
+
 	public static function create_taxonomies() {
 		register_taxonomy(
 			'frm_tag',
@@ -24,8 +35,6 @@ class FrmProAppController {
 				'show_ui'      => true,
 			)
 		);
-
-		FrmProAddonsController::maybe_disable_form_actions();
 	}
 
 	/**
@@ -49,10 +58,6 @@ class FrmProAppController {
 		return $location;
 	}
 
-	/**
-	 * @param array $files
-	 * @return array
-	 */
 	public static function combine_js_files( $files ) {
 		$pro_js = self::get_pro_js_files( '.min', false );
 		foreach ( $pro_js as $js ) {
@@ -68,9 +73,6 @@ class FrmProAppController {
 		return is_readable( FrmProAppHelper::plugin_path() . '/js/frm.min.js' );
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function register_scripts() {
 		$suffix = FrmAppHelper::js_suffix();
 
@@ -90,55 +92,6 @@ class FrmProAppController {
 			}
 		}
 		FrmAppHelper::localize_script( 'front' );
-
-		self::localize_global_messages();
-		self::add_password_checks_data_to_js();
-		FrmProStrpLiteController::maybe_register_stripe_scripts();
-	}
-
-	/**
-	 * Localizes the global settings messages.
-	 *
-	 * @since 6.4.1
-	 *
-	 * @return void
-	 */
-	private static function localize_global_messages() {
-
-		/**
-		 * Allows turning the repeater delete confirmation on/off.
-		 *
-		 * @since 6.4.1
-		 *
-		 * @param bool Whether a confirmation is required before deleting a repeater row.
-		 */
-		$enable_repeater_row_delete_confirmation = apply_filters( 'frm_enable_repeater_row_delete_confirmation', true );
-
-		if ( $enable_repeater_row_delete_confirmation ) {
-			$frmpro_settings = FrmProAppHelper::get_settings();
-
-			if ( ! empty( $frmpro_settings->repeater_row_delete_confirmation ) ) {
-				wp_add_inline_script( 'formidable', 'window.frm_js.repeaterRowDeleteConfirmation = "' . esc_js( $frmpro_settings->repeater_row_delete_confirmation ) . '";' );
-			}
-		}
-	}
-
-	/**
-	 * Adds password checks data to JS.
-	 *
-	 * @since 5.5.3
-	 */
-	private static function add_password_checks_data_to_js() {
-		$field          = new stdClass();
-		$field->name    = 'password';
-		$field->type    = 'password';
-		$password_field = new FrmProFieldPassword( $field, 'password' );
-
-		wp_localize_script(
-			'formidable',
-			'frm_password_checks',
-			$password_field->password_checks()
-		);
 	}
 
 	/**
@@ -148,7 +101,7 @@ class FrmProAppController {
 	 * @param array  $details
 	 * @return void
 	 */
-	public static function register_js( $key, $details ) {
+	private static function register_js( $key, $details ) {
 		wp_register_script( $key, FrmProAppHelper::plugin_url() . $details['file'], $details['requires'], $details['version'], true );
 	}
 
@@ -172,21 +125,12 @@ class FrmProAppController {
 				'requires' => array( 'jquery', 'formidable' ),
 				'version'  => $version,
 			),
-		);
-
-		if ( FrmProAppHelper::use_chosen_js() ) {
-			$files['jquery-chosen'] = array(
+			'jquery-chosen' => array(
 				'file'     => '/js/chosen.jquery.min.js',
 				'requires' => array( 'jquery' ),
 				'version'  => '1.8.7',
-			);
-		} else {
-			$files['slimselect'] = array(
-				'file'     => '/js/slimselect.min.js',
-				'requires' => array(),
-				'version'  => '2.8.1',
-			);
-		}
+			),
+		);
 
 		$files = array_merge( $files, self::additional_js_files( $include_excluded ? 'all' : 'minified' ) );
 
@@ -218,9 +162,12 @@ class FrmProAppController {
 
 		$files = array();
 		if ( $include_dropzone ) {
-			$files['dropzone'] = self::get_dropzone_js_details();
+			$files['dropzone'] = array(
+				'file'     => '/js/dropzone.min.js',
+				'requires' => array( 'jquery' ),
+				'version'  => '5.9.3',
+			);
 		}
-
 		if ( $include_maskedinput ) {
 			$files['jquery-maskedinput'] = array(
 				'file'     => '/js/jquery.maskedinput.min.js',
@@ -233,31 +180,12 @@ class FrmProAppController {
 	}
 
 	/**
-	 * Get details for dropzone script including file path, dependencies, and version.
-	 *
-	 * @since 6.0
-	 *
-	 * @return array {
-	 *     @type string $file
-	 *     @type array  $requires
-	 *     @type string $version
-	 * }
-	 */
-	public static function get_dropzone_js_details() {
-		return array(
-			'file'     => '/js/dropzone.min.js',
-			'requires' => array( 'jquery' ),
-			'version'  => '5.9.3',
-		);
-	}
-
-	/**
 	 * @since 5.0.15
 	 *
 	 * @return bool
 	 */
 	private static function dropzone_conflict_detected() {
-		$buddyboss_active = function_exists( 'buddypress' );
+		$buddyboss_active = is_plugin_active( 'buddyboss-platform/bp-loader.php' );
 		return $buddyboss_active;
 	}
 
@@ -267,7 +195,7 @@ class FrmProAppController {
 	 * @return bool
 	 */
 	private static function maskedinput_conflict_detected() {
-		$woocommerce_stripe_gateway_active = function_exists( 'woocommerce_gateway_stripe' );
+		$woocommerce_stripe_gateway_active = is_plugin_active( 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php' );
 		return $woocommerce_stripe_gateway_active;
 	}
 
@@ -365,7 +293,7 @@ class FrmProAppController {
 		$has_entries = FrmDb::get_var( 'frm_items', array( 'form_id' => $form_id ) );
 		if ( $has_entries ) {
 			$reports = array(
-				'link'       => admin_url( 'admin.php?page=formidable&frm_action=reports&form=' . $form_id . '&show_nav=1' ),
+				'link'       => admin_url( 'admin.php?page=formidable&frm_action=reports&frm-full=1&form=' . $form_id . '&show_nav=1' ),
 				'label'      => __( 'Reports', 'formidable-pro' ),
 				'current'    => array( 'reports' ),
 				'page'       => 'formidable',
@@ -537,22 +465,30 @@ class FrmProAppController {
 		}
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function admin_init() {
 		if ( FrmAppHelper::is_admin_page( 'formidable-entries' ) && 'destroy_all' === FrmAppHelper::get_param( 'frm_action' ) ) {
 			FrmProEntriesController::destroy_all();
 			die();
 		}
 
-		FrmProDashboardController::init();
+		if ( FrmProAppHelper::views_is_installed() ) {
+			if ( self::has_nested_views_plugin() ) {
+				add_filter( 'frm_message_list', 'FrmProAppController::deprecating_nested_views_notice' );
 
-		if ( FrmAppHelper::is_admin_page( 'formidable-entries' ) && 'duplicate' === FrmAppHelper::get_param( 'frm_action' ) ) {
-			FrmProEntriesController::duplicate();
-		}
-
-		if ( ! FrmProAppHelper::views_is_installed() && self::there_are_views_in_the_database() ) {
+				if ( class_exists( 'FrmInbox' ) ) {
+					$message = array(
+						'key'     => 'deprecating_nested_views_notice',
+						'subject' => 'Nested Views will be removed soon!',
+						'message' => self::get_nested_views_deprecation_message(),
+						'icon'    => 'frm_report_problem_icon',
+						'type'    => 'news',
+						'cta'     => self::get_nested_views_cta(),
+					);
+					$inbox   = new FrmInbox();
+					$inbox->add_message( $message );
+				}
+			}
+		} elseif ( self::there_are_views_in_the_database() ) {
 			$action = FrmAppHelper::get_param( 'frm_action' );
 			if ( ! $action ) {
 				if ( ! get_option( 'frm_missing_views_dismissed' ) ) {
@@ -565,30 +501,8 @@ class FrmProAppController {
 			}
 		}
 
-		if ( FrmAppHelper::is_admin_page( 'formidable-settings' ) ) {
-			$version = FrmProDb::$plug_version;
-			wp_register_script( 'formidable_pro_license_listener', FrmProAppHelper::plugin_url() . '/js/admin/settings/license.js', array( 'wp-hooks' ), $version, true );
-			add_action(
-				'admin_enqueue_scripts',
-				function () {
-					wp_enqueue_script( 'formidable_pro_license_listener' );
-				}
-			);
-		}
-
 		self::maybe_load_admin_js();
 		self::remove_upsells();
-	}
-
-	/**
-	 * Init admin head. It's called via action hook admin_head.
-	 *
-	 * @since 6.5.1
-	 *
-	 * @return void
-	 */
-	public static function admin_init_head() {
-		FrmProAddonsController::show_warning_overlay_for_expired_or_null_license();
 	}
 
 	/**
@@ -597,129 +511,17 @@ class FrmProAppController {
 	 * @return void
 	 */
 	private static function maybe_load_admin_js() {
-		if ( FrmAppHelper::doing_ajax() ) {
-			return;
-		}
-		self::maybe_enqueue_styles_for_admin_page_action( 'formidable-entries' );
-		self::maybe_enqueue_styles_for_admin_page_action( 'formidable', 'reports' );
-
-		// Check if we're on the 'Form Templates' page with the right permissions.
-		if ( method_exists( 'FrmFormTemplatesController', 'is_templates_page' ) && FrmFormTemplatesController::is_templates_page() ) {
-			self::enqueue_list_script();
-		}
-
-		if ( FrmAppHelper::is_admin_page( 'formidable-entries' ) ) {
-			self::register_and_enqueue_admin_script( 'entries' );
-			return;
-		}
-
-		// Exit if not on a Formidable admin page.
-		if ( ! FrmAppHelper::is_admin_page( 'formidable' ) ) {
+		if ( FrmAppHelper::doing_ajax() || ! FrmAppHelper::is_admin_page( 'formidable' ) ) {
 			return;
 		}
 
 		$action = FrmAppHelper::get_param( 'frm_action' );
 		if ( in_array( $action, array( 'edit', 'duplicate' ), true ) ) {
-
-			self::register_admin_script( 'builder', array( 'formidable_admin' ) );
-
-			$form_id = FrmAppHelper::simple_get( 'id', 'absint' );
-			$form    = FrmForm::getOne( $form_id );
-			$vars    = array(
-				'currency' => FrmProCurrencyHelper::get_currency( $form ),
-			);
-			wp_localize_script( 'formidable_pro_builder', 'frmProBuilderVars', $vars );
-
-			self::enqueue_script( 'builder' );
-
+			self::register_and_enqueue_admin_script( 'builder' );
 			self::register_and_enqueue_style( 'builder' );
-			self::maybe_register_and_enqueue_expired_script();
-		} elseif ( in_array( $action, array( 'settings', 'update_settings', 'reports' ), true ) ) {
-			self::register_and_enqueue_admin_script( 'update_settings' === $action ? 'settings' : $action );
-			self::maybe_register_and_enqueue_expired_script();
-		} elseif ( self::on_form_listing_page() ) {
-			self::enqueue_list_script();
+		} elseif ( 'settings' === $action ) {
+			self::register_and_enqueue_admin_script( 'settings' );
 		}
-	}
-
-	/**
-	 * Enqueues list script for application management.
-	 *
-	 * @return void Exits early if the user lacks editing permissions.
-	 */
-	private static function enqueue_list_script() {
-		// Exit if the user can't edit applications.
-		if ( ! FrmProApplicationsHelper::current_user_can_edit_applications() ) {
-			return;
-		}
-
-		// Register list script.
-		self::register_admin_script( 'list' );
-
-		// If 'applicationId' is in the URL, fetch application data.
-		$application_id = FrmAppHelper::simple_get( 'applicationId', 'absint' );
-		if ( $application_id ) {
-			$application = get_term( $application_id, 'frm_application' );
-			if ( $application instanceof WP_Term ) {
-				wp_localize_script(
-					'formidable_pro_list',
-					'frmAutocompleteApplicationVars',
-					array(
-						'name' => $application->name,
-					)
-				);
-			}
-		}
-
-		// Enqueue list script.
-		self::enqueue_script( 'list' );
-	}
-
-	/**
-	 * Enqueues style for specific admin page and also action, if it is provided.
-	 *
-	 * @param string $page
-	 * @param string $frm_action
-	 */
-	private static function maybe_enqueue_styles_for_admin_page_action( $page, $frm_action = '' ) {
-		if ( ! FrmAppHelper::is_admin_page( $page ) ) {
-			return;
-		}
-		if ( $frm_action ) {
-			if ( FrmAppHelper::simple_get( 'frm_action', 'sanitize_title' ) !== $frm_action ) {
-				return;
-			}
-			$frm_action = '-' . $frm_action;
-		}
-		$plugin_url = FrmProAppHelper::plugin_url();
-		$version    = FrmProDb::$plug_version;
-		wp_enqueue_style( 'formidable-pro-admin', $plugin_url . '/css/admin/' . $page . $frm_action . '.css', array(), $version );
-	}
-
-	/**
-	 * @since 5.5.1
-	 *
-	 * @return void
-	 */
-	private static function maybe_register_and_enqueue_expired_script() {
-		if ( FrmProAddonsController::is_expired_outside_grace_period() ) {
-			self::register_and_enqueue_admin_script( 'expired', array( 'formidable_dom' ) );
-		}
-	}
-
-	/**
-	 * Check if active page is the form list table page.
-	 *
-	 * @since 5.3.1
-	 *
-	 * @return bool
-	 */
-	private static function on_form_listing_page() {
-		if ( is_callable( 'FrmAppHelper::on_form_listing_page' ) ) {
-			return FrmAppHelper::on_form_listing_page();
-		}
-		$action = FrmAppHelper::simple_get( 'frm_action', 'sanitize_title' );
-		return ! $action || in_array( $action, array( 'list', 'trash', 'untrash', 'destroy' ), true );
 	}
 
 	/**
@@ -730,33 +532,8 @@ class FrmProAppController {
 	 * @return void
 	 */
 	private static function register_and_enqueue_admin_script( $script, $dependencies = array( 'formidable_admin' ) ) {
-		self::register_admin_script( $script, $dependencies );
-		self::enqueue_script( $script );
-	}
-
-	/**
-	 * Register JavaScript in /js/admin/ folder.
-	 *
-	 * @since 5.3
-	 *
-	 * @param string $script
-	 * @param array  $dependencies
-	 * @return void
-	 */
-	private static function register_admin_script( $script, $dependencies = array( 'formidable_admin' ) ) {
 		$version = FrmProDb::$plug_version;
 		wp_register_script( 'formidable_pro_' . $script, FrmProAppHelper::plugin_url() . '/js/admin/' . $script . '.js', $dependencies, $version, true );
-	}
-
-	/**
-	 * Enqueue JavaScript
-	 *
-	 * @since 5.3
-	 *
-	 * @param string $script
-	 * @return void
-	 */
-	private static function enqueue_script( $script ) {
 		wp_enqueue_script( 'formidable_pro_' . $script );
 	}
 
@@ -768,6 +545,31 @@ class FrmProAppController {
 		$version = FrmProDb::$plug_version;
 		wp_register_style( 'formidable-pro-' . $style, FrmProAppHelper::plugin_url() . '/css/' . $style . '.css', array(), $version );
 		wp_enqueue_style( 'formidable-pro-' . $style );
+	}
+
+	public static function deprecating_nested_views_notice() {
+		$messages[] = '<p>' . self::get_nested_views_deprecation_message() . '</p><p>' . self::get_nested_views_cta() . '</p>';
+		return $messages;
+	}
+
+	private static function get_nested_views_deprecation_message() {
+		return 'The nested Formidable Views plugin will be removed soon! We recommend downloading and activating Views as soon as possible to avoid future issues!';
+	}
+
+	private static function get_nested_views_cta() {
+		ob_start();
+		FrmProAddonsController::conditional_action_button( 'views', array( 'medium' => 'nested-views-deprecation-notice' ) );
+		return ob_get_clean();
+	}
+
+	private static function has_nested_views_plugin() {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+		}
+
+		$file_name   = 'views/formidable-views.php';
+		$stand_alone = is_plugin_active( 'formidable-' . $file_name );
+		return file_exists( FrmProAppHelper::plugin_path() . '/' . $file_name ) && ! $stand_alone;
 	}
 
 	private static function there_are_views_in_the_database() {
@@ -822,7 +624,7 @@ class FrmProAppController {
 			<?php
 			printf(
 				/* translators: %1$s: Start link HTML, %2$s: End link HTML */
-				esc_html__( 'Formidable Forms installed, but not yet activated. %1$sAdd your license key now%2$s to start enjoying all the premium features.', 'formidable' ),
+				__( 'Formidable Forms installed, but not yet activated. %1$sAdd your license key now%2$s to start enjoying all the premium features.', 'formidable' ),
 				'<a href="' . esc_url( admin_url( 'admin.php?page=formidable-settings' ) ) . '">',
 				'</a>'
 			);
@@ -856,127 +658,15 @@ class FrmProAppController {
 		return FrmProAppHelper::plugin_url() . '/js/admin/settings/';
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function load_style_manager_js_assets() {
 		$version = FrmProDb::$plug_version;
-		wp_enqueue_media(); // Required for the bg image file upload.
-
-		if ( is_callable( 'FrmAppHelper::is_style_editor_page' ) && FrmAppHelper::is_style_editor_page( 'edit' ) ) {
-			wp_enqueue_script( 'wp-color-picker-alpha', self::get_settings_js_url() . 'wp-color-picker-alpha.js', array( 'wp-color-picker' ), '3.0.2', true );
-		}
-
-		$dependencies = array( 'jquery', 'wp-i18n', 'wp-hooks', 'formidable_dom' );
-		if ( class_exists( 'FrmStylesPreviewHelper' ) ) { // This class only exists after the visual styler update in v6.0.
-			$dependencies[] = 'formidable_style';
-		}
-
-		wp_register_script( 'formidable_pro_style_settings', self::get_settings_js_url() . 'style-settings.js', $dependencies, $version, true );
-
-		self::preload_svgs_for_style_settings();
-
+		wp_enqueue_media(); // required for the bg image file upload.
+		wp_enqueue_script( 'wp-color-picker-alpha', self::get_settings_js_url() . 'wp-color-picker-alpha.js', array( 'wp-color-picker' ), $version, true );
+		wp_register_script( 'formidable_pro_style_settings', self::get_settings_js_url() . 'style-settings.js', array( 'jquery' ), $version, true );
 		wp_enqueue_script( 'formidable_pro_style_settings' );
-	}
-
-	/**
-	 * Preloads SVG icons for live updating in style settings.
-	 *
-	 * @since 6.4.2
-	 */
-	private static function preload_svgs_for_style_settings() {
-		$svgs      = array();
-		$svg_names = array(
-			'frm_plus_icon',
-			'frm_plus1_icon',
-			'frm_plus2_icon',
-			'frm_plus3_icon',
-			'frm_plus4_icon',
-			'frm_minus_icon',
-			'frm_minus1_icon',
-			'frm_minus2_icon',
-			'frm_minus3_icon',
-			'frm_minus4_icon',
-			'frm_arrowdown_icon',
-			'frm_arrowdown1_icon',
-			'frm_arrowdown2_icon',
-			'frm_arrowdown3_icon',
-			'frm_arrowdown4_icon',
-			'frm_arrowdown5_icon',
-			'frm_arrowdown6_icon',
-		);
-
-		foreach ( $svg_names as $svg_name ) {
-			$svgs[ $svg_name ] = FrmProAppHelper::get_svg_icon( $svg_name, 'frmsvg' );
-		}
-
-		wp_localize_script( 'formidable_pro_style_settings', 'frmProStyleSettingsSVGs', $svgs );
-	}
-
-	/**
-	 * Updates the default stylesheet.
-	 *
-	 * @since 6.4.1
-	 */
-	public static function update_stylesheet() {
-		$frm_style = new FrmStyle();
-		$frm_style->update( 'default' );
-	}
-
-	/**
-	 * Load a script that is loaded whenever formidable_admin.js is.
-	 * This is used for the Inbox Slide-In, and may be used for other features in the future.
-	 *
-	 * @since 6.8.4
-	 *
-	 * @return void
-	 */
-	public static function load_floating_links_js() {
-		if ( ! wp_script_is( 'formidable_dom', 'registered' ) ) {
-			wp_register_script( 'formidable_dom', FrmAppHelper::plugin_url() . '/js/admin/dom.js', array( 'jquery', 'jquery-ui-dialog', 'wp-i18n' ), FrmAppHelper::plugin_version(), true );
-		}
-
-		$plugin_url   = FrmProAppHelper::plugin_url();
-		$dependencies = array( 's11-floating-links', 'wp-hooks', 'formidable_dom' );
-		$version      = FrmProDb::$plug_version;
-		wp_register_script( 'frm_pro_floating_links', $plugin_url . '/js/admin/floating-links.js', $dependencies, $version, true );
-		wp_enqueue_script( 'frm_pro_floating_links' );
-	}
-
-	/**
-	 * @since 6.8.4
-	 *
-	 * @param array $keys
-	 * @return array
-	 */
-	public static function inbox_slidein_js_vars( $keys ) {
-		$keys[] = 'image';
-		return $keys;
 	}
 
 	public static function load_genesis() {
 		return FrmProDisplaysController::deprecated_function( __METHOD__, 'FrmViewsAppController::load_genesis' );
-	}
-
-	/**
-	 * Use in-plugin translations instead of WP.org
-	 *
-	 * @since 2.2.8
-	 * @deprecated 3.0
-	 * @codeCoverageIgnore
-	 */
-	public static function load_translation( $mo_file, $domain ) {
-		_deprecated_function( __FUNCTION__, '3.0' );
-		return $mo_file;
-	}
-
-	/**
-	 * @deprecated 5.3.1
-	 *
-	 * @return array
-	 */
-	public static function deprecating_nested_views_notice() {
-		_deprecated_function( __METHOD__, '5.3.1' );
-		return array();
 	}
 }

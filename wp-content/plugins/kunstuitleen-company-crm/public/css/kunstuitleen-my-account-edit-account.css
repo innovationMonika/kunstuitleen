@@ -1,0 +1,40 @@
+form.kucrm_company_register_form {
+    margin-top: 0px;
+}
+form.kucrm_company_register_form .edit_account_btn_group a.btn.btn-primary {
+    background: #607ff2 !important;
+    color: #fff;
+    font-weight:600;
+    outline: none !important;
+    margin-left: 0px !important;
+    transition:all 0.4s ease;
+    padding: 15px 30px !important;
+}
+form.kucrm_company_register_form .edit_account_btn_group a.btn.btn-primary:hover{
+    background:#fff !important;
+}
+form.kucrm_company_register_form .edit_account_btn_group button.btn.company_user_register,form.kucrm_company_register_form .edit_account_btn_group a.btn.btn-primary:hover {
+    border: 1px solid #607ff2 !important;
+    color: #607ff2 !important;
+    transition:all 0.4s ease;
+}
+form.kucrm_company_register_form .edit_account_btn_group  button.btn.company_user_register{
+      padding: 15px 30px !important;
+}
+form.kucrm_company_register_form .edit_account_btn_group  button.btn.company_user_register:hover{
+ background: #607ff2 !important; 
+  color: #fff !important; 
+}
+
+.kunstuitleen-table th.mr-jonas a img {
+    max-width: 24px;
+    height: auto !important;
+    margin-top: 0px;
+}
+
+
+@media(max-width: 767px){
+  form.kucrm_company_register_form .edit_account_btn_group  .btn.company_user_register {
+    display: inline-block !important;
+} 
+}

@@ -6,8 +6,7 @@
  */
 namespace LiteSpeed;
 
-defined('WPINC') || exit();
+defined( 'WPINC' ) || exit;
 
-abstract class Instance extends Root
-{
+abstract class Instance extends Root {
 }

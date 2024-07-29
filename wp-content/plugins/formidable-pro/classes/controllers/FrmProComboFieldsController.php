@@ -14,7 +14,7 @@ class FrmProComboFieldsController {
 		$field_name = 'item_meta[' . $field['id'] . ']';
 		$html_id = 'field_' . $field['field_key'];
 
-		include FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/input-form-builder.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/input-form-builder.php' );
 	}
 
 	public static function get_sub_fields( $field ) {
@@ -95,7 +95,7 @@ class FrmProComboFieldsController {
 	}
 
 	public static function include_sub_label( $atts ) {
-		$is_form_builder = FrmAppHelper::is_admin_page( 'formidable' );
+		$is_form_builder = FrmAppHelper::is_admin_page('formidable' );
 		$ajax_action = FrmAppHelper::get_param( 'action', '', 'get', 'sanitize_text_field' );
 		$is_new_field = FrmAppHelper::doing_ajax() && ( $ajax_action == 'frm_insert_field' || $ajax_action == 'frm_load_field' );
 
@@ -112,7 +112,7 @@ class FrmProComboFieldsController {
 
 	public static function maybe_add_error_class( $atts ) {
 		$temp_id   = ! empty( $atts['atts']['field_id'] ) ? $atts['atts']['field_id'] : $atts['field']['id'];
-		$has_error = isset( $atts['errors'][ 'field' . $temp_id . '-' . $atts['key'] ] );
+		$has_error = isset( $atts['errors'][ 'field' . $temp_id . '-' . $atts['key'] ]  );
 		if ( $has_error ) {
 			echo ' frm_blank_field';
 		}
@@ -132,5 +132,9 @@ class FrmProComboFieldsController {
 	public static function add_default_options( $options ) {
 		_deprecated_function( __METHOD__, '3.0', 'FrmProField{type} Modals' );
 		return $options;
+	}
+
+	private static function empty_value_array() {
+		return array();
 	}
 }

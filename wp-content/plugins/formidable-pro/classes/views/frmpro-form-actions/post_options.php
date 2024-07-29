@@ -36,8 +36,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<option value=""><?php esc_html_e( '&mdash; Select &mdash;' ); ?></option>
 			<?php
 			$post_key = 'post_title';
-			$post_field = array( 'text', 'email', 'url', 'radio', 'select', 'scale', 'star', 'number', 'phone', 'time', 'hidden' );
-			include __DIR__ . '/_post_field_options.php';
+			$post_field = array( 'text', 'email', 'url', 'radio', 'checkbox', 'select', 'scale', 'star', 'number', 'phone', 'time', 'hidden' );
+			include( dirname( __FILE__ ) . '/_post_field_options.php' );
 			unset( $post_field );
 			?>
 		</select>
@@ -61,7 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			$post_key                    = 'post_content';
 			$post_field_only_if_selected = array( 'checkbox' );
-			include __DIR__ . '/_post_field_options.php';
+			include dirname( __FILE__ ) . '/_post_field_options.php';
 			unset( $post_field_only_if_selected );
 			?>
 		</select>
@@ -75,7 +75,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<option value=""><?php esc_html_e( 'None', 'formidable-pro' ); ?></option>
 			<?php
 			$post_key = 'post_excerpt';
-			include __DIR__ . '/_post_field_options.php';
+			include( dirname( __FILE__ ) . '/_post_field_options.php' );
 			?>
 		</select>
 	</p>
@@ -88,7 +88,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</option>
 			<?php
 			$post_key = 'post_password';
-			include __DIR__ . '/_post_field_options.php';
+			include( dirname( __FILE__ ) . '/_post_field_options.php' );
 			?>
 		</select>
 	</p>
@@ -101,7 +101,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</option>
 			<?php
 			$post_key = 'post_name';
-			include __DIR__ . '/_post_field_options.php';
+			include( dirname( __FILE__ ) . '/_post_field_options.php' );
 			?>
 		</select>
 	</p>
@@ -115,7 +115,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			$post_key   = 'post_date';
 			$post_field = array( 'date' );
-			include __DIR__ . '/_post_field_options.php';
+			include( dirname( __FILE__ ) . '/_post_field_options.php' );
 			?>
 		</select>
 	</p>
@@ -138,7 +138,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			$post_key   = 'post_status';
 			$post_field = array( 'select', 'radio', 'hidden' );
-			include __DIR__ . '/_post_field_options.php';
+			include( dirname( __FILE__ ) . '/_post_field_options.php' );
 			?>
 		</select>
 	</p>
@@ -184,7 +184,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</label>
 		<select name="<?php echo esc_attr( $this->get_field_name( $post_key ) ); ?>" class="frm_single_post_field">
 			<option value="">0</option>
-			<?php include __DIR__ . '/_post_field_options.php'; ?>
+			<?php include dirname( __FILE__ ) . '/_post_field_options.php'; ?>
 		</select>
 	</p>
 	<?php unset( $post_field, $post_key, $field_class ); ?>
@@ -204,7 +204,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php
 		$tax_key = 0;
 		foreach ( $form_action->post_content['post_category'] as $field_vars ) {
-			include __DIR__ . '/_post_taxonomy_row.php';
+			include( dirname( __FILE__ ) . '/_post_taxonomy_row.php' );
 			$tax_key++;
 			unset( $field_vars );
 		}
@@ -233,39 +233,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</p>
 
 		<div id="frm_postmeta_rows">
-			<?php
-			$has_meta_row = false;
-			foreach ( $form_action->post_content['post_custom_fields'] as $custom_data ) {
-				$handle_in_acf = function_exists( 'frm_acf_autoloader' ) && ! empty( $custom_data['is_acf'] );
-				if ( ! empty( $custom_data['meta_name'] ) && ! $handle_in_acf ) {
-					include __DIR__ . '/_custom_field_row.php';
-					$has_meta_row = true;
-				}
-				unset($custom_data);
-			}
-			?>
+                <?php
+                foreach ( $form_action->post_content['post_custom_fields'] as $custom_data ) {
+					if ( isset( $custom_data['meta_name'] ) && ! empty( $custom_data['meta_name'] ) ) {
+						include( dirname( __FILE__ ) . '/_custom_field_row.php' );
+					}
+                    unset($custom_data);
+                }
+                ?>
 		</div>
 	</div>
 
 	<p>
-		<a href="javascript:void(0)" class="frm_add_postmeta_row button frm-button-secondary <?php echo esc_attr( ! $has_meta_row ? '' : 'frm_hidden' ); ?>">
+		<a href="javascript:void(0)" class="frm_add_postmeta_row button frm-button-secondary <?php echo esc_attr( empty( $form_action->post_content['post_custom_fields'] ) ? '' : 'frm_hidden' ); ?>">
 			+ <?php esc_html_e( 'Add' ); ?>
 		</a>
 	</p>
-
-	<?php
-	FrmProFormActionsController::show_disabled_acf_integration_option();
-
-	/**
-	 * Fires at the end of post action options.
-	 *
-	 * @since 5.5.1
-	 *
-	 * @param array $args {
-	 *     @type object        $form_action    Form action object.
-	 *     @type FrmFormAction $action_control Form action control object.
-	 * }
-	 */
-	do_action( 'frm_pro_post_action_options', compact( 'form_action', 'action_control' ) );
-	?>
 </div>

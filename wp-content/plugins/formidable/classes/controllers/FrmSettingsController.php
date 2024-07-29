@@ -12,16 +12,9 @@ class FrmSettingsController {
 		add_submenu_page( 'formidable', 'Formidable | ' . __( 'Global Settings', 'formidable' ), __( 'Global Settings', 'formidable' ), 'frm_change_settings', 'formidable-settings', 'FrmSettingsController::route' );
 	}
 
-	/**
-	 * Include license box template on demand.
-	 *
-	 * @return void
-	 */
 	public static function license_box() {
-		if ( ! current_user_can( 'activate_plugins' ) ) {
-			return;
-		}
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-settings/license_box.php';
+		$a = FrmAppHelper::simple_get( 't', 'sanitize_title', 'general_settings' );
+		include( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/license_box.php' );
 	}
 
 	public static function display_form( $errors = array(), $message = '' ) {
@@ -35,76 +28,57 @@ class FrmSettingsController {
 		$sections = self::get_settings_tabs();
 		$current  = FrmAppHelper::simple_get( 't', 'sanitize_title', 'general_settings' );
 
-		require FrmAppHelper::plugin_path() . '/classes/views/frm-settings/form.php';
+		require( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/form.php' );
 	}
 
-	/**
-	 * Get sections to use for Global Settings.
-	 *
-	 * @return array<array>
-	 */
 	private static function get_settings_tabs() {
 		$sections = array(
-			'general'       => array(
+			'general' => array(
 				'class'    => __CLASS__,
 				'function' => 'general_settings',
 				'name'     => __( 'General Settings', 'formidable' ),
 				'icon'     => 'frm_icon_font frm_settings_icon',
 			),
-			'messages'      => array(
+			'messages' => array(
 				'class'    => __CLASS__,
 				'function' => 'message_settings',
 				'name'     => __( 'Message Defaults', 'formidable' ),
 				'icon'     => 'frm_icon_font frm_stamp_icon',
 			),
-			'permissions'   => array(
+			'permissions' => array(
 				'class'    => __CLASS__,
 				'function' => 'permission_settings',
 				'name'     => __( 'Permissions', 'formidable' ),
 				'icon'     => 'frm_icon_font frm_lock_icon',
 			),
-			'custom_css'    => array(
-				'class'    => 'FrmStylesController',
-				'function' => 'custom_css',
-				'name'     => __( 'Custom CSS', 'formidable' ),
-				'icon'     => 'frm_icon_font frm_code_icon',
-			),
-			'manage_styles' => array(
-				'class'    => 'FrmStylesController',
-				'function' => 'manage',
-				'name'     => __( 'Manage Styles', 'formidable' ),
-				'icon'     => 'frm_icon_font frm_pallet_icon',
-			),
-			'captcha'       => array(
+			'recaptcha' => array(
 				'class'    => __CLASS__,
-				'function' => 'captcha_settings',
-				'name'     => __( 'Captcha', 'formidable' ),
+				'function' => 'recaptcha_settings',
+				'name'     => __( 'reCAPTCHA', 'formidable' ),
 				'icon'     => 'frm_icon_font frm_shield_check_icon',
 			),
-			'white_label'   => array(
+			'white_label' => array(
 				'name'       => __( 'White Labeling', 'formidable' ),
 				'icon'       => 'frm_icon_font frm_ghost_icon',
-				'html_class' => 'frm_show_upgrade_tab frm_noallow',
+				'html_class' => 'frm_show_upgrade frm_noallow',
 				'data'       => array(
-					'medium'     => 'white-label',
-					'upgrade'    => __( 'White labeling options', 'formidable' ),
-					'screenshot' => 'white-label.png',
+					'medium'  => 'white-label',
+					'upgrade' => __( 'White labeling options', 'formidable' ),
 				),
 			),
-			'inbox'         => array(
+			'inbox' => array(
 				'name'       => __( 'Inbox', 'formidable' ),
 				'icon'       => 'frm_icon_font frm_email_icon',
-				'html_class' => 'frm_show_upgrade_tab frm_noallow',
+				'html_class' => 'frm_show_upgrade frm_noallow',
 				'data'       => array(
-					'medium'     => 'inbox-settings',
-					'upgrade'    => __( 'Inbox settings', 'formidable' ),
-					'screenshot' => 'inbox.png',
+					'medium'  => 'inbox-settings',
+					'upgrade' => __( 'Inbox settings', 'formidable' ),
 				),
 			),
 		);
 
 		if ( apply_filters( 'frm_include_addon_page', false ) ) {
-			// If no addons need a license, skip this page
+			// if no addons need a license, skip this page
 			$show_licenses    = false;
 			$installed_addons = apply_filters( 'frm_installed_addons', array() );
 			foreach ( $installed_addons as $installed_addon ) {
@@ -119,15 +93,11 @@ class FrmSettingsController {
 					'class'    => 'FrmAddonsController',
 					'function' => 'license_settings',
 					'name'     => __( 'Plugin Licenses', 'formidable' ),
-					'icon'     => 'frmfont frm_key_icon',
+					'icon'     => 'frm_icon_font frm_keyalt_icon',
 					'ajax'     => true,
 				);
 			}
-		}//end if
-
-		/**
-		 * @param array<array> $sections
-		 */
+		}
 		$sections = apply_filters( 'frm_add_settings_section', $sections );
 
 		$sections['misc'] = array(
@@ -159,7 +129,7 @@ class FrmSettingsController {
 			}
 
 			$sections[ $key ] = $section;
-		}//end foreach
+		}
 
 		return $sections;
 	}
@@ -185,36 +155,15 @@ class FrmSettingsController {
 	}
 
 	/**
-	 * Render the general global settings section.
-	 *
 	 * @since 4.0
-	 *
-	 * @return void
 	 */
 	public static function general_settings() {
 		$frm_settings = FrmAppHelper::get_settings();
-		$uploads      = wp_upload_dir();
-		$target_path  = $uploads['basedir'] . '/formidable/css';
 
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-settings/general.php';
-	}
+		$uploads     = wp_upload_dir();
+		$target_path = $uploads['basedir'] . '/formidable/css';
 
-	/**
-	 * Render the global currency selector if Pro is up to date.
-	 *
-	 * @param FrmSettings $frm_settings
-	 * @param string      $more_html
-	 * @return void
-	 */
-	public static function maybe_render_currency_selector( $frm_settings, $more_html ) {
-		if ( false !== strpos( $more_html, 'id="frm_currency"' ) ) {
-			// Avoid rendering the Currency setting if it gets rendered from the frm_settings_form hook.
-			// This is for backward compatibility. If Pro is outdated there won't be two currency dropdowns.
-			return;
-		}
-
-		$currencies = FrmCurrencyHelper::get_currencies();
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-settings/_currency.php';
+		include( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/general.php' );
 	}
 
 	/**
@@ -223,17 +172,17 @@ class FrmSettingsController {
 	public static function message_settings() {
 		$frm_settings = FrmAppHelper::get_settings();
 
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-settings/messages.php';
+		include( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/messages.php' );
 	}
 
 	/**
 	 * @since 4.0
 	 */
-	public static function captcha_settings() {
+	public static function recaptcha_settings() {
 		$frm_settings = FrmAppHelper::get_settings();
 		$captcha_lang = FrmAppHelper::locales( 'captcha' );
 
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-settings/captcha/captcha.php';
+		include( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/recaptcha.php' );
 	}
 
 	/**
@@ -243,7 +192,7 @@ class FrmSettingsController {
 		$frm_settings = FrmAppHelper::get_settings();
 		$frm_roles    = FrmAppHelper::frm_capabilities();
 
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-settings/permissions.php';
+		include( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/permissions.php' );
 	}
 
 	/**
@@ -252,41 +201,28 @@ class FrmSettingsController {
 	public static function misc_settings() {
 		$frm_settings = FrmAppHelper::get_settings();
 
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-settings/misc.php';
+		include( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/misc.php' );
 	}
 
-	/**
-	 * Save form data submitted from the Global settings page.
-	 *
-	 * @param bool|string $stop_load
-	 *
-	 * @return void
-	 */
 	public static function process_form( $stop_load = false ) {
 		global $frm_vars;
 
 		$frm_settings = FrmAppHelper::get_settings();
-		$process_form = FrmAppHelper::get_post_param( 'process_form', '', 'sanitize_text_field' );
 
+		$process_form = FrmAppHelper::get_post_param( 'process_form', '', 'sanitize_text_field' );
 		if ( ! wp_verify_nonce( $process_form, 'process_form_nonce' ) ) {
-			$error_args = array(
-				'title'       => __( 'Verification failed', 'formidable' ),
-				'body'        => $frm_settings->admin_permission,
-				'cancel_text' => __( 'Cancel', 'formidable' ),
-			);
-			FrmAppController::show_error_modal( $error_args );
-			return;
+			wp_die( esc_html( $frm_settings->admin_permission ) );
 		}
 
 		$errors  = array();
 		$message = '';
 
-		if ( empty( $frm_vars['settings_routed'] ) ) {
+		if ( ! isset( $frm_vars['settings_routed'] ) || ! $frm_vars['settings_routed'] ) {
 			$errors = $frm_settings->validate( $_POST, array() );
 
 			$frm_settings->update( wp_unslash( $_POST ) );
 
-			if ( ! $errors ) {
+			if ( empty( $errors ) ) {
 				$frm_settings->store();
 				$message = __( 'Settings Saved', 'formidable' );
 			}
@@ -294,8 +230,9 @@ class FrmSettingsController {
 			$message = __( 'Settings Saved', 'formidable' );
 		}
 
-		if ( $stop_load === 'stop_load' ) {
+		if ( $stop_load == 'stop_load' ) {
 			$frm_vars['settings_routed'] = true;
+
 			return;
 		}
 
@@ -317,7 +254,7 @@ class FrmSettingsController {
 		$action = FrmAppHelper::get_param( $action, '', 'get', 'sanitize_title' );
 		FrmAppHelper::include_svg();
 
-		if ( $action === 'process-form' ) {
+		if ( $action == 'process-form' ) {
 			self::process_form( $stop_load );
 		} elseif ( $stop_load != 'stop_load' ) {
 			self::display_form();
@@ -353,7 +290,7 @@ class FrmSettingsController {
 			__( 'Analyze form data with graphs & stats', 'formidable' ),
 		);
 
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-settings/settings_cta.php';
+		include( FrmAppHelper::plugin_path() . '/classes/views/frm-settings/settings_cta.php' );
 	}
 
 	/**
@@ -362,7 +299,6 @@ class FrmSettingsController {
 	 * @since 3.04.02
 	 */
 	public static function settings_cta_dismiss() {
-		check_ajax_referer( 'frm_ajax', 'nonce' );
 		FrmAppHelper::permission_check( 'frm_change_settings' );
 
 		update_option( 'frm_lite_settings_upgrade', time(), 'no' );
@@ -381,7 +317,7 @@ class FrmSettingsController {
 
 		global $wpdb;
 
-		$term      = FrmAppHelper::get_param( 'term', '', 'get', 'sanitize_text_field' );
+		$term = FrmAppHelper::get_param( 'term', '', 'get', 'sanitize_text_field' );
 		$post_type = FrmAppHelper::get_param( 'post_type', 'page', 'get', 'sanitize_text_field' );
 
 		$where = array(

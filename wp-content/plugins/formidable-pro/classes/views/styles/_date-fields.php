@@ -3,27 +3,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'You are not allowed to call this page directly.' );
 }
 
-$themes     = FrmProStylesController::jquery_themes( $style->post_content['theme_css'] );
+$themes = FrmProStylesController::jquery_themes( $style->post_content['theme_css'] );
 $use_themes = count( $themes ) > 1;
 $is_default = 1 === $style->menu_order;
-$show       = 'frm_date_color';
-
-if ( ! $is_default ) {
-	$frm_style     = new FrmStyle( 'default' );
-	$default_style = $frm_style->get_one();
-
-	if ( ! empty( $default_style->post_content['theme_css'] ) && 'ui-lightness' !== $default_style->post_content['theme_css'] ) {
-		$show = 'frm_hidden';
-	}
-}
+$show = $is_default ? 'frm_date_color' : 'frm_hidden'; // hide all settings in non-default theme
 ?>
 
-<?php if ( 'frm_hidden' === $show ) { ?>
+<?php if ( ! $is_default ) { ?>
 	<p class="howto">
 		<?php
 		printf(
 			/* translators: %1$s: Start link HTML, %2$s: End link HTML */
-			esc_html__( 'Make changes to the date themes in the %1$sdefault style%2$s.', 'formidable-pro' ),
+			esc_html__( 'Make changes to the date colors in the %1$sdefault style%2$s.', 'formidable-pro' ),
 			'<a href="?page=formidable-styles">',
 			'</a>'
 		);

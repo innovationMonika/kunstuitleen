@@ -71,7 +71,7 @@ class FrmProFieldTag extends FrmFieldType {
 		$terms = array();
 
 		if ( isset( $_POST['frm_wp_post'] ) ) {
-			$_POST['frm_wp_post'][ $this->get_field_column( 'id' ) . '=tags_input' ] = $tags;
+			$_POST['frm_wp_post'][ $this->get_field_column('id') . '=tags_input' ] = $tags;
 		}
 
 		if ( $tax_type != 'frm_tag' ) {

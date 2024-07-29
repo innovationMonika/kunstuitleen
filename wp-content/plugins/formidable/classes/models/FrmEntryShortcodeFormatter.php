@@ -45,10 +45,10 @@ class FrmEntryShortcodeFormatter {
 	protected $format = 'text';
 
 	/**
-	 * @var FrmTableHTMLGenerator|null
+	 * @var FrmTableHTMLGenerator
 	 * @since 2.04
 	 */
-	protected $table_generator;
+	protected $table_generator = null;
 
 	/**
 	 * @var array
@@ -60,7 +60,7 @@ class FrmEntryShortcodeFormatter {
 	 * FrmEntryShortcodeFormatter constructor
 	 *
 	 * @param int|string $form_id
-	 * @param array      $atts
+	 * @param array $atts
 	 */
 	public function __construct( $form_id, $atts ) {
 		if ( ! $form_id ) {
@@ -87,9 +87,7 @@ class FrmEntryShortcodeFormatter {
 	 *
 	 * @since 2.04
 	 *
-	 * @param int|string $form_id
-	 *
-	 * @return void
+	 * @param $form_id
 	 */
 	protected function init_form_id( $form_id ) {
 		$this->form_id = (int) $form_id;
@@ -99,8 +97,6 @@ class FrmEntryShortcodeFormatter {
 	 * Initialize the fields property
 	 *
 	 * @since 2.04
-	 *
-	 * @return void
 	 */
 	protected function init_fields() {
 		$this->fields = FrmField::get_all_for_form( $this->form_id, '', 'exclude', 'exclude' );
@@ -112,8 +108,6 @@ class FrmEntryShortcodeFormatter {
 	 * @since 2.05
 	 *
 	 * @param array $atts
-	 *
-	 * @return void
 	 */
 	protected function init_plain_text( $atts ) {
 		if ( isset( $atts['plain_text'] ) && $atts['plain_text'] ) {
@@ -127,8 +121,6 @@ class FrmEntryShortcodeFormatter {
 	 * @since 2.04
 	 *
 	 * @param array $atts
-	 *
-	 * @return void
 	 */
 	protected function init_format( $atts ) {
 		if ( isset( $atts['format'] ) && is_string( $atts['format'] ) && $atts['format'] !== '' ) {
@@ -142,8 +134,6 @@ class FrmEntryShortcodeFormatter {
 	 * Initialize the table_generator property
 	 *
 	 * @since 2.04
-	 *
-	 * @return void
 	 */
 	protected function init_table_generator() {
 		$this->table_generator = new FrmTableHTMLGenerator( 'shortcode' );
@@ -159,7 +149,7 @@ class FrmEntryShortcodeFormatter {
 			return '';
 		}
 
-		if ( $this->format === 'array' ) {
+		if ( $this->format == 'array' ) {
 			$content = $this->get_array();
 		} elseif ( $this->is_plain_text_format() ) {
 			$content = $this->get_plain_text();
@@ -174,8 +164,6 @@ class FrmEntryShortcodeFormatter {
 	 * Return the default HTML array
 	 *
 	 * @since 2.04
-	 *
-	 * @return array
 	 */
 	protected function get_array() {
 		foreach ( $this->fields as $field ) {
@@ -189,8 +177,6 @@ class FrmEntryShortcodeFormatter {
 	 * Return the default plain text for an email message
 	 *
 	 * @since 2.04
-	 *
-	 * @return string
 	 */
 	protected function get_plain_text() {
 		return $this->generate_content_for_all_fields();
@@ -200,11 +186,9 @@ class FrmEntryShortcodeFormatter {
 	 * Return the default HTML for an email message
 	 *
 	 * @since 2.04
-	 *
-	 * @return string
 	 */
 	protected function get_table() {
-		$content  = $this->table_generator->generate_table_header();
+		$content = $this->table_generator->generate_table_header();
 		$content .= $this->generate_content_for_all_fields();
 		$content .= $this->table_generator->generate_table_footer();
 
@@ -253,7 +237,7 @@ class FrmEntryShortcodeFormatter {
 	 * @since 2.04
 	 *
 	 * @param stdClass $field
-	 * @param mixed    $value
+	 * @param mixed $value
 	 *
 	 * @return string
 	 */
@@ -287,8 +271,6 @@ class FrmEntryShortcodeFormatter {
 	 * @since 2.04
 	 *
 	 * @param stdClass $field
-	 *
-	 * @return void
 	 */
 	protected function add_field_array( $field ) {
 		if ( in_array( $field->type, $this->skip_fields ) ) {
@@ -304,9 +286,7 @@ class FrmEntryShortcodeFormatter {
 	 * @since 2.04
 	 *
 	 * @param stdClass $field
-	 * @param string   $value
-	 *
-	 * @return void
+	 * @param string $value
 	 */
 	protected function add_single_field_array( $field, $value ) {
 		$array = array(

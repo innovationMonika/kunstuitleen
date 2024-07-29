@@ -46,9 +46,8 @@ a.eml-pro {
 
 
 .wrap .eml-apply-settings-to-network:hover {
-    border-color: #135e96;
-    background: #135e96;
-    color: #fff;
+    border-color: #d54e21;
+    background: #EC5F30;
 }
 
 
@@ -57,7 +56,7 @@ a.eml-pro {
 /* == ui-dialog Styles == */
 
 .eml-dialog-modal {
-   z-index: 300000 !important; /* important for the media popups */
+    /*z-index: 300000 !important;*/
 }
 .eml-dialog-modal,
 .eml-dialog-modal p{
@@ -110,7 +109,7 @@ a.eml-pro {
 /* == Option Page Generic Styles == */
 
 #toplevel_page_media-library .wp-menu-image {
-    background-position: right -119px top -33px !important;
+    background-position: -119px -33px !important;
 }
 
 #wpuxss-eml-global-options-wrap .postbox {
@@ -194,15 +193,6 @@ a.eml-pro {
     }
 }
 
-.eml-options #poststuff h2 {
-    font-size: 23px;
-    font-weight: 400;
-}
-
-.eml-options p.description {
-    font-style: italic;
-}
-
 
 
 
@@ -249,6 +239,11 @@ a.eml-pro {
 .wp-core-ui .button-primary.eml-warning-button {
     background: #d54e21;
     border-color: #EC5F30 #940B0B #940B0B;
+    -webkit-box-shadow: 0 1px 0 #940B0B;
+    box-shadow: 0 1px 0 #940B0B;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 -1px 1px #940B0B, -1px 0 1px #940B0B, 0 1px 1px #940B0B, 1px 0 1px #940B0B;
 }
 .wp-core-ui #eml-submit-settings-cleanup:hover,
 .wp-core-ui .button-primary.eml-warning-button:hover {
@@ -358,6 +353,11 @@ a.eml-pro {
     width: 70%;
 }
 
+.eml-options #poststuff h2 {
+    font-size: 23px;
+    font-weight: 400;
+}
+
 .eml-button-synchronize-terms.disabled {
     pointer-events: none;
     cursor: default;
@@ -391,141 +391,4 @@ a.eml-pro {
 }
 .wrap.eml-options h2 span.premium {
     font-size: 0.5em;
-}
-
-
-/* == Admin Notices Styles == */
-
-.eml-admin-notice.notice {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-
-    border-width: 1px;
-    border-style: solid;
-
-    background-color: #fff;
-    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.1);
-}
-.eml-admin-notice.notice.dashicons-before::before {
-    content: '\f534';
-    font-size: 40px;
-    width: 40px;
-    height: 40px;
-    margin: 8px 5px 0 14px; 
-    align-self: flex-start; 
-}
-
-
-.eml-admin-notice.notice.is-dismissible {
-    padding-left: 55px;
-}
-
-
-.eml-admin-notice.notice p {
-    flex-grow: 1;
-}
-.eml-admin-notice.notice p,
-.eml-admin-notice.notice .button {
-    font-size: 14px;
-}
-.eml-admin-notice.notice .header {
-    font-size: 15px;
-}
-.eml-admin-notice.notice .button {
-    flex-grow: 0;
-    padding: 2px 15px 2px 10px;
-    margin: 0 15px;
-    border-radius: 5px;
-    display: inline-flex;
-    align-items: center;
-}
-@media only screen and (max-width: 782px) {
-    .eml-admin-notice.notice .button {
-        margin-left: 0;
-    }
-}
-.eml-admin-notice.notice .button::after {
-    content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20height%3D%2224px%22%20viewBox%3D%220%20-960%20960%20960%22%20width%3D%2224px%22%20fill%3D%22%23fff%22%3E%3Cpath%20d%3D%22M251.77-254.23%20210-296l393.62-394H245.77v-60h460v460h-60v-357.85l-394%20393.62Z%22%2F%3E%3C%2Fsvg%3E");
-    display: inline-block;
-    height: 24px;
-    width: 24px;
-    margin-right: 8px;
-}
-
-.eml-admin-notice.notice.notice-news {
-    border-color: #bcdff0;  
-    border-right: solid 4px #21a4e6;
-}
-.eml-admin-notice.notice.notice-news::before {
-    color: #21a4e6;
-}
-
-.eml-admin-notice.notice.notice-news .button {
-    background-color: #21a4e6;
-    border-color: #21a4e6;
-}
-.eml-admin-notice.notice.notice-news .button:hover,  
-.eml-admin-notice.notice.notice-news .button:focus,
-.eml-admin-notice.notice.notice-news .button:active {
-    background-color: #27b0f5;
-    border-color: #27b0f5;
-}
-
-.eml-admin-notice.notice.notice-info {
-    border-color: #b6deb9;  
-    border-right: solid 4px #50b03a;
-}
-.eml-admin-notice.notice.notice-info::before {
-    color: #50b03a;
-}
-
-.eml-admin-notice.notice.notice-info .button {
-    background-color: #50b03a;
-    border-color: #50b03a;
-}
-.eml-admin-notice.notice.notice-info .button:hover,  
-.eml-admin-notice.notice.notice-info .button:focus,
-.eml-admin-notice.notice.notice-info .button:active {
-    background-color: #59c141;
-    border-color: #59c141;
-}
-
-.eml-admin-notice.notice.notice-issue {
-    border-color: #fed4ac;  
-    border-right: solid 4px #ff7b00;
-}
-.eml-admin-notice.notice.notice-issue::before {
-/*    color: #9d60e3;*/
-    color: #ff7b00;
-}
-
-.eml-admin-notice.notice.notice-issue .button {
-    background-color: #ff7b00;
-    border-color: #ff7b00;
-}
-.eml-admin-notice.notice.notice-issue .button:hover,  
-.eml-admin-notice.notice.notice-issue .button:focus,
-.eml-admin-notice.notice.notice-issue .button:active {
-    background-color: #ff9500;
-    border-color: #ff9500;
-}
-
-.eml-admin-notice.notice.notice-warning {
-    border-color: #deb6b6;  
-    border-right: solid 4px #ff1700;
-}
-.eml-admin-notice.notice.notice-warning::before {
-    color: #ff1700;
-}
-
-.eml-admin-notice.notice.notice-warning .button {
-    background-color: #ff1700;
-    border-color: #ff1700;
-}
-.eml-admin-notice.notice.notice-warning .button:hover,  
-.eml-admin-notice.notice.notice-warning .button:focus,
-.eml-admin-notice.notice.notice-warning .button:active {
-    background-color: #f21600;
-    border-color: #f21600;
 }

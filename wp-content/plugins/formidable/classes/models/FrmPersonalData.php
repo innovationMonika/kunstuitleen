@@ -50,9 +50,6 @@ class FrmPersonalData {
 		return $erasers;
 	}
 
-	/**
-	 * @return array
-	 */
 	public function export_data( $email, $page = 1 ) {
 		$this->page = absint( $page );
 

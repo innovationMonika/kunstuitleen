@@ -1,9 +1,9 @@
 === 301 Redirects - Easy Redirect Manager ===
 Contributors: WebFactory
-Tags: 301 redirect, redirect, 404 error log, redirection, redirects
+Tags: 301 redirect, redirects, redirect, 404 error log, redirection, 302 redirect, 302, seo, 302 redirect, 404, 404 redirect, 301, 307, 404 log
 Requires at least: 4.0
-Tested up to: 6.5
-Stable tag: 2.76
+Tested up to: 5.8
+Stable tag: 2.72
 Requires PHP: 5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -12,14 +12,14 @@ Manage 301 & 302 redirects. Simple redirection & redirects validation. Includes 
 
 == Description ==
 
-<a href="https://wp301redirects.com/?ref=wporg">301 Redirects</a> helps you manage and create 301, 302, 307 redirects for WordPress site to **improve SEO & visitor experience**. 301 Redirects is easy to use. Perfect for new sites or repairing links after reorganizing your old content, or when your site has content that expires and you wish to avoid sending visitors to a 404 error page and want to create redirection instead. Use the 404 error log to identify problematic links.
+<a href="https://wp301redirects.com/?ref=wporg">301 Redirects</a> helps you manage and create 301, 302, 307 redirects for your WordPress site to **improve SEO and visitor experience**. With a user-friendly interface, 301 Redirects is easy to use. Perfect for new sites or repairing links after reorganizing your existing WordPress content, or when your site has content that expires and you wish to avoid sending visitors to a 404 error page. Use the 404 error log to identify problematic links.
 
 301 Redirects GUI is located in WP Admin - Settings - 301 Redirects
 404 Error Log widget can be found in the WP Admin - Dashboard
 
 **Features**
 
-* Choose from Pages, Posts, Custom Post types, Archives, and Term Archives from dropdown menu to create redirection
+* Choose from Pages, Posts, Custom Post types, Archives, and Term Archives from dropdown menu
 * Or, set a custom destination URL!
 * Retain query strings across redirects
 * Super-fast redirection
@@ -40,6 +40,7 @@ A 301 redirect indicates that the page requested has been permanently moved to t
 [youtube https://www.youtube.com/watch?v=70Yn_lO_8BA]
 
 **When Should I use 301 Redirects?**
+
 * Replacing an old site design with a new site design
 * Overhauling or re-organizing your existing WordPress content
 * You have content that expires (or is otherwise no longer available) and you wish to redirect users elsewhere
@@ -47,10 +48,8 @@ A 301 redirect indicates that the page requested has been permanently moved to t
 **Is the 404 error log GDPR friendly?**
 The 404 error log does not collect user IPs. It collects the following data: timestamp of the event, the (404) URL that was opened, and the user-agent string.
 
-**Having problems with SSL? Moving a site from HTTP to HTTPS?**
-Install our free <a href="https://wordpress.org/plugins/wp-force-ssl/">WP Force SSL</a> plugin. It's a great way to enable SSL and fix SSL problems.
-
 **External libraries used in the project**
+
 * <a href="https://github.com/donatj/PhpUserAgent">PHP User Agent Parser</a>
 
 
@@ -60,6 +59,8 @@ Install our free <a href="https://wordpress.org/plugins/wp-force-ssl/">WP Force 
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Begin adding redirects in the Settings -> 301 Redirects menu item
 
+
+
 == Screenshots ==
 
 1. 301 Redirects admin area
@@ -67,22 +68,6 @@ Install our free <a href="https://wordpress.org/plugins/wp-force-ssl/">WP Force 
 
 
 == Changelog ==
-
-= 2.76 =
-* 2024/06/30
-* security fixes
-
-= 2.75 =
-* 2024/03/25
-* WordPress 6.5 compatibility
-
-= 2.74 =
-* 2024/02/20
-* PHP v8.2 compatibility fix
-
-= 2.73 =
-* 2023/03/08
-* security fixes
 
 = 2.72 =
 * 2021/11/11
@@ -96,7 +81,7 @@ Install our free <a href="https://wordpress.org/plugins/wp-force-ssl/">WP Force 
 
 = 2.67 =
 * 2021/03/16
-* fixed a small security issue with redirection
+* fixed a small security issue
 
 = 2.66 =
 * 2021/02/23
@@ -190,6 +175,7 @@ Click the small X beside the redirect you wish to remove.
 
 Unfortunately this is not supported. You should look into <a href="https://wp301redirects.com/?ref=wporg">WP 301 Redirects PRO</a> for these advanced features.
 
+
 =What about query strings?=
 
 By default, any URL with a query string is considered unique, and will redirect to a unique page (if you so wish). The query string will be added to the Destination URL, which allows you to keep your tracking codes, affiliate codes, and other important data! If you want to have full control over query strings, ignore them, add or remove them consider upgrading to <a href="https://wp301redirects.com/?ref=wporg">WP 301 Redirects PRO</a>.
@@ -203,7 +189,3 @@ When you deactivate the plugin, obviously, redirects stop working. But, they are
 By default, the 404 error log is limited to the last (chronologically) fifty 404 errors. Since the log doesn't use a custom database table for storage but rather an array saved in WP options, 50 is a safe number that ensures the log works on all sites, that it doesn't take up too much space in the database and that it doesn't slow down the site.
 The code imposes no limits on the log size and you can easily overwrite the default limit by using the <i>eps_301_max_404_logs</i> filter or by using the following code snippet to raise the limit to 200:
 `add_filter('eps_301_max_404_logs', function($log_max) { return 200; });`
-
-= How can I report security bugs? =
-
-You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/eps-301-redirects)

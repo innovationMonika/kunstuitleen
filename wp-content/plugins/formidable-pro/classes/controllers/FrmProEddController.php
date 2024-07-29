@@ -41,6 +41,20 @@ class FrmProEddController extends FrmAddon {
 	 */
 	private function set_download() {
 		$this->plugin_file = FrmProAppHelper::plugin_path() . '/formidable-pro.php';
+		$this->get_beta    = $this->has_nested_views_plugin();
+	}
+
+	/**
+	 * @return bool true if views is nested
+	 */
+	private function has_nested_views_plugin() {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+		}
+
+		$file_name   = 'views/formidable-views.php';
+		$stand_alone = is_plugin_active( 'formidable-' . $file_name );
+		return file_exists( FrmProAppHelper::plugin_path() . '/' . $file_name ) && ! $stand_alone;
 	}
 
 	public function set_license( $license ) {
@@ -70,13 +84,8 @@ class FrmProEddController extends FrmAddon {
 		return $license;
 	}
 
-	/**
-	 * Override the parent method to use the defined license.
-	 *
-	 * @return string
-	 */
 	public function get_defined_license() {
-		return FrmProEddHelper::get_defined_license();
+		return defined( 'FRM_PRO_LICENSE' ) ? FRM_PRO_LICENSE : false;
 	}
 
 	public function clear_license() {
@@ -89,7 +98,7 @@ class FrmProEddController extends FrmAddon {
 
 	public function set_active( $is_active ) {
 		$is_active = ( $is_active == 'valid' );
-		$creds     = $this->get_pro_cred_form_vals();
+		$creds = $this->get_pro_cred_form_vals();
 
 		if ( is_multisite() ) {
 			update_site_option( $this->pro_wpmu_store, $creds['wpmu'] );
@@ -102,14 +111,7 @@ class FrmProEddController extends FrmAddon {
 			update_option( $this->pro_auth_store, $is_active );
 		}
 
-		/**
-		 * Update stylesheet to make sure pro css is included.
-		 * This will be incomplete if there are add-ons installed because a lot of hooks do not get added
-		 * when Pro is not active on load.
-		 * As of v6.8, the stylesheet is re-generated again with an AJAX action in a separate request.
-		 * This is mostly still here for backward compatibility. If Lite is not up to date, the frm_after_authorize hook
-		 * will never get called.
-		 */
+		// update style sheet to make sure pro css is included
 		$frm_style = new FrmStyle();
 		$frm_style->update( 'default' );
 
@@ -119,11 +121,11 @@ class FrmProEddController extends FrmAddon {
 		delete_option( $this->option_name . 'active' );
 	}
 
-	public function get_pro_cred_form_vals() {
+	private function get_pro_cred_form_vals() {
 		$license = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : $this->get_license();
 		$wpmu = isset( $_POST['wpmu'] ) ? absint( $_POST['wpmu'] ) : $this->pro_wpmu;
 
-		return compact( 'license', 'wpmu' );
+		return compact('license', 'wpmu');
 	}
 
 	public function pro_is_authorized() {
@@ -145,57 +147,117 @@ class FrmProEddController extends FrmAddon {
 		return $this->pro_is_authorized();
 	}
 
-	/**
-	 * @return void
-	 */
 	public function pro_cred_form() {
 		global $frm_vars;
 
-		$authorized   = $frm_vars['pro_is_authorized'];
-		$license_type = FrmProAddonsController::get_readable_license_type();
+		$config_license = $this->get_defined_license();
+		$authorized     = $frm_vars['pro_is_authorized'];
+
+		$type = $this->get_license_type();
+
 		?>
 
 <div id="frm_license_top" class="<?php echo esc_attr( $authorized ? 'frm_authorized_box' : 'frm_unauthorized_box' ); ?>">
 	<p id="frm-connect-btns" class="frm-show-unauthorized">
-		<?php FrmProEddHelper::show_connect_links( 'frm-button-sm' ); ?>
+		<?php if ( is_callable( 'FrmProAddonsController::connect_link' ) ) { ?>
+		<a href="<?php echo esc_url( FrmProAddonsController::connect_link() ); ?>" class="button-primary frm-button-primary">
+		<?php } else { ?>
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=formidable-settings' ) ); ?>" target="_blank" class="button-primary frm-button-primary" id="frm-settings-connect-btn">
+		<?php } ?>
+			<?php esc_html_e( 'Connect an Account', 'formidable' ); ?>
+		</a>
+		or
+		<a href="<?php echo esc_url( FrmAppHelper::make_affiliate_url( FrmAppHelper::admin_upgrade_link( 'settings-license' ) ) ); ?>" target="_blank" class="button-secondary frm-secondary-button">
+			<?php esc_html_e( 'Get Formidable Now', 'formidable' ); ?>
+		</a>
 	</p>
 
 	<div class="frm-show-authorized">
-		<p><?php echo esc_html( FrmProEddHelper::get_license_type_info( $license_type ) ); ?></p>
-		<?php if ( 'Elite' !== $license_type ) { ?>
+		<p>You're using Formidable Forms <?php echo esc_html( FrmProAddonsController::get_readable_license_type() ); ?>. Enjoy! 🙂</p>
+		<?php if ( ! empty( $type ) && $type !== 'elite' ) { ?>
 		<p style="font-size:1.1em">
 			To <b>unlock more features</b> consider <a href="<?php echo esc_url( FrmAppHelper::make_affiliate_url( FrmAppHelper::admin_upgrade_link( 'settings-upgrade', 'account/downloads/' ) ) ); ?>">upgrading to the Elite plan</a>.
 		</p>
 		<?php } ?>
 	</div>
-	<?php
-	$this->display_form();
+	<?php $this->display_form(); ?>
 
-	FrmProEddHelper::show_disconnect_link();
-	if ( ! FrmProEddHelper::get_defined_license() ) {
-			?>
+	<?php if ( ! $config_license ) { ?>
+		<a href="#" id="frm_deauthorize_link" class="frm-show-authorized" data-plugin="<?php echo esc_attr( $this->plugin_slug ); ?>">
+			<?php esc_html_e( 'Disconnect this site', 'formidable-pro' ); ?>
+		</a>
 		<span class="frm-show-authorized">|</span>
-			<?php
-	}
-	FrmProEddHelper::show_clear_license_cache_link();
-	?>
+		<a href="#" id="frm_reconnect_link" class="frm-show-authorized">
+			<?php esc_html_e( 'Check now for a recent upgrade or renewal', 'formidable' ); ?>
+		</a>
+	<?php } ?>
 </div>
 
 <div class="frm_pro_license_msg frm_hidden"></div>
 <div class="clear"></div>
+
 		<?php
+	}
+
+	/**
+	 * @since 4.03
+	 */
+	private function get_license_type() {
+		$api    = new FrmFormApi();
+		$addons = $api->get_api_info();
+		$errors = $api->get_error_from_response( $addons );
+		$type   = isset( $errors['type'] ) ? $errors['type'] : '';
+		if ( empty( $type ) && ! empty( $addons ) ) {
+			$first = reset( $addons );
+			$type  = isset( $first['type'] ) ? $first['type'] : '';
+		}
+		return $type;
 	}
 
 	/**
 	 * This is the view for the license form
 	 */
 	public function display_form() {
-		$creds = $this->get_pro_cred_form_vals();
-		FrmProEddHelper::insert_license_form( $creds );
+		global $frm_vars;
+
+		$authorized = $frm_vars['pro_is_authorized'];
+
+		if ( $authorized ) {
+			$placeholder = __( 'Verify a different license key', 'formidable-pro' );
+		} else {
+			$placeholder = __( 'Enter your license key here', 'formidable-pro' );
+		}
 		?>
-		<p class="frm-show-unauthorized">
-			<?php FrmProEddHelper::show_manual_license_link(); ?>
-		</p>
-		<?php
+<div id="pro_cred_form" class="frm_grid_container frm-show-unauthorized frm_hidden">
+
+	<p class="frm9 frm_form_field frm-license-input">
+		<input type="text" name="proplug-license" value="" placeholder="<?php echo esc_attr( $placeholder ); ?>" id="edd_<?php echo esc_attr( $this->plugin_slug ); ?>_license_key" />
+		<span class="frm-show-authorized">
+			<?php esc_html_e( 'License is active', 'formidable-pro' ); ?>
+			<?php FrmProAppHelper::icon_by_class( 'frm_icon_font frm_check1_icon' ); ?>
+		</span>
+	</p>
+	<p class="frm3 frm_form_field">
+		<button class="button-secondary frm-button-secondary frm_authorize_link" data-plugin="<?php echo esc_attr( $this->plugin_slug ); ?>" type="button">
+			<?php esc_attr_e( 'Save License', 'formidable-pro' ); ?>
+		</button>
+	</p>
+	<?php
+	if ( is_multisite() ) {
+			$creds = $this->get_pro_cred_form_vals();
+			?>
+		<br/>
+		<label for="proplug-wpmu">
+			<input type="checkbox" value="1" name="proplug-wpmu" id="proplug-wpmu" <?php checked( $creds['wpmu'], 1 ); ?> />
+			<?php esc_html_e( 'Use this license to enable Formidable Pro site-wide', 'formidable-pro' ); ?>
+		</label>
+			<?php } ?>
+</div>
+<p class="frm-show-unauthorized">
+	<a href="#" id="frm-manual-key" data-frmhide="#frm-manual-key" data-frmshow="#pro_cred_form">
+		<?php esc_html_e( 'Click to enter a license key manually', 'formidable-pro' ); ?>
+	</a>
+</p>
+<?php
 	}
 }

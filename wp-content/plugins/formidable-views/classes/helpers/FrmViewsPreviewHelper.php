@@ -23,8 +23,8 @@ class FrmViewsPreviewHelper {
 	 */
 	private static $last_where_query;
 
-	public static function get_ordered_entry_ids( $form_id, $filter, $sort = array(), $limit = '', $page_size = '', $offset = '' ) {
-		self::prepare_view_object( $form_id, $filter, $sort, $limit, $page_size, $offset );
+	public static function get_ordered_entry_ids( $form_id, $filter, $sort = array(), $limit = '', $page_size = '' ) {
+		self::prepare_view_object( $form_id, $filter, $sort, $limit, $page_size );
 		FrmViewsDisplaysController::apply_atts_to_view_object( self::$atts, self::$view );
 		$where_query            = self::get_where_query_for_view_listing_page();
 		self::$last_where_query = $where_query;
@@ -32,15 +32,14 @@ class FrmViewsPreviewHelper {
 	}
 
 	/**
-	 * @param int        $form_id
-	 * @param array      $filter
-	 * @param array      $sort
-	 * @param string|int $limit
-	 * @param string|int $page_size
-	 * @param string|int $offset
+	 * @param int   $form_id
+	 * @param array $filter
+	 * @param array $sort
+	 * @param mixed $limit
+	 * @param mixed $page_size
 	 * @return object
 	 */
-	private static function prepare_view_object( $form_id, $filter, $sort = array(), $limit = '', $page_size = '', $offset = '' ) {
+	private static function prepare_view_object( $form_id, $filter, $sort = array(), $limit = '', $page_size = '' ) {
 		$view                     = new stdClass();
 		$view->ID                 = 0;
 		$view->frm_form_id        = $form_id;
@@ -75,8 +74,7 @@ class FrmViewsPreviewHelper {
 			}
 		}
 
-		$view->frm_limit  = $limit;
-		$view->frm_offset = $offset;
+		$view->frm_limit = $limit;
 
 		self::$view = $view;
 		self::$atts = FrmViewsDisplaysController::get_atts_for_view( array(), $view );

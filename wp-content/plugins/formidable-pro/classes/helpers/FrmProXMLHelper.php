@@ -6,16 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmProXMLHelper {
 
-	/**
-	 * @var bool $legacy_import_format Used for legacy format. Set to true when uploading a file with -legacy at the end of the name.
-	 */
 	private static $legacy_import_format = false;
 
-	/**
-	 * @param array<stdClass> $entries
-	 * @param array           $imported
-	 * @return array
-	 */
 	public static function import_xml_entries( $entries, $imported ) {
 		global $frm_duplicate_ids;
 
@@ -48,7 +40,7 @@ class FrmProXMLHelper {
 				if ( is_array( $frm_duplicate_ids ) && isset( $frm_duplicate_ids[ $field_id ] ) ) {
 					$field_id = $frm_duplicate_ids[ $field_id ];
 				}
-				$field = FrmField::getOne( $field_id );
+				$field = FrmField::getOne($field_id);
 
 				if ( ! $field ) {
 					continue;
@@ -58,18 +50,17 @@ class FrmProXMLHelper {
 				$metas[ $field_id ] = apply_filters( 'frm_import_val', $metas[ $field_id ], $field );
 
 				self::convert_field_values( $field, $field_id, $metas, $saved_entries );
-
 				if ( $field->type === 'user_id' && $metas[ $field_id ] && is_numeric( $metas[ $field_id ] ) ) {
 					$entry['frm_user_id'] = $metas[ $field_id ];
 				}
 
-				unset( $field, $meta );
+				unset($field, $meta);
 			}
 
-			unset( $item );
+			unset($item);
 
 			$entry['item_meta'] = $metas;
-			unset( $metas );
+			unset($metas);
 
 			// Edit entry if the key and created time match.
 			$editing = FrmDb::get_var(
@@ -82,38 +73,28 @@ class FrmProXMLHelper {
 
 			if ( $editing ) {
 				FrmEntry::update_entry_from_xml( $entry['id'], $entry );
-				if ( empty( $entry['parent_item_id'] ) ) {
-					$imported['updated']['items']++;
-				}
+				$imported['updated']['items']++;
 				$saved_entries[ $entry['id'] ] = $entry['id'];
 			} else {
 				$e = FrmEntry::create_entry_from_xml( $entry );
 				if ( $e ) {
 					$saved_entries[ $entry['id'] ] = $e;
-					if ( empty( $entry['parent_item_id'] ) ) {
-						$imported['imported']['items']++;
-					}
+					$imported['imported']['items']++;
 				}
 			}
 
-			if ( array_key_exists( $entry['id'], $saved_entries ) ) {
-				self::track_imported_child_entries( $saved_entries[ $entry['id'] ], $entry['parent_item_id'], $track_child_ids );
-			}
+			self::track_imported_child_entries( $saved_entries[ $entry['id'] ], $entry['parent_item_id'], $track_child_ids );
 
-			unset( $entry );
+			unset($entry);
 		}
 
 		self::update_parent_item_ids( $track_child_ids, $saved_entries );
 
-		unset( $entries );
+		unset($entries);
 
 		return $imported;
 	}
 
-	/**
-	 * @param array $entries
-	 * @return void
-	 */
 	private static function put_child_entries_first( &$entries ) {
 		$child_entries   = array();
 		$regular_entries = array();
@@ -132,15 +113,14 @@ class FrmProXMLHelper {
 	}
 
 	/**
-	 *
-	 * Track imported entries if they have a parent_item_id
-	 * Use the old parent_item_id as the array key and set the array value to an array of child IDs
-	 *
-	 * @param int|boolean $child_id
-	 * @param int         $parent_id
-	 * @param array       $track_child_ids - pass by reference
-	 * @return void
-	 */
+	*
+	* Track imported entries if they have a parent_item_id
+	* Use the old parent_item_id as the array key and set the array value to an array of child IDs
+	*
+	* @param int|boolean $child_id
+	* @param int $parent_id
+	* @param array $track_child_ids - pass by reference
+	*/
 	private static function track_imported_child_entries( $child_id, $parent_id, &$track_child_ids ) {
 		if ( ! $parent_id ) {
 			return;
@@ -154,38 +134,37 @@ class FrmProXMLHelper {
 	}
 
 	/**
-	 *
-	 * Update imported child entries so their parent_item_ids match any imported parent entries
-	 *
-	 * @since 2.0.12
-	 *
-	 *  @param array $track_child_ids
-	 * @param array $saved_entries
-	 */
+	*
+	* Update imported child entries so their parent_item_ids match any imported parent entries
+	*
+	* @since 2.0.12
+	*
+	* @param array $track_child_ids
+	* @param array $saved_entries
+	*/
 	private static function update_parent_item_ids( $track_child_ids, $saved_entries ) {
 		global $wpdb;
 
 		foreach ( $track_child_ids as $old_parent_id => $new_child_ids ) {
-			if ( ! isset( $saved_entries[ $old_parent_id ] ) ) {
-				continue;
+			if ( isset( $saved_entries[ $old_parent_id ] ) ) {
+				$new_parent_id = $saved_entries[ $old_parent_id ];
+
+				$new_child_ids = '(' . implode( ',', $new_child_ids ) . ')';
+
+				// This parent entry was imported and the parent_item_id column needs to be updated on all children
+				$wpdb->query(
+					$wpdb->prepare(
+						'UPDATE ' . $wpdb->prefix . 'frm_items SET parent_item_id = %d WHERE id IN ' . $new_child_ids,
+						$new_parent_id
+					)
+				);
 			}
-
-			$new_parent_id = $saved_entries[ $old_parent_id ];
-			$new_child_ids = '(' . implode( ',', $new_child_ids ) . ')';
-
-			// This parent entry was imported and the parent_item_id column needs to be updated on all children
-			$wpdb->query(
-				$wpdb->prepare(
-					'UPDATE ' . $wpdb->prefix . 'frm_items SET parent_item_id = %d WHERE id IN ' . $new_child_ids,
-					$new_parent_id
-				)
-			);
 		}
 	}
 
 	public static function import_csv( $path, $form_id, $field_ids, $entry_key = 0, $start_row = 2, $del = ',', $max = 250 ) {
-		if ( ! defined( 'WP_IMPORTING' ) ) {
-			define( 'WP_IMPORTING', true );
+		if ( ! defined('WP_IMPORTING') ) {
+			define('WP_IMPORTING', true);
 		}
 
 		$form_id = (int) $form_id;
@@ -194,38 +173,20 @@ class FrmProXMLHelper {
 		}
 
 		// Remove time limit to execute this function
-		if ( function_exists( 'set_time_limit' ) ) {
-			set_time_limit( 0 );
-		}
+		set_time_limit( 0 );
 
-		$field_ids = array_filter( $field_ids );
-
-		/**
-		 * Allows adding fixed meta values.
-		 *
-		 * Some field types might not appear in the CSV file (Example: Likert field), but we need to set the meta value
-		 * for them when importing.
-		 *
-		 * The return value should be an empty array or an array like this:
-		 * array(
-		 *     13 => 'meta value', // 13 is the field ID, this field is outside of Repeater or Embed Form.
-		 *     '13_10' => 'meta value', // 13 is the field ID, 10 is the Repeater or Embed Form ID which that field is inside.
-		 * )
-		 *
-		 * @since 5.4
-		 *
-		 * @param array $fixed_meta_values Fixed meta values.
-		 * @param array $args              Contains `form_id`.
-		 */
-		$fixed_meta_values = apply_filters( 'frm_pro_csv_import_fixed_meta_values', array(), compact( 'form_id' ) );
+		$unmapped_fields = self::get_unmapped_fields( $field_ids );
+		$field_ids       = array_filter( $field_ids );
 
 		self::check_csv_filename_for_legacy_format( $path );
 
 		$f = fopen( $path, 'r' );
 		if ( $f ) {
-			unset( $path );
+			unset($path);
 			$row = 0;
-			while ( ( $data = fgetcsv( $f, 100000, $del ) ) !== false ) {
+			//setlocale(LC_ALL, get_locale());
+
+			while ( ( $data = fgetcsv($f, 100000, $del) ) !== false ) {
 				$row++;
 				if ( $start_row > $row ) {
 					continue;
@@ -241,58 +202,19 @@ class FrmProXMLHelper {
 					unset( $key, $field_id );
 				}
 
-				self::maybe_add_fixed_meta_values( $fixed_meta_values, $values );
 				self::convert_db_cols( $values );
 				self::convert_timestamps( $values );
-				self::save_or_edit_entry( $values );
-
+				self::save_or_edit_entry( $values, $unmapped_fields );
 				unset( $_POST, $values );
-				$_POST['form_id'] = $form_id; // $form_id is set from $_POST['form_id'], so set it back again after the unset line above.
 
 				if ( ( $row - $start_row ) >= $max ) {
-					fclose( $f );
+					fclose($f);
 					return $row;
 				}
 			}
 
-			fclose( $f );
+			fclose($f);
 			return $row;
-		}
-	}
-
-	/**
-	 * Maybe add fixed meta values to entry meta.
-	 *
-	 * @since 5.4.1
-	 *
-	 * @param array $fixed_meta_values Fixed meta values.
-	 * @param array $values            Entry data.
-	 */
-	private static function maybe_add_fixed_meta_values( $fixed_meta_values, &$values ) {
-		if ( ! $fixed_meta_values ) {
-			return;
-		}
-
-		foreach ( $fixed_meta_values as $fixed_meta_field => $fixed_meta_value ) {
-			if ( is_numeric( $fixed_meta_field ) ) {
-				$values['item_meta'][ $fixed_meta_field ] = $fixed_meta_value;
-				continue;
-			}
-
-			list( $field_id, $section_id ) = explode( '_', $fixed_meta_field );
-
-			foreach ( $values['item_meta'] as $meta_field => $meta_value ) {
-				if ( intval( $meta_field ) !== intval( $section_id ) || ! is_array( $meta_value ) ) {
-					continue;
-				}
-
-				foreach ( $meta_value as $key => $value ) {
-					if ( ! is_numeric( $key ) || ! is_array( $value ) ) {
-						continue;
-					}
-					$values['item_meta'][ $meta_field ][ $key ][ $field_id ] = $fixed_meta_value;
-				}
-			}
 		}
 	}
 
@@ -304,6 +226,15 @@ class FrmProXMLHelper {
 	 */
 	private static function check_csv_filename_for_legacy_format( $path ) {
 		self::$legacy_import_format = false !== strpos( basename( $path ), '-legacy' );
+	}
+
+	private static function get_unmapped_fields( $field_ids ) {
+		$unmapped_fields = array();
+		$mapped_fields   = array_filter( $field_ids );
+		if ( $field_ids != $mapped_fields ) {
+			$unmapped_fields = array_diff( $field_ids, $mapped_fields );
+		}
+		return $unmapped_fields;
 	}
 
 	private static function csv_to_entry_value( $key, $field_id, $data, &$values ) {
@@ -361,18 +292,7 @@ class FrmProXMLHelper {
 	 * Called by self::csv_to_entry_value
 	 */
 	private static function set_values_for_fields( $key, $field_id, $data, &$values ) {
-		$field = self::get_field( $field_id );
-
-		/**
-		 * Allows modifying field to be imported.
-		 *
-		 * @since 5.4
-		 *
-		 * @param object $field Field object.
-		 * @param array  $args  Contains `field_id`.
-		 */
-		$field = apply_filters( 'frm_pro_get_field_for_import', $field, compact( 'field_id' ) );
-
+		$field      = self::get_field( $field_id );
 		$section_id = self::check_field_for_section_id( $field );
 
 		$values['item_meta'][ $field_id ] = apply_filters( 'frm_import_val', $data[ $key ], $field );
@@ -441,15 +361,7 @@ class FrmProXMLHelper {
 		$_POST['item_meta'][ $section_id ] = $values['item_meta'][ $section_id ];
 	}
 
-	/**
-	 * Gets field for import.
-	 *
-	 * @since 5.4 This method is public.
-	 *
-	 * @param int $field_id Field ID.
-	 * @return object|null|false
-	 */
-	public static function get_field( $field_id ) {
+	private static function get_field( $field_id ) {
 		global $importing_fields;
 
 		if ( ! $importing_fields ) {
@@ -578,10 +490,7 @@ class FrmProXMLHelper {
 	 */
 	private static function get_new_section_data_for_multiple_row_format( $section_id, $form_id, $field_id, $value ) {
 		if ( ! isset( $_POST['item_meta'][ $section_id ] ) ) {
-			return array(
-				'form' => $form_id,
-				array( $field_id => $value ),
-			);
+			return array( 'form' => $form_id, array( $field_id => $value ) );
 		}
 
 		$section_data = $_POST['item_meta'][ $section_id ];
@@ -596,7 +505,7 @@ class FrmProXMLHelper {
 				break;
 			}
 
-			$index++;
+			$index ++;
 		}
 
 		$section_data[ $index ][ $field_id ] = $value;
@@ -607,24 +516,17 @@ class FrmProXMLHelper {
 	 * Called by self::csv_to_entry_value
 	 */
 	private static function set_values_for_data_fields( $key, $field_id, $data, &$values ) {
-		$field_type = isset( $field_id['type'] ) ? $field_id['type'] : false;
+		$field_type = isset($field_id['type']) ? $field_id['type'] : false;
 
 		if ( $field_type !== 'data' ) {
 			return;
 		}
 
-		$linked   = isset( $field_id['linked'] ) ? $field_id['linked'] : false;
+		$linked   = isset($field_id['linked']) ? $field_id['linked'] : false;
 		$field_id = $field_id['field_id'];
 
 		if ( $linked ) {
-			$entry_id = FrmDb::get_var(
-				'frm_item_metas',
-				array(
-					'meta_value' => $data[ $key ],
-					'field_id'   => $linked,
-				),
-				'item_id'
-			);
+			$entry_id = FrmDb::get_var( 'frm_item_metas', array( 'meta_value' => $data[ $key ], 'field_id' => $linked ), 'item_id' );
 		} else {
 			//get entry id of entry with item_key == $data[$key]
 			$entry_id = FrmDb::get_var( 'frm_items', array( 'item_key' => $data[ $key ] ) );
@@ -644,7 +546,7 @@ class FrmProXMLHelper {
 	 * Convert timestamps to the database format
 	 */
 	private static function convert_timestamps( &$values ) {
-		$offset = get_option( 'gmt_offset' ) * 60 * 60;
+		$offset = get_option('gmt_offset') * 60 * 60;
 
 		$frmpro_settings = FrmProAppHelper::get_settings();
 		foreach ( array( 'created_at', 'updated_at' ) as $stamp ) {
@@ -667,7 +569,7 @@ class FrmProXMLHelper {
 
 			$values[ $stamp ] = gmdate( 'Y-m-d H:i:s', ( strtotime( $values[ $stamp ] ) - $offset ) );
 
-			unset( $stamp );
+			unset($stamp);
 		}
 	}
 
@@ -675,17 +577,17 @@ class FrmProXMLHelper {
 	 * Make sure values are in the format they should be saved in
 	 */
 	private static function convert_db_cols( &$values ) {
-		if ( empty( $values['item_key'] ) ) {
+		if ( ! isset($values['item_key']) || empty($values['item_key']) ) {
 			global $wpdb;
 			$values['item_key'] = FrmAppHelper::get_unique_key( '', $wpdb->prefix . 'frm_items', 'item_key' );
 		}
 
-		if ( isset( $values['user_id'] ) ) {
-			$values['user_id'] = FrmAppHelper::get_user_id_param( $values['user_id'] );
+		if ( isset($values['user_id']) ) {
+			$values['user_id'] = FrmAppHelper::get_user_id_param($values['user_id']);
 		}
 
 		if ( isset( $values['updated_by'] ) ) {
-			$values['updated_by'] = FrmAppHelper::get_user_id_param( $values['updated_by'] );
+			$values['updated_by'] = FrmAppHelper::get_user_id_param($values['updated_by']);
 		}
 
 		if ( isset( $values['is_draft'] ) ) {
@@ -700,8 +602,8 @@ class FrmProXMLHelper {
 	/**
 	 * Save the entry after checking if it should be created or updated
 	 */
-	private static function save_or_edit_entry( $values ) {
-		$editing = self::get_entry_to_edit( $values );
+	private static function save_or_edit_entry( $values, $unmapped_fields ) {
+		$editing = self::get_entry_to_edit( $values, $unmapped_fields );
 		if ( $editing ) {
 			FrmEntry::update( $editing, $values );
 		} else {
@@ -713,11 +615,8 @@ class FrmProXMLHelper {
 	 * Editing CSV entries on import based on id or key
 	 *
 	 * @since 3.01.03
-	 *
-	 * @param array $values
-	 * @return int
 	 */
-	private static function get_entry_to_edit( $values ) {
+	private static function get_entry_to_edit( $values, $unmapped_fields ) {
 		$entry_id = 0;
 		$query    = array();
 
@@ -730,14 +629,11 @@ class FrmProXMLHelper {
 		}
 
 		if ( $query ) {
-			if ( count( $query ) === 2 ) {
+			if ( count( $query) === 2 ) {
 				$query = array_merge( array( 'or' => 1 ), $query );
 			}
 
-			$query    = array(
-				'form_id' => $values['form_id'],
-				$query,
-			);
+			$query    = array( 'form_id' => $values['form_id'], $query );
 			$entry_id = FrmDb::get_var( 'frm_items', $query );
 		}
 
@@ -748,7 +644,52 @@ class FrmProXMLHelper {
 		 * @param int $entry_id - The ID of the entry to edit. 0 means a new entry will be created.
 		 * @param array $values - The mapped values for this entry
 		 */
-		return (int) apply_filters( 'frm_editing_entry_by_csv', absint( $entry_id ), $values );
+		return apply_filters( 'frm_editing_entry_by_csv', absint( $entry_id ), $values );
+	}
+
+	private static function merge_old_entry( $unmapped_fields, &$values ) {
+		if ( $unmapped_fields ) {
+			$entry = FrmEntry::getOne( $values['id'], true );
+			if ( $entry ) {
+				$values['item_meta'] += $entry->metas;
+			}
+		}
+	}
+
+	/**
+	 * @deprecated 3.0
+	 */
+	public static function get_file_id( $value ) {
+		_deprecated_function( __FUNCTION__, '3.0', 'FrmProFieldFile->get_file_id' );
+		$field_obj = FrmFieldFactory::get_field_type( 'file' );
+		return $field_obj->get_file_id( $value );
+	}
+
+	/**
+	 * @deprecated 3.0
+	 */
+	public static function get_date( $value ) {
+		_deprecated_function( __FUNCTION__, '3.0', 'FrmProFieldFile->get_file_id' );
+		$field_obj = FrmFieldFactory::get_field_type('file');
+		return $field_obj->get_import_value( $value );
+	}
+
+	/**
+	 * @deprecated 3.0
+	 */
+	public static function get_multi_opts( $value, $field ) {
+		_deprecated_function( __FUNCTION__, '3.0', 'FrmProFieldFile->get_import_value' );
+		$field_obj = FrmFieldFactory::get_field_object( $field );
+		return $field_obj->get_import_value( $value );
+	}
+
+	/**
+	 * @deprecated 2.03.08
+	 */
+	public static function get_dfe_id( $value, $field, $ids = array() ) {
+		_deprecated_function( __FUNCTION__, '2.03.08' );
+		$field_obj = FrmFieldFactory::get_field_object( $field );
+		return $field_obj->get_import_value( $value, compact( 'ids' ) );
 	}
 
 	/**
@@ -756,16 +697,16 @@ class FrmProXMLHelper {
 	 *
 	 * @since 2.03.08
 	 *
-	 * @param mixed $imported_value
+	 * @param $imported_value
 	 *
-	 * @return mixed
+	 * @return array|mixed|string
 	 */
 	public static function convert_imported_value_to_array( $imported_value ) {
 		if ( is_string( $imported_value ) && strpos( $imported_value, ',' ) !== false ) {
 			FrmProAppHelper::unserialize_or_decode( $imported_value );
 
 			if ( ! is_array( $imported_value ) ) {
-				$imported_value = array_map( 'ltrim', explode( ',', $imported_value ) );
+				$imported_value = explode( ',', $imported_value );
 			}
 		} else {
 			$imported_value = (array) $imported_value;
@@ -778,9 +719,6 @@ class FrmProXMLHelper {
 	 * Update field settings before it's saved.
 	 *
 	 * @since 4.0
-	 *
-	 * @param array $field
-	 * @return array
 	 */
 	public static function run_field_migrations( $field ) {
 		$update = self::migrate_dyn_default_value( $field['type'], $field['field_options'] );
@@ -796,8 +734,6 @@ class FrmProXMLHelper {
 
 	/**
 	 * @since 4.0
-	 * @param array $field_options
-	 * @return void
 	 */
 	public static function migrate_lookup_placeholder( &$field_options ) {
 		if ( empty( $field_options['lookup_placeholder_text'] ) ) {
@@ -815,7 +751,6 @@ class FrmProXMLHelper {
 
 	/**
 	 * @since 4.0
-	 * @return void
 	 */
 	public static function migrate_lookup_checkbox_setting( &$field_options ) {
 		$is_not_selected = empty( $field_options['get_values_field'] );
@@ -833,10 +768,6 @@ class FrmProXMLHelper {
 
 	/**
 	 * @since 4.0
-	 *
-	 * @param string $type
-	 * @param array  $field_options
-	 * @return array
 	 */
 	public static function migrate_dyn_default_value( $type, $field_options ) {
 		$field_types = array( 'file', 'range', 'scale', 'star', 'time', 'toggle', 'user_id' );
@@ -857,44 +788,10 @@ class FrmProXMLHelper {
 	 *
 	 * @param array $field_array
 	 * @param int $field_id
-	 * @return void
 	 */
 	public static function after_field_is_imported( $field_array, $field_id ) {
 		self::add_in_section_value_to_repeating_fields( $field_array, $field_id );
 		self::update_page_titles( $field_array, $field_id );
-	}
-
-	/**
-	 * Fixes broken form_select field options after xml is imported.
-	 *
-	 * @since 6.6
-	 *
-	 * @param array $imported
-	 * @return array
-	 */
-	public static function after_xml_imported( $imported ) {
-		$imported_forms  = $imported['forms'];
-		$form_ids        = array_map( 'intval', $imported_forms );
-		$imported_fields = FrmDb::get_results(
-			'frm_fields',
-			array(
-				'form_id' => $form_ids,
-				'type'    => 'form',
-			),
-			'id,field_options'
-		);
-
-		foreach ( $imported_fields as $field ) {
-			$field_options = $field->field_options;
-			FrmAppHelper::unserialize_or_decode( $field_options );
-			if ( empty( $field_options['form_select'] ) || empty( $imported_forms[ $field_options['form_select'] ] ) ) {
-				continue;
-			}
-			$field_options['form_select'] = $imported_forms[ $field_options['form_select'] ];
-			FrmField::update( $field->id, array( 'field_options' => $field_options ) );
-		}
-
-		return $imported;
 	}
 
 	/**
@@ -904,7 +801,6 @@ class FrmProXMLHelper {
 	 *
 	 * @param array $field_array
 	 * @param int|string $new_id
-	 * @return void
 	 */
 	private static function update_page_titles( $field_array, $new_id ) {
 		if ( $field_array['type'] === 'break' ) {
@@ -924,7 +820,6 @@ class FrmProXMLHelper {
 	 * @since 2.0.25
 	 * @param array $f
 	 * @param int $section_id
-	 * @return void
 	 */
 	private static function add_in_section_value_to_repeating_fields( $f, $section_id ) {
 		if ( $f['type'] === 'divider'
@@ -948,7 +843,6 @@ class FrmProXMLHelper {
 	 * @since 2.0.25
 	 * @param array $field_ids
 	 * @param int $section_id
-	 * @return void
 	 */
 	public static function add_in_section_value_to_field_ids( $field_ids, $section_id ) {
 		foreach ( $field_ids as $child_id ) {
@@ -969,62 +863,23 @@ class FrmProXMLHelper {
 	 *
 	 * @param int $child_form_id
 	 * @param int $parent_form_id
-	 * @return void
 	 */
 	public static function maybe_update_in_section_variables_for_repeater_children( $child_form_id, $parent_form_id ) {
 		$child_form_fields = FrmField::get_all_for_form( $child_form_id );
 		foreach ( $child_form_fields as $child_field ) {
-			if ( $child_field->field_options['in_section'] ) {
-				continue;
-			}
+			if ( ! $child_field->field_options['in_section'] ) {
+				if ( ! isset( $dividers ) ) {
+					$dividers = FrmField::get_all_types_in_form( $parent_form_id, 'divider' );
+				}
 
-			if ( ! isset( $dividers ) ) {
-				$dividers = FrmField::get_all_types_in_form( $parent_form_id, 'divider' );
-			}
-
-			foreach ( $dividers as $divider ) {
-				if ( FrmField::is_repeating_field( $divider ) && (int) $divider->field_options['form_select'] === (int) $child_form_id ) {
-					$child_field->field_options['in_section'] = $divider->id;
-					self::add_in_section_value_to_field_ids( array( $child_field->id ), $divider->id );
-					break;
+				foreach ( $dividers as $divider ) {
+					if ( FrmField::is_repeating_field( $divider ) && (int) $divider->field_options['form_select'] === (int) $child_form_id ) {
+						$child_field->field_options['in_section'] = $divider->id;
+						self::add_in_section_value_to_field_ids( array( $child_field->id ), $divider->id );
+						break;
+					}
 				}
 			}
 		}
-	}
-
-	/**
-	 * @deprecated 3.0
-	 */
-	public static function get_file_id( $value ) {
-		_deprecated_function( __FUNCTION__, '3.0', 'FrmProFieldFile->get_file_id' );
-		$field_obj = FrmFieldFactory::get_field_type( 'file' );
-		return $field_obj->get_file_id( $value );
-	}
-
-	/**
-	 * @deprecated 3.0
-	 */
-	public static function get_date( $value ) {
-		_deprecated_function( __FUNCTION__, '3.0', 'FrmProFieldFile->get_file_id' );
-		$field_obj = FrmFieldFactory::get_field_type( 'file' );
-		return $field_obj->get_import_value( $value );
-	}
-
-	/**
-	 * @deprecated 3.0
-	 */
-	public static function get_multi_opts( $value, $field ) {
-		_deprecated_function( __FUNCTION__, '3.0', 'FrmProFieldFile->get_import_value' );
-		$field_obj = FrmFieldFactory::get_field_object( $field );
-		return $field_obj->get_import_value( $value );
-	}
-
-	/**
-	 * @deprecated 2.03.08 This function is still being used in the API add on so it cannot be removed safely.
-	 */
-	public static function get_dfe_id( $value, $field, $ids = array() ) {
-		_deprecated_function( __FUNCTION__, '2.03.08' );
-		$field_obj = FrmFieldFactory::get_field_object( $field );
-		return $field_obj->get_import_value( $value, compact( 'ids' ) );
 	}
 }

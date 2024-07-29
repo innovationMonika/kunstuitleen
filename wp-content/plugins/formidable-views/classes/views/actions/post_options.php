@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p class="frm_has_shortcodes">
 		<label for="frm_post_action_custom_content">
 			<?php esc_html_e( 'Customize Content', 'formidable-views' ); ?>
-			<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'The content shown on the single post page. If nothing is entered here, the regular post content will be used.', 'formidable-views' ); ?>"></span>
+			<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'The content shown on your single post page. If nothing is entered here, the regular post content will be used.', 'formidable-views' ); ?>"></span>
 		</label>
 		<?php
 		if ( $display ) {
@@ -35,13 +35,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 		?>
 		<textarea
 			id="frm_post_action_custom_content"
-			placeholder="<?php esc_attr_e( 'Add text, HTML, and fields from a form to build the post content.', 'formidable-views' ); ?>"
+			placeholder="<?php esc_attr_e( 'Add text, HTML, and fields from your form to build your post content.', 'formidable-views' ); ?>"
 			name="dyncontent"
 			rows="10"
 			class="frm_not_email_message"
 		><?php echo $textarea_value; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></textarea>
 	</p>
 	<span class="howto">
-		<?php esc_html_e( 'Editing this box will update the existing view or create a new one.', 'formidable-views' ); ?>
+		<?php esc_html_e( 'Editing this box will update your existing view or create a new one.', 'formidable-views' ); ?>
 	</span>
 </div>

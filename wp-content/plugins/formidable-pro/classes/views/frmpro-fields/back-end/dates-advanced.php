@@ -13,8 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<select name="field_options[locale_<?php echo absint( $field['id'] ); ?>]" id="field_options_locale_<?php echo absint( $field['id'] ); ?>" class="auto_width">
 			<?php
 			foreach ( $locales as $locale_key => $locale ) {
+				$selected = ( isset( $field['locale'] ) && $field['locale'] == $locale_key ) ? ' selected="selected"' : '';
 				?>
-				<option value="<?php echo esc_attr( $locale_key ); ?>" <?php selected( isset( $field['locale'] ) && $field['locale'] === $locale_key ); ?>>
+				<option value="<?php echo esc_attr( $locale_key ); ?>"<?php echo $selected; ?>>
 					<?php echo esc_html( $locale ); ?>
 				</option>
 			<?php } ?>
@@ -22,15 +23,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</td>
 </tr>
 
-<?php if ( ! empty( $upgrade_data ) ) { ?>
+<?php if ( isset( $install_data ) ) { ?>
 <tr>
 	<td>
-		<?php esc_attr_e( 'Add blackout dates, inline datepickers, dynamic start and end dates, and date calculations.', 'formidable-pro' ); ?>
+		<?php esc_attr_e( 'Blackout Dates, Inline Datepicker, and Dynamic Start and End Dates', 'formidable-pro' ); ?>
 	</td>
 	<td>
-		<a href="javascript:void(0)" class="frm_show_upgrade<?php echo esc_attr( $class ); ?>" <?php FrmAppHelper::array_to_html_params( $upgrade_data, true ); ?>>
+		<a href="javascript:void(0)" class="frm_show_upgrade<?php echo esc_attr( $class ); ?>" data-upgrade="<?php esc_attr_e( 'Extra Datepicker options', 'formidable' ); ?>" data-medium="datepicker-options" data-oneclick="<?php echo esc_attr( $install_data ); ?>">
 			<?php FrmProAppHelper::icon_by_class( 'frm_icon_font frm_plus1_icon frm_add_tag frm_svg14' ); ?>
-			<?php esc_html_e( 'More Datepicker Options', 'formidable-pro' ); ?>
+			<?php esc_html_e( 'More Datepicker Options', 'formidable' ); ?>
 		</a>
 	</td>
 </tr>

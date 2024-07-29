@@ -7,8 +7,6 @@ class FrmSimpleBlocksController {
 
 	/**
 	 * Enqueue Formidable Simple Blocks' js and CSS for editor in admin.
-	 *
-	 * @return void
 	 */
 	public static function block_editor_assets() {
 		$version = FrmAppHelper::plugin_version();
@@ -33,32 +31,12 @@ class FrmSimpleBlocksController {
 			$block_name = 'Formidable Forms';
 		}
 
-		$modal_addon      = self::get_addon_info( 185013 );
-		$charts_addon     = self::get_addon_info( 28248560 );
-		$views_addon      = FrmAddonsController::get_addon( 'views' );
-		$views_addon_info = self::get_addon_info( 28027505 );
-
 		$script_vars = array(
-			'forms'       => self::get_forms_options(),
-			'icon'        => $icon,
-			'name'        => $block_name,
-			'link'        => FrmAppHelper::admin_upgrade_link( 'block' ),
-			'url'         => FrmAppHelper::plugin_url(),
-			'modalAddon'  => array(
-				'link'      => FrmAppHelper::admin_upgrade_link( 'block', $modal_addon['link'] ),
-				'hasAccess' => ! empty( $modal_addon['url'] ),
-			),
-			'viewsAddon'  => array(
-				'link'      => FrmAppHelper::admin_upgrade_link( 'block', $views_addon_info['link'] ),
-				'hasAccess' => ! empty( $views_addon_info['url'] ),
-				'url'       => ! empty( $views_addon_info['url'] ) ? $views_addon_info['url'] : '',
-				'installed' => 'installed' === $views_addon['status']['type'],
-			),
-			'chartsAddon' => array(
-				'link'      => FrmAppHelper::admin_upgrade_link( 'block', $charts_addon['link'] ),
-				'hasAccess' => ! empty( $charts_addon['url'] ),
-				'installed' => class_exists( 'FrmChartsAppController' ),
-			),
+			'forms' => self::get_forms_options(),
+			'icon'  => $icon,
+			'name'  => $block_name,
+			'link'  => FrmAppHelper::admin_upgrade_link( 'block' ),
+			'url'   => FrmAppHelper::plugin_url(),
 		);
 
 		wp_localize_script( 'formidable-form-selector', 'formidable_form_selector', $script_vars );
@@ -72,25 +50,6 @@ class FrmSimpleBlocksController {
 			array( 'wp-edit-blocks' ),
 			$version
 		);
-	}
-
-	/**
-	 * Gets addon info.
-	 *
-	 * @since 6.8
-	 *
-	 * @param int $addon_id Addon ID.
-	 * @return array|false
-	 */
-	private static function get_addon_info( $addon_id ) {
-		$api    = new FrmFormApi();
-		$addons = $api->get_api_info();
-
-		if ( ! is_array( $addons ) || ! array_key_exists( $addon_id, $addons ) ) {
-			return false;
-		}
-
-		return $addons[ $addon_id ];
 	}
 
 	/**
@@ -118,21 +77,19 @@ class FrmSimpleBlocksController {
 	/**
 	 * Returns an array for a form with name as label and id as value
 	 *
-	 * @param object $form
+	 * @param $form
 	 *
 	 * @return array
 	 */
 	private static function set_form_options( $form ) {
 		return array(
-			'label' => FrmFormsHelper::edit_form_link_label( $form ),
+			'label' => $form->name,
 			'value' => $form->id,
 		);
 	}
 
 	/**
 	 * Registers simple form block
-	 *
-	 * @return void
 	 */
 	public static function register_simple_form_block() {
 		if ( ! is_callable( 'register_block_type' ) ) {
@@ -174,19 +131,14 @@ class FrmSimpleBlocksController {
 	/**
 	 * Renders a form given the specified attributes.
 	 *
-	 * @param array $attributes
+	 * @param $attributes
+	 *
 	 * @return string
 	 */
 	public static function simple_form_render( $attributes ) {
 		if ( ! isset( $attributes['formId'] ) ) {
 			return '';
 		}
-
-		/**
-		 * @since 5.5.2
-		 * @param array $attributes
-		 */
-		do_action( 'frm_before_simple_form_render', $attributes );
 
 		$params       = array_filter( $attributes );
 		$params['id'] = $params['formId'];

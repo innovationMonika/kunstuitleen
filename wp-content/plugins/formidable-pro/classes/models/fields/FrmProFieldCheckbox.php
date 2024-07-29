@@ -30,8 +30,8 @@ class FrmProFieldCheckbox extends FrmFieldCheckbox {
 		}
 
 		$hide_other = false;
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/other-option.php';
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/checkbox-limit.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/other-option.php' );
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/checkbox-limit.php' );
 	}
 
 	/**
@@ -195,29 +195,6 @@ class FrmProFieldCheckbox extends FrmFieldCheckbox {
 	}
 
 	/**
-	 * @since 6.8
-	 *
-	 * @param string $value
-	 * @param array  $atts
-	 * @return string
-	 */
-	public function get_display_value( $value, $atts = array() ) {
-		$has_image_option_markup = FrmProImages::has_image_option_markup( $value );
-
-		if ( $has_image_option_markup ) {
-			add_filter( 'frm_allowed_form_input_html', 'FrmProImages::allow_image_option_html' );
-		}
-
-		$value = parent::get_display_value( $value, $atts );
-
-		if ( $has_image_option_markup ) {
-			remove_filter( 'frm_allowed_form_input_html', 'FrmProImages::allow_image_option_html' );
-		}
-
-		return $value;
-	}
-
-	/**
 	 * When there are other options, $value will look something like array( 0 => '', 'other_2' => '' )
 	 * This as getting saved in the database as a:0:{} when it should be left out entirely since it is empty.
 	 * Instead of saving an empty array in the database, save nothing.
@@ -230,7 +207,7 @@ class FrmProFieldCheckbox extends FrmFieldCheckbox {
 		if ( is_array( $value ) ) {
 			$value = array_filter(
 				$value,
-				function ( $current ) {
+				function( $current ) {
 					return '' !== $current;
 				}
 			);

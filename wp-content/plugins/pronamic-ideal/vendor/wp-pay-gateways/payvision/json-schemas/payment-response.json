@@ -1,0 +1,40 @@
+{
+	"$id": "https://github.com/wp-pay-gateways/payvision/blob/master/json-schemas/transaction-response.json",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Payvision payment response.",
+	"type": "object",
+	"properties": {
+		"result": {
+			"type": "number",
+			"description": "The result of the payment."
+		},
+		"description": {
+			"type": "string",
+			"description": "A short description of the result.",
+			"maxLength": 150
+		},
+		"header": {
+			"$ref": "response-header.json"
+		},
+		"body": {
+			"type": "object",
+      		"properties": {
+				"transaction": {
+					"$ref": "transaction-response.json"
+				},
+				"redirect": {
+					"$ref": "redirect.json"
+				},
+				"error": {
+					"$ref": "error.json"
+				}
+			}
+		}
+	},
+	"required": [
+		"result",
+		"description",
+		"header",
+		"body"
+	]
+}

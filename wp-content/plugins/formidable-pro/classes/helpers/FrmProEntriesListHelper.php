@@ -11,8 +11,8 @@ class FrmProEntriesListHelper extends FrmEntriesListHelper {
 			'bulk_delete' => __( 'Delete', 'formidable-pro' ),
 		);
 
-		if ( ! current_user_can( 'frm_delete_entries' ) ) {
-			unset( $actions['bulk_delete'] );
+		if ( ! current_user_can('frm_delete_entries') ) {
+			unset($actions['bulk_delete']);
 		}
 
 		//$actions['bulk_export'] = __( 'Export to XML', 'formidable-pro' );
@@ -25,12 +25,8 @@ class FrmProEntriesListHelper extends FrmEntriesListHelper {
 
 	protected function extra_tablenav( $which ) {
 		parent::extra_tablenav( $which );
-		$is_footer    = ( $which !== 'top' );
-		$entries_args = array(
-			'entries_count'                    => $this->total_items,
-			'bulk_delete_confirmation_message' => $this->confirm_bulk_delete(),
-		);
-		FrmProEntriesHelper::before_table( $is_footer, $this->params['form'], $entries_args );
+		$is_footer = ( $which !== 'top' );
+		FrmProEntriesHelper::before_table( $is_footer, $this->params['form'] );
 	}
 
 	public function search_box( $text, $input_id ) {
@@ -90,7 +86,7 @@ class FrmProEntriesListHelper extends FrmEntriesListHelper {
 			<?php esc_html_e( 'Search', 'formidable-pro' ); ?>
 			<b class="caret"></b>
 		</a>
-		<ul class="frm-dropdown-menu <?php echo esc_attr( is_rtl() ? 'dropdown-menu-left' : 'dropdown-menu-right' ); ?>" id="frm-fid-search-menu" role="menu" aria-labelledby="frm-fid-search">
+		<ul class="frm-dropdown-menu pull-right" id="frm-fid-search-menu" role="menu" aria-labelledby="frm-fid-search">
 			<?php
 			foreach ( $options as $v => $opt ) {
 				?>
@@ -104,7 +100,10 @@ class FrmProEntriesListHelper extends FrmEntriesListHelper {
 			?>
 		</ul>
 	</div>
-		<?php
+		<?php if ( FrmAppHelper::get_param( 'frm-full', '', 'get', 'sanitize_text_field' ) ) { ?>
+			<input type="hidden" name="frm-full" value="1" />
+			<?php
+		}
 		submit_button( $text, 'button hide-if-js', false, false, array( 'id' => 'search-submit' ) );
 		?>
 

@@ -77,7 +77,13 @@ window.eml = window.eml || { l10n: {} };
                 _.each( eml.l10n.taxonomies, function( terms, taxonomy ) {
 
                     if ( attrs[taxonomy] ) {
-                        args[taxonomy] = attrs[taxonomy];
+
+                        if ( _.isArray( attrs[taxonomy] ) ) {
+                            args[taxonomy] = attrs[taxonomy];
+                        }
+                        else {
+                            args[taxonomy] = attrs[taxonomy].split(',');
+                        }
                     }
                 });
 

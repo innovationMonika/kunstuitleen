@@ -1,0 +1,251 @@
+/*---------------|| Mijn tegoeden Start ||-------------------*/
+.main .h4{
+    color: #2a374a;
+}
+.condition{
+    border-left: 1px solid #f3f3f3;
+    margin-top: 30px;
+    border-top: 0;
+}
+.condition .h4{
+    color:#9dafc2
+}
+.condition .col-md-10{
+    border-right: 1px solid #f3f3f3;
+    padding-left: 30px;
+}
+#condition{
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 30px;
+}
+.gift-cards{
+    color: #9dafc2;
+}
+#label {
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    margin-top: 20px;
+    -webkit-box-shadow: 0 10px 6px -6px #ececec;
+    -moz-box-shadow: 0 10px 6px -6px #ececec;
+    box-shadow: 0 10px 6px -6px #ececec;
+}
+.present {
+    padding-top: 26px;
+}
+.box-shadow label.col-md-12.mr-jonas.h4.text-uppercase {
+    line-height: inherit;
+}
+.main-row{
+    margin-top: 40px;
+}
+.search-btn{
+    margin-top: 30px;
+}
+.search-btn .input-group{
+    display: flex;
+}
+input[type="text"] {
+    border: 1px solid #e1e8f1;
+    height: 45px;
+    font-family: 'MrJones-Book';
+    font-size: 18px;
+    color: #a5b6c7;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.search-btn .btn-primary{
+    background-color: #607ff2;
+    height: 45px;
+    font-size: 17px;
+    border: 0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+.table-gift-card{
+    margin-top:30px;
+}
+.table{
+    border: 0;
+}
+.table thead{
+    border :0;
+}
+.table thead tr th {
+    font-size: 16px;
+    color: #2a374a;
+    border: 0;
+}
+.table tbody tr th{
+    color: #2a374a;
+    border:0;
+}
+.table tbody tr td{
+    color: #2a374a;
+    border:0;
+}
+.fa-sign-in{
+    cursor: pointer;
+    padding-left: 8px;
+    font-size: 15px;
+    color: #2a374a;
+}
+button.close{
+    padding-right: 10px;
+}
+.spend-gift-cards{
+    margin-top: 30px;
+}
+#spend-gift-cards{
+    padding: 20px;
+}
+.spend-gift-cards 
+input[type="text"]{
+    color: #afbece;
+    background-color: #f6fafc;
+    font-weight: normal;
+    border-color: #e1e8f1;
+}
+.flex{
+    display: flex;
+}
+.flex .col-md-8{
+    align-self: center;
+    padding-bottom: 12px;
+}
+.btn-submit{
+    display: flex;
+    justify-content: center;
+}
+.btn-submit .btn-primary{
+    background-color: #607ff2;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus{
+    outline: none;
+}
+/* @media (min-width: 768px){
+    .modal-dialog {
+        width: 700px;
+        margin: 30px auto;
+    }
+} */
+/* modal-right */
+.modal.right .modal-dialog {
+    position: fixed;
+    margin: auto;
+    height: 100%;
+    -webkit-transform: translate3d(0%, 0, 0);
+        -ms-transform: translate3d(0%, 0, 0);
+         -o-transform: translate3d(0%, 0, 0);
+            transform: translate3d(0%, 0, 0);
+}
+
+.modal.left .modal-content,
+.modal.right .modal-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.modal.left .modal-body,
+.modal.right .modal-body {
+    padding: 15px 15px 80px;
+}
+
+    .modal.right.fade .modal-dialog {
+    right: -320px;
+    -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+       -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+         -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+            transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.modal.right.fade.in .modal-dialog {
+    right: 0;
+}
+
+/* ----- MODAL STYLE ----- */
+.modal-content {
+    border-radius: 0 0 0 6px;
+    border: none;
+}
+.modal-footer{
+    border-radius: 0;
+    bottom: 0px;
+    position: absolute;
+    text-align: center;
+    border-top-color: transparent;
+    width: 100%;
+}
+.modal-footer .btn-primary{
+    background-color: #607ff2;
+    border: transparent;
+}
+.modal-footer label{
+    margin-bottom: 0;
+    font-weight: normal;
+}
+.modal-footer .btn-primary:hover, .modal-footer .btn-primary:focus, .modal-footer .btn-primary:active, .modal-footer .btn-primary.active, .open>.dropdown-toggle.modal-footer .btn-primary{
+    border: transparent;
+}
+.modal-footer .row{
+    display: flex;
+    justify-content: center;
+}
+.table-responsive{
+    border: 0;
+}
+.search-btn .btn-primary {
+    background-color: #607ff2 !important;
+    font-size: 17px;
+    border: 0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    background-image: none !important;
+    color: #fff !important;
+    min-width: auto !important;
+    padding: 12px !important;
+    text-transform: capitalize;
+}
+.row.search-btn input[type="text"] {
+    border: 1px solid #e1e8f1;
+    font-family: 'MrJones-Book';
+    font-size: 18px;
+    color: #a5b6c7;
+    margin-bottom: 20px;
+    font-weight: bold;
+    height: 45px !important;
+}
+.row.search-btn input[type="text"]::placeholder{
+    font-style: normal;
+}
+.kunstuitleen-table .table{
+    border-spacing: 0 !important;
+}
+.kunstuitleen-table table.table {
+    width:100%;
+     max-width: 100%;
+}
+.gift-cards {
+    font-size: 14px !important;
+    color: #9dafc2 !important;
+    font-weight: 700;
+}
+@media (max-width: 767px) {
+    .main .row img {
+    max-width: 80px;
+}
+}
+
+@media(max-width: 480px){
+.account_page_first label strong{
+        font-size: 14px;
+}
+.kunstuitleen-main-account label.title strong {
+    font-size: 22px;
+}
+.account_page_first {
+    margin-top: 15px;
+}
+}
+/*---------------|| Mijn tegoeden End ||-------------------*/
+

@@ -6,32 +6,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmProDisplaysHelper {
 
-	/**
-	 * @param string $content
-	 * @param mixed  $form_id
-	 * @return array
-	 */
 	public static function get_shortcodes( $content, $form_id ) {
 		if ( ! $form_id || strpos( $content, '[' ) === false ) {
 			// don't continue if there are no shortcodes to check
 			return array( array() );
 		}
 
-		$form_id            = (int) $form_id;
-		$field_ids_and_keys = self::get_field_ids_and_keys_for_form( $form_id );
-		$tagregexp          = array( 'deletelink', 'detaillink', 'evenodd', 'get', 'entry_count', 'event_date', 'is[-|_]draft' );
+		$tagregexp   = array( 'deletelink', 'detaillink', 'evenodd', 'get', 'entry_count', 'event_date', 'is[-|_]draft' );
+		$form_id     = (int) $form_id;
+		$form_ids    = self::linked_form_ids( $form_id );
+		$field_query = array(
+			'form_id' => $form_ids,
+			'or'      => 1,
+		);
+		$field_keys  = FrmDb::get_col( 'frm_fields', $field_query, 'field_key' );
 
-		if ( count( $field_ids_and_keys ) > 200 ) {
-			$field_ids_and_keys = FrmProFieldsHelper::filter_keys_for_regex( $content, $field_ids_and_keys );
+		if ( count( $field_keys ) > 200 ) {
+			$tagregexp = array_merge( $tagregexp, self::get_additional_keys_for_regex( $content, $field_keys ) );
+		} else {
+			$tagregexp = array_merge( $tagregexp, $field_keys );
 		}
 
-		$tagregexp  = array_merge( $tagregexp, $field_ids_and_keys );
 		$tagregexp  = implode( '|', $tagregexp ) . '|';
 		$tagregexp .= FrmFieldsHelper::allowed_shortcodes();
 
 		self::maybe_increase_regex_limit();
 
-		preg_match_all( "/\[(if |foreach )?($tagregexp)\b(.*?)(?:(\/))?\](?:(.+?)\[\/\2\])?/s", $content, $matches, PREG_PATTERN_ORDER );
+		preg_match_all( "/\[(if |foreach )?(\d+|$tagregexp)\b(.*?)(?:(\/))?\](?:(.+?)\[\/\2\])?/s", $content, $matches, PREG_PATTERN_ORDER );
 
 		$matches[0] = self::organize_and_filter_shortcodes( $matches[0] );
 
@@ -39,28 +40,20 @@ class FrmProDisplaysHelper {
 	}
 
 	/**
-	 * Get all field IDs and keys for a form and its children forms for regex.
+	 * To avoid issues with regex limits, remove any field keys that aren't found in the content ahead of time for large field sets.
 	 *
-	 * @since 5.5.4 This was moved from get_shortcodes and field IDs were added because checking for \d would catch false positives.
-	 *
-	 * @param int $form_id
+	 * @param string $content
+	 * @param array  $keys
 	 * @return array
 	 */
-	private static function get_field_ids_and_keys_for_form( $form_id ) {
-		$form_ids      = self::linked_form_ids( $form_id );
-		$field_query   = array(
-			'form_id' => $form_ids,
-			'or'      => 1,
-		);
-		$field_results = FrmDb::get_results( 'frm_fields', $field_query, 'id, field_key' );
-
-		$field_ids_and_keys = array();
-		foreach ( $field_results as $result ) {
-			$field_ids_and_keys[] = $result->id;
-			$field_ids_and_keys[] = $result->field_key;
+	private static function get_additional_keys_for_regex( $content, $keys ) {
+		$additional_keys = array();
+		foreach ( $keys as $key ) {
+			if ( false !== strpos( $content, $key ) ) {
+				$additional_keys[] = $key;
+			}
 		}
-
-		return $field_ids_and_keys;
+		return $additional_keys;
 	}
 
 	/**

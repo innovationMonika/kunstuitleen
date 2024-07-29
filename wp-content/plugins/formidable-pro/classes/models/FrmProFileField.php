@@ -7,16 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class FrmProFileField {
 
 	/**
-	 * @since 5.4.3
-	 */
-	const WRITE_ONLY = 0200;
-
-	/**
-	 * @since 5.4.3
-	 */
-	const READ_ONLY = 0400;
-
-	/**
 	 * @var array $all_file_upload_field_ids
 	 */
 	private static $all_file_upload_field_ids;
@@ -42,16 +32,6 @@ class FrmProFileField {
 	private static $new_temporary_file_ids;
 
 	/**
-	 * @var bool Used in allow_xlsx_files_from_google_sheets, so the filter only gets added the first time upload_file gets called.
-	 */
-	private static $added_xlsx_filter = false;
-
-	/**
-	 * @var int The maximum number of chars allowed for the 'post_name' field.
-	 */
-	private static $post_name_limit = 200;
-
-	/**
 	 * @param array $field (no array for field options)
 	 * @param array $atts
 	 */
@@ -73,11 +53,10 @@ class FrmProFileField {
 			}
 
 			$file_size = self::get_max_file_size( $field['size'] );
-			$form_id   = isset( $field['parent_form_id'] ) ? $field['parent_form_id'] : $field['form_id'];
 
+			$form_id                                = isset( $field['parent_form_id'] ) ? $field['parent_form_id'] : $field['form_id'];
 			$frm_vars['dropzone_loaded'][ $the_id ] = array(
 				'maxFilesize'      => round( $file_size, 2 ),
-				'minFilesize'      => $field['min_size'],
 				'maxFiles'         => $max,
 				'htmlID'           => $the_id,
 				'label'            => $atts['html_id'],
@@ -90,10 +69,8 @@ class FrmProFileField {
 				'defaultMessage'   => __( 'Drop files here to upload', 'formidable-pro' ),
 				'fallbackMessage'  => __( 'Your browser does not support drag and drop file uploads.', 'formidable-pro' ),
 				'fallbackText'     => __( 'Please use the fallback form below to upload your files like in the olden days.', 'formidable-pro' ),
-				/* translators: %s: File size limit (Megabytes). */
+				/* translators: %sMB: File size limit (Megabytes). */
 				'fileTooBig'       => sprintf( __( 'That file is too big. It must be less than %sMB.', 'formidable-pro' ), '{{maxFilesize}}' ),
-				/* translators: %s: File minimum size limit (Megabytes). */
-				'fileTooSmall'     => sprintf( __( 'That file is too small. It must be greater than %sMB.', 'formidable-pro' ), '{{minFilesize}}' ),
 				'invalidFileType'  => self::get_invalid_file_type_message( $field['name'], $field['invalid'] ),
 				/* translators: %s: Status code */
 				'responseError'    => sprintf( __( 'Server responded with %s code.', 'formidable-pro' ), '{{statusCode}}' ),
@@ -193,7 +170,7 @@ class FrmProFileField {
 	 * @param int $media_id
 	 * @return array
 	 */
-	public static function get_mock_file( $media_id ) {
+	private static function get_mock_file( $media_id ) {
 		$file_url  = self::get_file_url( $media_id );
 		$path      = get_attached_file( $media_id );
 		$file_type = wp_check_filetype( $path );
@@ -212,40 +189,6 @@ class FrmProFileField {
 		}
 
 		return $file;
-	}
-
-	/**
-	 * Get path to use for file that checks for permissions first before trying to show files the user cannot access.
-	 *
-	 * @since 5.4.1
-	 *
-	 * @param array $file Mock file data.
-	 * @return string
-	 */
-	public static function get_safe_file_icon( $file ) {
-		if ( ! empty( $file['accessible'] ) && self::file_type_matches_image( $file['type'] ) ) {
-			return $file['url'];
-		}
-
-		// Use a placeholder for type instead.
-		return self::get_icon_for_file_type( $file['ext'] );
-	}
-
-	/**
-	 * @param string $extension
-	 *
-	 * @return string
-	 */
-	private static function get_icon_for_file_type( $extension ) {
-		$images_url = FrmProAppHelper::plugin_url() . '/images/';
-
-		if ( in_array( $extension, array( 'pdf', 'doc', 'xls', 'docx', 'xlsx' ), true ) ) {
-			$ext = substr( $extension, 0, 3 );
-
-			return $images_url . $ext . '.svg';
-		}
-
-		return $images_url . 'doc.svg';
 	}
 
 	/**
@@ -380,32 +323,30 @@ class FrmProFileField {
 	}
 
 	/**
-	 * Upload files when dropzone is disabled (triggered when submitting a form).
+	 * Upload files the uploaded files when no JS on page
 	 *
 	 * @since 2.03.08
 	 *
 	 * @param array $errors
+	 *
 	 * @return array
 	 */
 	public static function upload_files_no_js( $errors ) {
-		global $frm_vars;
-
-		if ( ! empty( $errors ) || ! isset( $frm_vars['file_fields'] ) ) {
+		if ( ! empty( $errors ) ) {
 			return $errors;
 		}
 
-		foreach ( $frm_vars['file_fields'] as $unique_file_id => $file_args ) {
-			if ( ! isset( $_FILES[ $file_args['file_name'] ] ) ) {
-				continue;
-			}
+		global $frm_vars;
 
-			$file_field = FrmField::getOne( $file_args['field_id'] );
-			if ( ! self::should_allow_upload_for_field( $file_field ) ) {
-				continue;
-			}
+		if ( isset( $frm_vars['file_fields'] ) ) {
+			foreach ( $frm_vars['file_fields'] as $unique_file_id => $file_args ) {
 
-			$file_field->temp_id = $file_field->id;
-			self::maybe_upload_temp_file( $errors, $file_field, $file_args );
+				if ( isset( $_FILES[ $file_args['file_name'] ] ) ) {
+					$file_field          = FrmField::getOne( $file_args['field_id'] );
+					$file_field->temp_id = $file_field->id;
+					self::maybe_upload_temp_file( $errors, $file_field, $file_args );
+				}
+			}
 		}
 
 		return $errors;
@@ -507,21 +448,14 @@ class FrmProFileField {
 
 		$mb_limit     = FrmField::get_option( $field, 'size' );
 		$size_limit   = self::get_max_file_size( $mb_limit );
-		$min_size_limit = FrmField::get_option( $field, 'min_size' );
 		$file_uploads = (array) $_FILES[ $args['file_name'] ]; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		foreach ( (array) $file_uploads['name'] as $k => $name ) {
 
 			// Check allowed file size
 			if ( ! empty( $file_uploads['error'] ) && in_array( 1, (array) $file_uploads['error'] ) ) {
-				// Hit a server limit (upload exceeds upload_max_filesize PHP directive).
-				$server_limit = self::get_server_filesize_limit();
-
-				$errors[ 'field' . $field->temp_id ] = sprintf(
-					// translators: %s: File size limit (Megabytes)
-					__( 'That file is too big. It must be less than %sMB.', 'formidable-pro' ),
-					false !== $server_limit ? $server_limit : $size_limit
-				);
+				/* translators: %sMB: File size limit (Megabytes). */
+				$errors[ 'field' . $field->temp_id ] = __( 'That file is too big. It must be less than %sMB.', 'formidable-pro' );
 			}
 
 			if ( empty( $name ) ) {
@@ -532,59 +466,12 @@ class FrmProFileField {
 			$this_file_size = $this_file_size / 1000000; // compare in MB
 
 			if ( $this_file_size > $size_limit ) {
-				// translators: %s: File size limit (Megabytes).
+				/* translators: %sMB: File size limit (Megabytes). */
 				$errors[ 'field' . $field->temp_id ] = sprintf( __( 'That file is too big. It must be less than %sMB.', 'formidable-pro' ), $size_limit );
-			}
-
-			if ( $this_file_size < $min_size_limit ) {
-				// translators: %s: File minimum size limit (Megabytes).
-				$errors[ 'field' . $field->temp_id ] = sprintf( __( 'That file is too small. It must be greater than %sMB.', 'formidable-pro' ), $min_size_limit );
 			}
 
 			unset( $name );
 		}
-	}
-
-	/**
-	 * Get the filesize limit in Megabytes.
-	 *
-	 * @since 6.3
-	 *
-	 * @return int|float|false
-	 */
-	private static function get_server_filesize_limit() {
-		$limit = ini_get( 'upload_max_filesize' );
-		if ( ! $limit ) {
-			return false;
-		}
-
-		return self::convert_size_to_mb( $limit );
-	}
-
-	/**
-	 * @since 6.3
-	 *
-	 * @param string $limit
-	 * @return int|float|false
-	 */
-	private static function convert_size_to_mb( $limit ) {
-		$value = substr( $limit, 0, -1 );
-		if ( ! is_numeric( $value ) ) {
-			return false;
-		}
-
-		$value = (int) $value;
-		$unit  = $limit[ strlen( $limit ) - 1 ];
-		switch ( $unit ) {
-			case 'M':
-				return $value;
-			case 'K':
-				return $value / 1024;
-			case 'G':
-				return $value * 1024;
-		}
-
-		return $value;
 	}
 
 	/**
@@ -599,7 +486,7 @@ class FrmProFileField {
 		$mb_limit   = (float) $mb_limit;
 		$upload_max = wp_max_upload_size() / 1000000;
 
-		return round( min( $upload_max, $mb_limit ), 2 );
+		return round( min( $upload_max, $mb_limit ), 3 );
 	}
 
 	/**
@@ -651,13 +538,6 @@ class FrmProFileField {
 
 	/**
 	 * @since 2.02
-	 *
-	 * @param array    $errors
-	 * @param stdClass $field
-	 * @param array    $args {
-	 *     @type string $file_name
-	 * }
-	 * @return void
 	 */
 	public static function validate_file_type( &$errors, $field, $args ) {
 		if ( isset( $errors[ 'field' . $field->temp_id ] ) ) {
@@ -678,7 +558,7 @@ class FrmProFileField {
 
 			//check allowed mime types for this field
 			$file_type = wp_check_filetype( $name, $mimes );
-			unset( $name );
+			unset($name);
 
 			if ( ! $file_type['ext'] ) {
 				break;
@@ -690,11 +570,7 @@ class FrmProFileField {
 		}
 	}
 
-	/**
-	 * @param array|stdClass $field
-	 * @return array|null
-	 */
-	public static function get_allowed_mimes( $field ) {
+	private static function get_allowed_mimes( $field ) {
 		$mimes    = FrmField::get_option( $field, 'ftypes' );
 		$restrict = FrmField::is_option_true( $field, 'restrict' ) && ! empty( $mimes );
 		if ( ! $restrict ) {
@@ -733,7 +609,7 @@ class FrmProFileField {
 		}
 
 		$file_names = array_map(
-			function ( $file_name ) {
+			function( $file_name ) {
 				return sanitize_option( 'upload_path', $file_name );
 			},
 			(array) $_FILES[ $args['file_name'] ]['name'] // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -828,24 +704,19 @@ class FrmProFileField {
 
 		$file_uploads = $_FILES[ $args['file_name'] ]; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
-		if ( ! self::file_was_selected( $file_uploads ) ) {
-			return;
-		}
+		if ( self::file_was_selected( $file_uploads ) ) {
+			$response = array( 'errors' => array(), 'media_ids' => array() );
+			self::upload_temp_files( $args['file_name'], $response, $field );
 
-		$response = array(
-			'errors'    => array(),
-			'media_ids' => array(),
-		);
-		self::upload_temp_files( $args['file_name'], $response, $field );
+			if ( ! empty( $response['media_ids'] ) ) {
+				$previous_value = self::get_file_posted_vals( $field->id, $args );
+				$new_value      = self::set_new_file_upload_meta_value( $field, $response['media_ids'], $previous_value );
+				self::set_file_posted_vals( $field->id, $new_value, $args );
+			}
 
-		if ( ! empty( $response['media_ids'] ) ) {
-			$previous_value = self::get_file_posted_vals( $field->id, $args );
-			$new_value      = self::set_new_file_upload_meta_value( $field, $response['media_ids'], $previous_value );
-			self::set_file_posted_vals( $field->id, $new_value, $args );
-		}
-
-		if ( ! empty( $response['errors'] ) ) {
-			$errors[ 'field' . $field->temp_id ] = implode( ' ', $response['errors'] );
+			if ( ! empty( $response['errors'] ) ) {
+				$errors[ 'field' . $field->temp_id ] = implode( ' ', $response['errors'] );
+			}
 		}
 	}
 
@@ -861,7 +732,7 @@ class FrmProFileField {
 		}
 
 		$field = FrmField::getOne( $field_id, true );
-		if ( ! self::should_allow_upload_for_field( $field ) ) {
+		if ( ! self::should_allow_ajax_upload_for_field( $field ) ) {
 			return $response;
 		}
 
@@ -887,10 +758,10 @@ class FrmProFileField {
 	}
 
 	/**
-	 * @param stdClass|null $field
+	 * @param object $field
 	 * @return bool
 	 */
-	private static function should_allow_upload_for_field( $field ) {
+	private static function should_allow_ajax_upload_for_field( $field ) {
 		if ( ! $field || 'file' !== $field->type ) {
 			return false;
 		}
@@ -952,7 +823,7 @@ class FrmProFileField {
 		if ( ! $new_media_ids ) {
 			if ( $errors ) {
 				$errors = array_map(
-					function ( $error ) {
+					function( $error ) {
 						return $error->get_error_message();
 					},
 					$errors
@@ -988,20 +859,12 @@ class FrmProFileField {
 
 		$field                = self::$active_upload_field;
 		$upload_dir           = self::get_upload_dir_for_form( $field->form_id );
-		$is_in_formidable_dir = '' !== $upload_dir && 0 === strpos( $meta_value, $upload_dir );
+		$is_in_formidable_dir = 0 === strpos( $meta_value, $upload_dir );
 
 		if ( $is_in_formidable_dir ) {
 			self::$new_temporary_file_ids[] = $object_id;
 			self::add_meta_to_media( $object_id, 'temporary', $field->id );
 		}
-	}
-
-	/**
-	 * @param int $attachment_id Original attachment id.
-	 * @param int $duplicated_attachment_id Attachment copy id.
-	 */
-	public static function remove_frm_temporary_meta( $attachment_id, $duplicated_attachment_id ) {
-		delete_post_meta( $duplicated_attachment_id, '_frm_temporary' );
 	}
 
 	/**
@@ -1014,8 +877,6 @@ class FrmProFileField {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 		require_once ABSPATH . 'wp-admin/includes/media.php';
-
-		self::allow_xlsx_files_from_google_sheets();
 
 		$response = array( 'media_ids' => array(), 'errors' => array() );
 		add_filter( 'upload_dir', array( 'FrmProFileField', 'upload_dir' ) );
@@ -1056,42 +917,6 @@ class FrmProFileField {
 	}
 
 	/**
-	 * Treat Google sheet xlsx files as the expected xlsx mime type.
-	 * Otherwise it isn't possible possible to upload an xlsx file downloaded from Google sheets.
-	 *
-	 * @since 6.1.2
-	 *
-	 * @return void
-	 */
-	private static function allow_xlsx_files_from_google_sheets() {
-		if ( self::$added_xlsx_filter ) {
-			return;
-		}
-
-		add_filter(
-			'wp_check_filetype_and_ext',
-			/**
-			 * @param array         $wp_check_filetype_and_ext
-			 * @param string        $file
-			 * @param string        $filename
-			 * @param array<string> $mimes
-			 * @param string        $real_mime
-			 * @return array
-			 */
-			function ( $wp_check_filetype_and_ext, $file, $filename, $mimes, $real_mime ) {
-				if ( 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheetapplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet' === $real_mime ) {
-					$wp_check_filetype_and_ext['ext']  = 'xlsx';
-					$wp_check_filetype_and_ext['type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-				}
-				return $wp_check_filetype_and_ext;
-			},
-			10,
-			5
-		);
-		self::$added_xlsx_filter = true;
-	}
-
-	/**
 	 * @since 5.0.03
 	 * @param string $name
 	 * @return string
@@ -1099,7 +924,7 @@ class FrmProFileField {
 	private static function maybe_truncate_long_file_name( $name ) {
 		$max_filename_length = apply_filters( 'frm_max_filename_length', 100, compact( 'name' ) );
 
-		if ( strlen( $name ) < $max_filename_length && strlen( rawurlencode( $name ) ) <= self::$post_name_limit ) {
+		if ( strlen( $name ) < $max_filename_length ) {
 			return $name;
 		}
 
@@ -1107,33 +932,8 @@ class FrmProFileField {
 		$extension = array_pop( $split );
 		$name      = implode( '.', $split );
 		$name      = substr( $name, 0, $max_filename_length - strlen( $extension ) - 1 );
-
-		self::check_filename_against_max_post_name( $name, $extension );
-
 		return $name . '.' . $extension;
 	}
-
-	/**
-	 * Checks a file name against WP post_name limit and truncates it if needed.
-	 *
-	 * @since 6.4
-	 *
-	 * @param string $name
-	 * @param string $extension
-	 *
-	 * @return void
-	 */
-	private static function check_filename_against_max_post_name( &$name, $extension ) {
-		$max_name_part_length = self::$post_name_limit - strlen( $extension ) - 1;
-		$encoded_name_length  = strlen( rawurlencode( $name ) );
-
-		while ( $encoded_name_length > $max_name_part_length ) {
-			$name                = mb_substr( $name, 0, -1 );
-			$encoded_name        = rawurlencode( $name );
-			$encoded_name_length = strlen( $encoded_name );
-		}
-	}
-
 
 	/**
 	 * @param string|array $file_id Index (or array of Indices) of the $_FILES array that the file was sent.
@@ -1567,8 +1367,7 @@ class FrmProFileField {
 				}
 
 				if ( $form_is_protected ) {
-					// Temporarily allow access to file so it can be copied.
-					self::set_to_read_only( $orig_path );
+					self::chmod( $orig_path, 0400 );
 				}
 
 				$read_file     = new FrmCreateFile(
@@ -1585,8 +1384,7 @@ class FrmProFileField {
 				}
 
 				if ( $form_is_protected ) {
-					// Protect the file that was temporarily been readable.
-					self::set_to_write_only( $orig_path );
+					self::chmod( $orig_path, 0200 );
 				}
 
 				$file_arr = array(
@@ -1612,39 +1410,6 @@ class FrmProFileField {
 
 			FrmEntryMeta::update_entry_meta( $entry_id, $field->id, null, $new_meta );
 		}
-	}
-
-	/**
-	 * Sets a file to read only.
-	 *
-	 * @since 5.4.3
-	 * @since 6.6 This method is public.
-	 *
-	 * @param string $path File path.
-	 */
-	public static function set_to_read_only( $path ) {
-		self::chmod( $path, self::get_readonly_permission() );
-	}
-
-	/**
-	 * @since 6.5.3
-	 *
-	 * @return int
-	 */
-	public static function get_readonly_permission() {
-		return apply_filters( 'frm_protected_file_readonly_permission', self::READ_ONLY );
-	}
-
-	/**
-	 * Sets a file to write only.
-	 *
-	 * @since 5.4.3
-	 * @since 6.6 This method is public.
-	 *
-	 * @param string $path File path.
-	 */
-	public static function set_to_write_only( $path ) {
-		self::chmod( $path, self::WRITE_ONLY );
 	}
 
 	/**
@@ -1906,9 +1671,9 @@ class FrmProFileField {
 	}
 
 	/**
-	 * @param int               $id Post attachment ID.
+	 * @param int $id
 	 * @param string|int[]|bool $size
-	 * @param array             $args supported keys include "url" and "leave_size_out_of_payload"
+	 * @param array $args supported keys include "url" and "leave_size_out_of_payload"
 	 * @return string a maybe-protected url to use for our specified file id and size.
 	 */
 	public static function get_file_url( $id, $size = false, $args = array() ) {
@@ -1920,15 +1685,9 @@ class FrmProFileField {
 			return $builder->get_url();
 		}
 
-		$protected    = self::file_is_protected( $id, $form_id );
-		$chmod_params = array( 'file_id' => $id, 'form_id' => $form_id, 'protected' => $protected );
+		$protected = self::file_is_protected( $id, $form_id );
 
-		if ( false === $size && wp_attachment_is_image( $id ) && ! get_post_meta( $id, '_wp_attachment_metadata', true ) ) {
-			self::delay_file_protection_for_image( $chmod_params );
-		} else {
-			// Protect non-images immediately.
-			self::maybe_set_chmod( $chmod_params );
-		}
+		self::maybe_set_chmod( array( 'file_id' => $id, 'form_id' => $form_id, 'protected' => $protected ) );
 
 		if ( ! $protected ) {
 			return $builder->get_url();
@@ -1936,36 +1695,6 @@ class FrmProFileField {
 
 		$leave_filesize_out_of_payload = ! empty( $args['leave_size_out_of_payload'] );
 		return $builder->get_protected_url( self::file_protocol(), $leave_filesize_out_of_payload );
-	}
-
-	/**
-	 * Images are not protected immediately so that thumbnails may be generated.
-	 *
-	 * @param array $chmod_params {
-	 *     @type int  $file_id
-	 *     @type int  $form_id
-	 *     @type bool $protected
-	 * }
-	 * @return void
-	 */
-	private static function delay_file_protection_for_image( $chmod_params ) {
-		add_filter(
-			'wp_generate_attachment_metadata',
-			/**
-			 * @param array  $metadata
-			 * @param int    $attachment_id
-			 * @param string $context
-			 * @return array
-			 */
-			function ( $metadata, $attachment_id, $context ) use ( $chmod_params ) {
-				if ( 'create' === $context && $attachment_id === $chmod_params['file_id'] ) {
-					self::maybe_set_chmod( $chmod_params );
-				}
-				return $metadata;
-			},
-			10,
-			3
-		);
 	}
 
 	/**
@@ -2003,23 +1732,12 @@ class FrmProFileField {
 			return;
 		}
 
-		// Temporary allow file access.
-		self::set_to_read_only( $download['path'] );
-
-		// If wp_filesystem->chmod didn't work, try using chmod.
-		if ( ! is_readable( $download['path'] ) ) {
-			chmod( $download['path'], self::get_readonly_permission() );
-		}
+		self::chmod( $download['path'], 0400 );
 
 		$mime_type   = FrmProAppHelper::get_mime_type( $download['path'] );
 		$disposition = self::get_disposition( $mime_type );
 
-		// Extend time limit in case for a large file that may require additional time to download.
-		if ( function_exists( 'set_time_limit' ) ) {
-			set_time_limit( 0 );
-		}
-
-		header( FrmAppHelper::get_server_value( 'SERVER_PROTOCOL' ) . ' 200 OK' );
+		header( FrmAppHelper::get_server_value('SERVER_PROTOCOL') . ' 200 OK');
 		header( 'Cache-Control: public' ); // needed for internet explorer
 		header( 'Content-Type: ' . $mime_type );
 		header( 'Content-Transfer-Encoding: Binary' );
@@ -2030,16 +1748,9 @@ class FrmProFileField {
 			header( 'X-Robots-Tag: noindex' );
 		}
 
-		// Clear the output buffer.
-		// Without this some servers will load a corrupted file instead.
-		while ( ob_get_level() ) {
-			ob_end_clean();
-		}
+		@readfile( $download['path'] ); // hide any errors to prevent issues with downloading an error message as a file
 
-		@readfile( $download['path'] ); // Hide any errors to prevent issues with downloading an error message as a file.
-
-		// Set the protection back after download.
-		self::set_to_write_only( $download['path'] );
+		self::chmod( $download['path'], 0200 );
 		die();
 	}
 
@@ -2097,6 +1808,14 @@ class FrmProFileField {
 	 * @param int $form_id
 	 * @return string
 	 */
+	private static function upload_dir_url( $form_id ) {
+		return trailingslashit( wp_upload_dir()['baseurl'] ) . self::get_upload_dir_for_form( $form_id );
+	}
+
+	/**
+	 * @param int $form_id
+	 * @return string
+	 */
 	private static function upload_dir_path( $form_id ) {
 		return trailingslashit( wp_upload_dir()['basedir'] ) . self::get_upload_dir_for_form( $form_id );
 	}
@@ -2110,10 +1829,11 @@ class FrmProFileField {
 
 		if ( ! $meta ) {
 			$path = get_attached_file( $file_id );
-			if ( ! self::file_is_in_the_formidable_uploads_dir( $path ) ) {
+			if ( self::file_is_in_the_formidable_uploads_dir( $path ) ) {
+				$meta = 1;
+			} else {
 				return -1;
 			}
-			$meta = 1;
 		}
 
 		if ( is_array( $meta ) ) {
@@ -2173,12 +1893,8 @@ class FrmProFileField {
 		return false;
 	}
 
-	/**
-	 * @param string|int $field_id
-	 * @return int
-	 */
 	private static function get_form_id_from_field_id( $field_id ) {
-		return (int) FrmDb::get_var( 'frm_fields', array( 'id' => $field_id ), 'form_id' );
+		return FrmDb::get_var( 'frm_fields', array( 'id' => $field_id ), 'form_id' );
 	}
 
 	private static function get_all_file_upload_metas() {
@@ -2231,12 +1947,10 @@ class FrmProFileField {
 	/**
 	 * Check if the current user has permission to access a specific form
 	 *
-	 * @since 6.6 This method is public.
-	 *
 	 * @param int $form_id
 	 * @return bool
 	 */
-	public static function folder_is_protected( $form_id ) {
+	private static function folder_is_protected( $form_id ) {
 		if ( ! $form_id || $form_id === -1 ) {
 			return false;
 		}
@@ -2258,11 +1972,11 @@ class FrmProFileField {
 			return;
 		}
 
-		$chmod = $protected ? self::WRITE_ONLY : 0644;
+		$chmod = $protected ? 0200 : 0644;
 		$leave = array( $chmod );
 
 		if ( $protected ) {
-			$leave[] = self::get_readonly_permission();
+			$leave[] = 0400;
 		}
 
 		if ( ! in_array( self::get_chmod( array( 'file' => $file ) ), $leave, true ) ) {
@@ -2294,14 +2008,12 @@ class FrmProFileField {
 	}
 
 	/**
-	 * Attempt to get a protected file from a /frm_file/ url.
-	 *
-	 * @since 6.6 This method is public.
+	 * Attempt to get a protected file from a /frm_file/ url
 	 *
 	 * @param string $payload
 	 * @return array
 	 */
-	public static function get_download_filepath( $payload ) {
+	private static function get_download_filepath( $payload ) {
 		/**
 		 *  $decoded needs to match id:|filename:|size: pattern (size is optional though)
 		 *  if it does not, return without a code (to ignore the request, just in case there is another /frm_file/ implementation on their website)
@@ -2341,35 +2053,25 @@ class FrmProFileField {
 		$folder_is_protected = self::folder_is_protected( $form_id );
 		$require_login       = $folder_is_protected;
 
-		/**
-		 * Allows updating a flag for doing referer check.
-		 *
-		 * @since 5.5
-		 *
-		 * @param bool $check_referer
-		 */
-		$check_referer = apply_filters( 'frm_check_file_referer', true );
 		// only do the referer checks if the user is a guest
-		if ( $check_referer ) {
-			if ( $require_login && ! is_user_logged_in() ) {
-				$referer = FrmAppHelper::get_server_value( 'HTTP_REFERER' );
+		if ( $require_login && ! is_user_logged_in() ) {
+			$referer = FrmAppHelper::get_server_value( 'HTTP_REFERER' );
 
-				if ( ! $referer ) {
-					return array(
-						'code'    => 403,
-						'message' => __( 'referer value either does not exist or it is unusable', 'formidable-pro' ),
-					);
-				}
+			if ( ! $referer ) {
+				return array(
+					'code'    => 403,
+					'message' => __( 'referer value either does not exist or it is unusable', 'formidable-pro' ),
+				);
+			}
 
-				$referer = wp_parse_url( $referer );
-				$home    = wp_parse_url( $home_url );
+			$referer = wp_parse_url( $referer );
+			$home    = wp_parse_url( $home_url );
 
-				if ( $referer['host'] !== $home['host'] ) {
-					return array(
-						'code'    => 403,
-						'message' => __( 'referer check failed', 'formidable-pro' ),
-					);
-				}
+			if ( $referer['host'] !== $home['host'] ) {
+				return array(
+					'code'    => 403,
+					'message' => __( 'referer check failed', 'formidable-pro' ),
+				);
 			}
 		}
 
@@ -2521,16 +2223,14 @@ class FrmProFileField {
 	}
 
 	/**
-	 * Check REQUEST_URI (or any uri) for protected file download details.
-	 *
-	 * @since 6.6 This method is public.
+	 * Check REQUEST_URI (or any uri) for protected file download details
 	 *
 	 * @param string|bool $uri
 	 * @return string|bool false if no payload exists
 	 */
-	public static function get_file_payload( $uri = false ) {
+	private static function get_file_payload( $uri = false ) {
 		if ( ! $uri ) {
-			$uri = FrmAppHelper::get_server_value( 'REQUEST_URI' );
+			$uri = FrmAppHelper::get_server_value('REQUEST_URI');
 		}
 
 		$pattern  = self::file_protocol();
@@ -2545,37 +2245,10 @@ class FrmProFileField {
 
 	/**
 	 * @param string $url
-	 *
-	 * @since 6.1.2
-	 *
-	 * @return bool
-	 */
-	private static function is_formidable_icon( $url ) {
-		$images_url = FrmProAppHelper::plugin_url() . '/images/';
-		if ( strpos( $url, $images_url ) === false ) {
-			return false;
-		}
-
-		$file_types = array( 'pdf', 'doc', 'xls' );
-		foreach ( $file_types as $file_type ) {
-			if ( $url === $images_url . $file_type . '.svg' ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param string $url
 	 * @param int $attachment_id
 	 * @return bool
 	 */
 	private static function should_filter_url( $url, $attachment_id ) {
-		if ( self::is_formidable_icon( $url ) ) {
-			return false;
-		}
-
 		$form_id = self::get_form_id_from_file_id( $attachment_id );
 		if ( $form_id === -1 ) {
 			// do not touch non-formidable urls
@@ -2617,67 +2290,23 @@ class FrmProFileField {
 	 * @return array
 	 */
 	public static function filter_attachment_image_src( $image, $attachment_id, $size, $icon ) {
-		if ( is_array( $image ) && isset( $image[0] ) && self::should_filter_url( $image[0], $attachment_id ) ) {
-			if ( ! $icon ) {
-				$image[0] = self::get_file_url( $attachment_id, $size, array( 'url' => $image[0] ) );
-			} else {
-				self::set_formidable_icon( $image, $attachment_id );
-			}
+		if ( is_array( $image ) && isset( $image[0] ) && self::should_filter_url( $image[0], $attachment_id ) && ! $icon ) {
+			$image[0] = self::get_file_url( $attachment_id, $size, array( 'url' => $image[0] ) );
 		}
 		return $image;
 	}
 
 	/**
-	 * Use a Formidable icon instead of a default WordPress icon for docx, xlsx, and pdf types.
-	 *
-	 * @since 6.1.2
-	 *
-	 * @param array $image
-	 * @param int $attachment_id
-	 * @return void
-	 */
-	private static function set_formidable_icon( &$image, $attachment_id ) {
-		$path      = get_attached_file( $attachment_id );
-		$file_type = wp_check_filetype( $path );
-
-		if ( 'pdf' === $file_type['ext'] && false === strpos( $image[0], 'document.png' ) ) {
-			// Some servers allow PDF previews. We do not want to place an ICON if the PDF icon is not document.png.
-			return;
-		}
-
-		$image[0]  = self::get_icon_for_file_type( $file_type['ext'] );
-	}
-
-	/**
-	 * @param array        $attr
-	 * @param WP_Post|null $attachment
+	 * @param array $attr
+	 * @param WP_Post $attachment
 	 * @param string|int[] $size
 	 * @return array
 	 */
 	public static function filter_attachment_image_attributes( $attr, $attachment, $size = 'thumbnail' ) {
-		if ( is_object( $attachment ) && self::should_filter_attachment_image_attributes( $attachment->ID ) ) {
+		if ( self::should_filter_attachment_image_attributes( $attachment->ID ) ) {
 			$attr['src'] = self::get_file_url( $attachment->ID, $size );
 		}
 		return $attr;
-	}
-
-	/**
-	 * Remove attachment metadata for PDF file it is a formidable file as well.
-	 *
-	 * @param array $data
-	 * @param int   $attachment_id
-	 *
-	 * @return array $data
-	 */
-	public static function maybe_turnoff_attachment_meta( $data, $attachment_id ) {
-		if ( self::is_formidable_file( $attachment_id ) && get_post_mime_type( $attachment_id ) === 'application/pdf' ) {
-			$form_id = self::get_form_id_from_file_id( $attachment_id );
-			if ( self::file_is_protected( $attachment_id, $form_id ) ) {
-				return array();
-			}
-		}
-
-		return $data;
 	}
 
 	/**
@@ -2765,3 +2394,4 @@ class FrmProFileField {
 		return self::no_js_validate( $errors, $field, $values, $args );
 	}
 }
+

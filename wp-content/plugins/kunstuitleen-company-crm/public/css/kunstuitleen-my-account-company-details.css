@@ -1,0 +1,141 @@
+/*---------------|| Bedrijfsgegevens Start ||-------------------*/
+.main{
+    margin-top: 40px;
+}
+.main .h4{
+    color: #2a374a;
+}
+.condition{
+    border-left: 1px solid #f3f3f3;
+    margin-top: 30px;
+    border-top: 0;
+}
+.condition .h4{
+    color:#9dafc2
+}
+.condition .col-md-10{
+    border-right: 1px solid #f3f3f3;
+    padding-left: 30px;
+}
+#condition{
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 30px;
+}
+.gift-cards{
+    color: #9dafc2;
+}
+.mailing-address{
+    padding-left: 0;
+}
+.ps-0{
+    padding-left: 0;
+}
+.form-control{
+    height: 45px;
+    font-size: 18px;
+    border: 1px solid #e1e8f1;
+    color: #2a374a;
+    background-color: #f6fafc;
+    box-shadow: none;
+    font-weight: bold;
+    font-family: 'MrJones-Book',sans-serif;
+}
+.sample{
+    padding-top: 15px;
+}
+.mail-address .h4{
+    margin-bottom: 0;
+}
+.form-group{
+    margin-bottom: 20px;
+}
+input[type="checkbox"]{
+    height: 30px;
+    width: 30px;
+    border: 2px solid #e1e8f1 !important;
+    outline: 1px solid #e1e8f1;
+    outline-offset: -1px;
+}
+.inp-check{
+    padding-right: 0;
+}
+form .h4, .h5{
+    color:#344052;
+}
+form .btn-primary{
+    width: 100px;
+    color: white;
+    background-color: #607ff2;
+    margin-right: 14px;
+    border-color: #607ff2;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+}
+.btn-primary .h4{
+    color: white;
+}
+form .btn-default{
+    border-color: #607ff2;
+    font-weight: bold;
+    color: #607ff2;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+}
+.form-control:focus{
+    border-color: #e1e8f1;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary{
+    background-color: #607ff2;
+    border-color: #607ff2;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus{
+    outline: none;
+}
+.btn:active, .btn.active{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default{
+    background-color: white;
+    border: 1px solid #607ff2;
+    color: #607ff2;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+input[type=checkbox]:focus{
+    outline: 1px solid #e1e8f1;
+    outline-offset: -1px;
+}
+.form-control [type=checkbox]:focus{
+    outline: 1px solid #e1e8f1;
+    outline-offset: -1px;
+}
+.btn-default .h4, .btn-primary .h4{
+    cursor: pointer;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    font-family: 'MrJones-Book',sans-serif;
+    border: 1px solid #e1e8f1;
+    -webkit-text-fill-color: #2a374a;
+    transition: background-color 5000s ease-in-out 0s;
+}
+.kuerror {
+    border: 1px solid red !important;
+}.kuerror-message-wrapper {
+    color: red;
+}
+/*---------------|| Bedrijfsgegevens End ||-------------------*/

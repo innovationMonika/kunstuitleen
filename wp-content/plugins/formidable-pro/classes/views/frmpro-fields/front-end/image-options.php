@@ -41,12 +41,12 @@ foreach ( $field['options'] as $opt_key => $opt ) {
 	?>
 	<input type="<?php echo esc_attr( $field['type'] ); ?>" name="<?php echo esc_attr( $field_name . ( $field['type'] === 'checkbox' ? '[]' : '' ) ); ?>" id="<?php echo esc_attr( $html_id . '-' . $opt_key ); ?>" value="<?php echo esc_attr( $field_val ); ?>"
 	<?php
-	echo $checked; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $checked; // WPCS: XSS ok.
 	do_action( 'frm_field_input_html', $field );
 	?>/><?php
 
 	if ( ! isset( $shortcode_atts ) || ! isset( $shortcode_atts['label'] ) || $shortcode_atts['label'] ) {
-		echo ' ' . FrmAppHelper::kses( $image['label'], 'all' ) . '</label>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo ' ' . FrmAppHelper::kses( $image['label'], 'all' ) . '</label>'; // WPCS: XSS ok.
 	}
 
 	unset( $checked );

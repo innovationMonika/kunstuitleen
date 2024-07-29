@@ -3,6 +3,7 @@
 namespace Yoast\WP\SEO\Presentations;
 
 use WP_Term;
+use Yoast\WP\SEO\Helpers\Pagination_Helper;
 use Yoast\WP\SEO\Helpers\Taxonomy_Helper;
 use Yoast\WP\SEO\Wrappers\WP_Query_Wrapper;
 
@@ -16,6 +17,13 @@ use Yoast\WP\SEO\Wrappers\WP_Query_Wrapper;
 class Indexable_Term_Archive_Presentation extends Indexable_Presentation {
 
 	use Archive_Adjacent;
+
+	/**
+	 * Holds the Pagination_Helper instance.
+	 *
+	 * @var Pagination_Helper
+	 */
+	protected $pagination;
 
 	/**
 	 * Holds the WP query wrapper instance.
@@ -92,11 +100,7 @@ class Indexable_Term_Archive_Presentation extends Indexable_Presentation {
 	 * @return array The source.
 	 */
 	public function generate_source() {
-		if ( ! empty( $this->model->object_id ) || \is_null( \get_queried_object() ) ) {
-			return \get_term( $this->model->object_id, $this->model->object_sub_type );
-		}
-
-		return \get_term( \get_queried_object()->term_id, \get_queried_object()->taxonomy );
+		return \get_term( $this->model->object_id, $this->model->object_sub_type );
 	}
 
 	/**
@@ -152,7 +156,7 @@ class Indexable_Term_Archive_Presentation extends Indexable_Presentation {
 		 * First we get the no index option for this taxonomy, because it can be overwritten the indexable value for
 		 * this specific term.
 		 */
-		if ( \is_wp_error( $this->source ) || ! $this->taxonomy->is_indexable( $this->source->taxonomy ) ) {
+		if ( ! $this->taxonomy->is_indexable( $this->source->taxonomy ) ) {
 			$robots['index'] = 'noindex';
 		}
 
@@ -173,10 +177,6 @@ class Indexable_Term_Archive_Presentation extends Indexable_Presentation {
 	 */
 	public function generate_title() {
 		if ( $this->model->title ) {
-			return $this->model->title;
-		}
-
-		if ( \is_wp_error( $this->source ) ) {
 			return $this->model->title;
 		}
 
@@ -210,10 +210,6 @@ class Indexable_Term_Archive_Presentation extends Indexable_Presentation {
 		$query = $this->wp_query_wrapper->get_query();
 
 		if ( ! isset( $query->tax_query ) ) {
-			return false;
-		}
-
-		if ( \is_wp_error( $this->source ) ) {
 			return false;
 		}
 

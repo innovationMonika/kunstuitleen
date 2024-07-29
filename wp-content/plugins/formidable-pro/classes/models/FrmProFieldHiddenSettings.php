@@ -21,4 +21,5 @@ class FrmProFieldHiddenSettings extends FrmProFieldSettings {
 	protected function set_use_key() {
 		$this->use_key = false;
 	}
+
 }

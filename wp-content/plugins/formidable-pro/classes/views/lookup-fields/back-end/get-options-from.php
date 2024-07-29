@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<option value="">&mdash; <?php esc_html_e( 'Select Form', 'formidable-pro' ); ?> &mdash;</option>
 	<?php foreach ( $lookup_args['form_list'] as $form_opts ) { ?>
 	<option value="<?php echo absint( $form_opts->id ); ?>"<?php selected( $form_opts->id, isset( $field['get_values_form'] ) ? $field['get_values_form'] : '' ); ?>>
-		<?php echo esc_html( FrmAppHelper::truncate( $form_opts->name, 30 ) ); ?>
+		<?php echo FrmAppHelper::truncate( $form_opts->name, 30 ); ?>
 	</option>
 	<?php } ?>
 </select>

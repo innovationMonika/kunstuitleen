@@ -19,22 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</td>
 	</tr>
 	<tr class="hide_rootline <?php echo esc_attr( $hide_rootline_class ); ?>">
-		<td> 
-			<select name="options[pagination_position]" id="frm_pagination_position_opt">
-				<option value=""><?php esc_html_e( 'Below form title (default)', 'formidable-pro' ); ?></option>
-				<option value="above_title" <?php selected( $values['pagination_position'], 'above_title' ); ?>>
-					<?php esc_html_e( 'Above form title', 'formidable-pro' ); ?>
-				</option>
-				<option value="above_submit" <?php selected( $values['pagination_position'], 'above_submit' ); ?>>
-					<?php esc_html_e( 'Above submit button', 'formidable-pro' ); ?>
-				</option>
-				<option value="below_submit" <?php selected( $values['pagination_position'], 'below_submit' ); ?>>
-					<?php esc_html_e( 'Below submit button', 'formidable-pro' ); ?>
-				</option>
-			</select>
-		</td>
-	</tr>
-	<tr class="hide_rootline <?php echo esc_attr( $hide_rootline_class ); ?>">
 		<td>
 			<label>
 				<input type="checkbox" value="1" name="options[rootline_titles_on]" <?php checked( $values['rootline_titles_on'], 1 ); ?> data-toggleclass="hide_rootline_titles" />

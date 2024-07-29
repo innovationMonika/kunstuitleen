@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,11 +91,11 @@ class Ai1wm_Feedback_Controller {
 		try {
 			Ai1wm_Feedback::add( $type, $email, $message, $terms, implode( PHP_EOL, $purchases ) );
 		} catch ( Ai1wm_Feedback_Exception $e ) {
-			ai1wm_json_response( array( 'errors' => array( $e->getMessage() ) ) );
+			echo json_encode( array( 'errors' => array( $e->getMessage() ) ) );
 			exit;
 		}
 
-		ai1wm_json_response( array( 'errors' => array() ) );
+		echo json_encode( array( 'errors' => array() ) );
 		exit;
 	}
 }

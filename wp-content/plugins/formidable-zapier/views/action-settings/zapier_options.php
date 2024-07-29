@@ -1,10 +1,5 @@
 <div class="frm_grid_container">
 	<div class="frm12 frm_form_field">
-		<?php if ( get_post_meta( $form_action->ID, 'frm_zapier_test_hook' ) ) { ?>
-			<div class="frm_warning_style">
-				<?php esc_html_e( 'This action is only temporary and will be unsubscribed automatically.', 'frmzap' ); ?>
-			</div>
-		<?php } ?>
 		<label for="<?php echo esc_attr( $this->get_field_id( 'zap_url' ) ); ?>">
 			<?php esc_html_e( 'Zapier WebHook URL', 'frmzap' ); ?>
 		</label>
@@ -17,7 +12,7 @@
 				<?php esc_html_e( 'Get WebHook URL', 'frmzap' ); ?>
 			</a>
 			<?php } else { ?>
-			<a href="https://zapier.com/app/zaps" target="_blank" rel="noopener">
+			<a href="https://zapier.com/app" target="_blank" rel="noopener">
 				<?php esc_html_e( 'Edit Zap', 'frmzap' ); ?>
 			</a>
 			<?php } ?>

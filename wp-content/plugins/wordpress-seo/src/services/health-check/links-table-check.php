@@ -26,6 +26,7 @@ class Links_Table_Check extends Health_Check {
 	 *
 	 * @param Links_Table_Runner  $runner  The object that implements the actual health check.
 	 * @param Links_Table_Reports $reports The object that generates WordPress-friendly results.
+	 * @return void
 	 */
 	public function __construct(
 		Links_Table_Runner $runner,

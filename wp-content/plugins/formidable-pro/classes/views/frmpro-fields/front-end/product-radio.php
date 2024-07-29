@@ -21,7 +21,6 @@ if ( $display_type === 'checkbox' ) {
 	$field_name .= '[]';
 }
 
-$option_index = 0;
 foreach ( $field['options'] as $opt_key => $opt ) {
 	if ( isset( $shortcode_atts ) && isset( $shortcode_atts['opt'] ) && ( $shortcode_atts['opt'] !== $opt_key ) ) {
 		continue;
@@ -29,6 +28,7 @@ foreach ( $field['options'] as $opt_key => $opt ) {
 
 	$field_val = FrmFieldsHelper::get_value_from_array( $opt, $opt_key, $field );
 	$price     = FrmProFieldProduct::get_price_from_array( $opt, $opt_key, $field );
+	$checked   = FrmAppHelper::check_selected( $field['value'], $field_val ) ? ' checked="checked" ' : ' ';
 	$opt       = FrmFieldsHelper::get_label_from_array( $opt, $opt_key, $field );
 	?>
 	<div class="<?php echo esc_attr( apply_filters( 'frm_' . $display_type . '_class', 'frm_' . $display_type, $field, $field_val ) ); ?>" id="<?php echo esc_attr( FrmFieldsHelper::get_checkbox_id( $field, $opt_key, $display_type ) ); ?>"><?php
@@ -38,19 +38,12 @@ foreach ( $field['options'] as $opt_key => $opt ) {
 	}
 	?>
 	<input type="<?php echo esc_attr( $display_type ); ?>" name="<?php echo esc_attr( $field_name ); ?>" id="<?php echo esc_attr( $html_id . '-' . $opt_key ); ?>" value="<?php echo esc_attr( $field_val ); ?>"<?php
-
-	FrmAppHelper::checked( $field['value'], $field_val );
-
-	if ( 0 === $option_index && FrmField::is_required( $field ) ) {
-		echo ' aria-required="true" ';
-	}
-
+	echo $checked . ' '; // WPCS: XSS ok.
 	?> data-frmprice="<?php echo esc_attr( $price ); ?>" <?php do_action( 'frm_field_input_html', $field ); ?> /><?php
 
 	if ( ! isset( $shortcode_atts ) || ! isset( $shortcode_atts['label'] ) || $shortcode_atts['label'] ) {
-		echo ' ' . FrmAppHelper::kses( $opt, 'all' ) . '</label>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo ' ' . FrmAppHelper::kses( $opt, 'all' ) . '</label>'; // WPCS: XSS ok.
 	}
 	?></div>
 <?php
-	++$option_index;
 }

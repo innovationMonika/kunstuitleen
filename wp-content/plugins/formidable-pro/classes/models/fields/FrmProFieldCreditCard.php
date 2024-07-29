@@ -57,11 +57,11 @@ class FrmProFieldCreditCard extends FrmFieldType {
 	 */
 	public function show_primary_options( $args ) {
 		$field = $args['field'];
-		include FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/credit-cards/back-end-field-opts.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/credit-cards/back-end-field-opts.php' );
 
 		if ( ! empty( $field['description'] ) ) {
 			// This is here only for reverse compatibility.
-			include FrmAppHelper::plugin_path() . '/classes/views/frm-fields/back-end/field-description.php';
+			include( FrmAppHelper::plugin_path() . '/classes/views/frm-fields/back-end/field-description.php' );
 		}
 
 		parent::show_primary_options( $args );
@@ -77,7 +77,7 @@ class FrmProFieldCreditCard extends FrmFieldType {
 
 		$sub_fields = $this->all_default_labels();
 		foreach ( $sub_fields as $name => $field_label ) {
-			include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/default-placeholder.php';
+			include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/default-placeholder.php' );
 		}
 	}
 
@@ -129,7 +129,7 @@ class FrmProFieldCreditCard extends FrmFieldType {
 		$field_name = $this->html_name( $name );
 		$html_id = $this->html_id();
 
-		include FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/input-form-builder.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/input-form-builder.php' );
 	}
 
 	public function front_field_input( $args, $shortcode_atts ) {
@@ -373,4 +373,5 @@ class FrmProFieldCreditCard extends FrmFieldType {
 	public function sanitize_value( &$value ) {
 		FrmAppHelper::sanitize_value( 'sanitize_text_field', $value );
 	}
+
 }

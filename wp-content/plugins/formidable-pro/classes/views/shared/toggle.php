@@ -11,7 +11,6 @@ $on_label     = isset( $args['on_label'] ) ? $args['on_label'] : 1;
 $checked      = isset( $args['checked'] ) && ( true === $args['checked'] || false !== strpos( $args['checked'], 'checked="checked"' ) );
 $input_html   = isset( $args['input_html'] ) ? $args['input_html'] : '';
 $aria_checked = $checked ? 'true' : 'false';
-$name         = $name ? $name . '[]' : '';
 ?>
 
 <div <?php echo $div_class ? 'class="' . esc_attr( $div_class ) . '"' : ''; ?>>
@@ -20,18 +19,12 @@ $name         = $name ? $name . '[]' : '';
 			<span class="frm_off_label frm_switch_opt"><?php echo esc_html( $off_label ); ?></span>
 		<?php } ?>
 
-		<input type="checkbox" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $on_label ); ?>"
+		<input type="checkbox" name="<?php echo esc_attr( $name ); ?>[]" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $on_label ); ?>"
 			<?php checked( $checked, true ); ?>
 			<?php if ( $show_labels && $off_label ) { ?>
 				data-off="<?php echo esc_attr( $off_label ); ?>"
 			<?php } ?>
-			<?php
-			if ( is_array( $input_html ) ) {
-				FrmAppHelper::array_to_html_params( $input_html, true );
-			} else {
-				echo $input_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			}
-			?>
+			<?php echo $input_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		/>
 
 		<span class="frm_switch" tabindex="0" role="switch" aria-labelledby="<?php echo esc_attr( $id ); ?>_label" aria-checked="<?php echo esc_attr( $aria_checked ); ?>">

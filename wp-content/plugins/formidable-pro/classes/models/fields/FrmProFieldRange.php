@@ -15,11 +15,6 @@ class FrmProFieldRange extends FrmFieldType {
 	 */
 	protected $type = 'range';
 
-	/**
-	 * @var bool
-	 */
-	protected $array_allowed = false;
-
 	protected function field_settings_for_type() {
 		$settings = array(
 			'invalid' => true,
@@ -29,19 +24,6 @@ class FrmProFieldRange extends FrmFieldType {
 
 		FrmProFieldsHelper::fill_default_field_display( $settings );
 		return $settings;
-	}
-
-	/**
-	 * @since 5.4.3
-	 *
-	 * @param array $args - Includes 'field', 'display', and 'values'
-	 * @return void
-	 */
-	public function show_primary_options( $args ) {
-		$field = $args['field'];
-		$type  = __( 'number', 'formidable-pro' );
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/currency-format.php';
-		parent::show_primary_options( $args );
 	}
 
 	protected function builder_text_field( $name = '' ) {
@@ -95,7 +77,7 @@ class FrmProFieldRange extends FrmFieldType {
 			$this->add_min_max( $args, $input_html );
 		}
 
-		$default = $this->get_field_column( 'default_value' );
+		$default = $this->get_field_column('default_value');
 		if ( is_object( $this->field ) ) {
 			$field = $this->field;
 		} else {
@@ -159,10 +141,6 @@ class FrmProFieldRange extends FrmFieldType {
 		$starting_value = ( '' === $value || false === $value ) ? $default : $value;
 		$starting_value = $this->get_mid_value( $starting_value );
 
-		if ( ! empty( $this->field->field_options['is_currency'] ) ) {
-			$starting_value = FrmProCurrencyHelper::maybe_format_currency( $starting_value, $this->field, array() );
-		}
-
 		$num  = '<span class="frm_range_value">' . esc_html( $starting_value ) . '</span>';
 		$pre  = $this->format_unit( 'prepend', $is_builder );
 		$unit = $this->format_unit( 'append', $is_builder );
@@ -180,18 +158,8 @@ class FrmProFieldRange extends FrmFieldType {
 			return $value;
 		}
 
-		$defaults = $this->extra_field_opts();
-		$min      = FrmField::get_option( $this->field, 'minnum' );
-		$max      = FrmField::get_option( $this->field, 'maxnum' );
-
-		if ( ! is_numeric( $min ) ) {
-			$min = $defaults['minnum'];
-		}
-
-		if ( ! is_numeric( $max ) ) {
-			$max = $defaults['maxnum'];
-		}
-
+		$min = FrmField::get_option( $this->field, 'minnum' );
+		$max = FrmField::get_option( $this->field, 'maxnum' );
 		$mid = ( $max - $min ) / 2 + $min;
 
 		if ( is_int( $mid ) ) {
@@ -199,31 +167,15 @@ class FrmProFieldRange extends FrmFieldType {
 		}
 
 		$step = FrmField::get_option( $this->field, 'step' );
-		if ( ! $step || ! is_numeric( $step ) ) {
-			// Avoid division by zero or division by non-numeric string.
-			$step = $defaults['step'];
-		}
-
 		return round( $mid / $step ) * $step;
 	}
 
 	/**
-	 * Ranges will show the min and max values under the input when a "Before Input" or "After Input" value is set.
-	 *
 	 * @since 4.05
-	 *
-	 * @param bool $is_builder
-	 * @return string
 	 */
 	private function output_min_max_value( $is_builder = false ) {
 		$min  = FrmField::get_option( $this->field, 'minnum' );
 		$max  = FrmField::get_option( $this->field, 'maxnum' );
-
-		if ( FrmField::get_option( $this->field, 'is_currency' ) ) {
-			$min = FrmProCurrencyHelper::maybe_format_currency( $min, $this->field, array() );
-			$max = FrmProCurrencyHelper::maybe_format_currency( $max, $this->field, array() );
-		}
-
 		$pre  = $this->format_unit( 'prepend', $is_builder );
 		$unit = $this->format_unit( 'append', $is_builder );
 		if ( $is_builder && strpos( $unit, '><' ) ) {
@@ -235,7 +187,7 @@ class FrmProFieldRange extends FrmFieldType {
 		$min = $pre . esc_html( $min ) . $unit;
 		$max = $pre . esc_html( $max ) . $unit;
 
-		$output  = '<div class="frm_description">';
+		$output = '<div class="frm_description">';
 		$output .= '<span class="frm_range_min">' . $min . '</span>';
 		$output .= '<span class="frm_range_max">' . $max . '</span>';
 		$output .= '</div>';

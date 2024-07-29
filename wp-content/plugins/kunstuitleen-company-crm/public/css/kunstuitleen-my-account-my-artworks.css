@@ -1,0 +1,780 @@
+/*---------------|| Mijn kunstwerken Strat ||-------------------*/
+.search{
+    font-family: 'MrJones-Book', sans-serif;
+    height: 47px;
+    color: #2a374a;
+    font-weight: bold;
+    font-size: 17px;
+    border: 1px solid #9dafc2;
+}
+.form-control:focus{
+    border-color: #9dafc2;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.search::placeholder{
+    padding-left: 5px;
+    font-family: 'FontAwesome','MrJones-Book', sans-serif;
+    color: #9eb0c3;
+    font-size: 16px;
+}
+.search-btn{
+    color: #2a374a;
+    border: 0;
+    font-size: 18px;
+    font-family: 'MrJones-Book';
+    font-weight: bold;
+}
+.search-btn:hover{
+    background-color: white;
+}
+.search-btn:focus, .search-btn:active:focus, .search-btn.active:focus {
+    background-color: white;
+    border: none;
+    box-shadow: none;
+    outline:none;
+}
+.search-btn .fa{
+    padding-left: 18px;
+    position: relative;
+    font-size: 20px;
+    top: 0px;
+}
+.share-btn .fa{
+    padding-right: 10px;
+    font-size: 15px;
+}
+.input-group-addon:first-child {
+    border-right: 0;
+    color: #334052;
+    border: 1px solid #e1e8f1;
+    background-color: white;
+}
+.multiselect-search{
+    border: 1px solid #e1e8f1;
+    color: #2a374a;
+    font-family: 'MRJONES-BOOK';
+    font-weight: bold;
+}
+.multiselect-clear-filter{
+    border: 1px solid #e1e8f1;
+}
+.multiselect-container .active{
+    background-color: transparent;
+}
+.input-group .form-control {
+    height: 34px;
+}
+.multiselect-container .form-control{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    /* -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; */
+}
+.multiselect-container>li {
+    padding: 0;
+    border: 0;
+    height: 35px;
+}
+.multiselect-container>li>a>label.radio, .multiselect-container>li>a>label.checkbox {
+    margin: 0;
+    font-weight: bold;
+    font-family: 'MrJones-Book';
+    border: 0;
+    font-size: 16px;
+}
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+    background-color: transparent;
+}
+.multiselect-container .form-control:focus-visible{
+    outline: none;
+}
+a:focus {
+    outline: none;
+}
+.dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
+    color: black;
+    text-decoration: none;
+    background-color: white;
+    outline: 0;
+}
+.title{
+    font-family: "MrJones-Book", sans-serif;
+    color: #74869d;
+    margin: 0;
+    margin-bottom: 25px;
+}
+.form-title {
+    color: #607ff2;
+    margin-bottom: 20px;
+}
+.btn-info{
+    background-color: #607ff2;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 0;
+    margin-bottom: 15px;
+}
+.btn-info:focus, .login .btn-info:active {
+    border: 0;
+    box-shadow: none;
+    outline:none;
+}
+.btn-info:hover{
+    background-color:  #607ff2d9;
+}
+.select-box{
+    margin-bottom: 30px;
+}
+#modal-collegue{
+    padding: 50px;
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+.checked{
+    height: 150px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.img-checked{
+    margin-bottom: 30px;
+}
+.btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open>.dropdown-toggle.btn-info {
+    background-color:  #607ff2d9;
+}
+.share-btn .btn-default{
+    border: 0;
+}
+.delete-share .btn-default{
+    border: 0;
+}
+.share-btn label{
+    cursor: pointer;
+}
+.share-btn .btn-default:hover, .share-btn .btn-default:focus, .share-btn .btn-default:active, .share-btn .btn-default.active, .open>.dropdown-toggle.share-btn .btn-default,
+.delete-share .btn-default:hover, .delete-share .btn-default:focus, .delete-share .btn-default:active, .delete-share .btn-default.active, .open>.dropdown-toggle.delete-share .btn-default{
+    background-color: white;
+    border: 0;
+}
+.btn:active, .btn.active{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.fa-trash{
+    font-size: 30px;
+    cursor: pointer;
+}
+.icon-trash{
+    height: 18px;
+    padding-right: 10px;
+    display: inline-flex;
+    margin-top: -4px;
+}
+.delete-share-body p{
+    padding-left: 30px;
+    color: #72849c;
+}
+.delete-title{
+    margin-bottom: 22px;
+    color: #2c394b;
+    font-weight: bold;
+}
+#cancel{
+    color: #607ff2;
+    border: 1px solid #607ff2;
+}
+.my-details{
+    margin-bottom: 0;
+}
+.view-artworks-btn{
+    padding-left:0;
+}
+.view-artworks-btn .btn-default{
+    height: 48px;
+}
+.payment-overview-heading{
+    margin-bottom: 10px;
+}
+table {
+    border-spacing: 15px;
+    border-collapse: separate;
+}
+.table-borderless>thead>tr>th{
+    border: 0;
+}
+.table-borderless>thead>tr>th, .table-borderless>tbody>tr>th, .table-borderless>tfoot>tr>th, .table-borderless>thead>tr>td, .table-borderless>tbody>tr>td, .table-borderless>tfoot>tr>td{
+    border:0;
+    color: #2d394c;
+}
+.table-borderless thead tr th{
+    font-size: 16px;
+}
+.table-borderless{
+    font-size: 15px;
+}
+.table-borderless tbody tr .fa{
+    font-size: 16px;
+}
+.table-borderless tbody tr .fa-check{
+    padding-right: 10px;
+}
+.table-borderless tbody tr .fa-sign-in{
+    padding-left: 20px;
+}
+.pdf{
+    height: 24px;
+    display: inline-block;
+    padding-right: 6px;
+}
+.voucher .img-responsive{
+    height: auto;
+    max-height: 108px;
+}
+.voucher-col{
+    padding-left: 30px;
+}
+.flex{
+    display: flex;
+}
+.align-self-center{
+    align-self: center;
+}
+.inline-block{
+    display: inline-block;
+}
+.table-borderless tbody tr a{
+    color: #607ff2;
+}
+.mb-30px{
+    margin-bottom: 30px;
+}
+.expire-date{
+    font-size: 14px;
+    font-weight: bold;
+}
+#label .btn-block{
+    padding-top: 0;
+    padding-bottom: 10px;
+    border: 0;
+}
+#label .btn-block .h5{
+    cursor: pointer;
+}
+.title{
+    color: #2a374a;
+}
+.btn-group.open .btn-default:hover{
+    background-color: transparent;
+}
+.btn-group.open .btn-default:hover, .btn-group.open .btn-default:focus, .btn-group.open .btn-default:active, .btn-group.open .btn-default.active, .open>.dropdown-toggle .btn-group.open .btn-default {
+    color: #2c394b;
+    background-color: white;
+    border-color: #e1e8f1;
+}
+.btn-group.open .dropdown-toggle{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default{
+    background-color: white;
+}
+.multiselect-container>li:hover{
+    background-color: white;
+}
+.table-responsive{
+    border: 0;
+}
+main input.form-control.search::placeholder{
+    color: #9eb0c2 !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+}
+.search {
+    font-family: 'MrJones-Book', sans-serif;
+    height: 47px !important;
+    color: #2a374a !important;
+    font-weight: bold !important;
+    font-size: 17px !important;
+    border: 1px solid #9dafc2 !important;
+}
+main .btn-default.search-btn {
+    border: none !important;
+}
+.multiselect-container input[type="checkbox"], .multiselect-container input[type="radio"] {
+    display: inline-block;
+}   
+/*---------------|| Mijn kunstwerken End ||-------------------*/
+
+
+@media (max-width:  767px) {
+    .row.flex {
+    display: block;
+}
+input.form-control.search {
+    margin: 10px 0px;
+}
+}
+
+
+/*  email modal css  */
+.modal-body.modal-collegue.modal_main_div.modal_data_content {
+   /*  position: relative; */
+    width: 100%;
+    padding-right: 0px !important;
+}
+.art_work_mailsend form.my_artworks_form ul.multiselect-container {
+    max-height: 242px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-left: 30px;
+    box-shadow: -2px 6px 17px 0px #eaeaea;
+}
+
+
+.art_work_mailsend form.my_artworks_form ul.multiselect-container li {
+    padding-right: 8px !important;
+}
+
+.art_work_mailsend {
+    /* box-shadow: -2px 6px 17px 0px #eaeaea; */
+    padding: 40px !important;
+}
+ .art_work_mailsend button.artwork_email_btn,.art_work_mailsend #email_close_btn {
+     background: #607FF2 !important;
+     color: #FFE !important;
+     display: block;
+     padding: 18px 10px !important;
+     margin-bottom: 0px !important;
+     transition:all 0.4s ease;
+}
+
+ .art_work_mailsend button.artwork_email_btn:hover,.art_work_mailsend button#close:hover{
+     background:#4465df !important;
+}
+.modal-body.modal-collegue {
+    max-width: 400px;
+    display: flow-root;
+    padding: 0px !important;
+    float: right;
+    padding-right: 15px !important;
+    box-shadow: -2px 6px 17px 0px #eaeaea;
+    position: absolute;
+    right: 0px;
+    top: 50px;
+    background: #fff;
+    z-index: 25;
+}
+.art_work_mailsend label.h4.mr-jonas {
+    color: #6D8098 !important;
+    line-height: inherit;
+    font-size: 16px;
+    margin-top: 15px !important;
+    font-weight: 600;
+}
+.art_work_mailsend form.my_artworks_form {
+    padding: 8px 0px !important;
+    border-radius: 8px !important;
+    margin-bottom: 0px !important;
+    padding-bottom: 0px !important;
+}
+.table-responsive.kunstuitleen-table table.table tr th,.table-responsive.kunstuitleen-table table.table tr td strong,.table-responsive.kunstuitleen-table table.table tr td a {
+    color: #2A374A;
+    font-size: 16px;
+}
+
+.art_work_mailsend label.checkbox {
+    color: #2A374A !important;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+}
+ .art_work_mailsend ul.multiselect-container li.form-control{
+     position:relative;
+}
+.art_work_mailsend ul.multiselect-container li.form-control:after {
+    content: "";
+    background: #F6FAFC;
+    width: calc(100% + 78px) !important;
+    height: 2px;
+    display: block;
+    position: absolute;
+    right: -30px !important;
+   bottom: -8px;
+    border-radius: 4px !important;
+}
+ .art_work_mailsend ul.multiselect-container {
+     margin: 0px;
+}
+ .art_work_mailsend ul.multiselect-container li.form-control:last-child:after {
+     display: none !important;
+}
+ .art_work_mailsend ul.multiselect-container input {
+     position: relative;
+     cursor: pointer;
+     appearance: none!important;
+     outline: none !important;
+     border: none !important;
+     width: 24px;
+     border-radius: 4px !important;
+     height: 24px;
+}
+ .art_work_mailsend form.my_artworks_form label.checkbox input:before {
+     content:'';
+     appearance: none;
+     background-color: #ffff;
+     border: 2px solid #E1E8F1;
+     padding: 10px;
+     display: inline-block;
+     position: relative;
+     vertical-align: middle;
+     cursor: pointer;
+     margin-right: 5px;
+     border-radius: 4px !important;
+}
+ .art_work_mailsend form.my_artworks_form label.checkbox input:checked:before{
+     background-color:#00be71;
+     border: 2px solid #00be71;
+}
+ .art_work_mailsend form.my_artworks_form label.checkbox input:checked:after {
+     content: '';
+     display: block;
+     position: absolute;
+     top: 4px;
+     left: 9px;
+     width: 6px;
+     height: 12px;
+     border: solid #fff;
+     border-width: 0 2px 2px 0;
+     transform: rotate(45deg);
+}
+.art_work_mailsend form.my_artworks_form label.checkbox span.art_email {
+    margin-left: 10px;
+    word-break: break-word;
+    align-self: center;
+    color: #6D8098 !important;
+}
+.share-btn button.btn.btn-default{
+    border: none !important;
+    }
+ .art_work_mailsend ul li.form-control {
+     margin: 6px 0px;
+}
+ .art_work_mailsend  label.form-title {
+    margin-top: 0px;
+}
+ .art_work_mailsend .multiselect-container>li {
+    height: auto !important;
+}
+.modal_main_div {
+    display: none !important;
+}
+.modal_main_div.modal_data_content {
+    display: block !important;
+}
+.modal_main_div.modal_data_content div#confirm_email_send {
+    padding-right: 0px !important;
+}
+form.my_artworks_form .email_sent_loader {
+    margin: 8px 0px;
+}
+form.my_artworks_form .kucrm_company_signup_error_msg .alert {
+    margin-top: 15px;
+}
+form.my_artworks_form div#send-request {
+    margin: 0px;
+}
+.art_work_mailsend .row.text-center.img-checked img {
+    width: 100px !important;
+    height: 100px !important;
+    padding: 0px !important;
+}
+.art_work_mailsend .img-checked {
+    margin: 35px 0px 15px;
+}
+.art-block .share-btn {
+    margin-top: 8px;
+}
+.art-block .share-btn a {
+    text-decoration: none !important;
+    font-weight: 600;
+}
+.art-block .share-btn a {
+    margin-right: 15px;
+}
+.art-block .share-btn a:last-child {
+    margin-right: 0px;
+}
+.row.current-artworks-headings .row.content{
+    margin: 0px 15px !important;
+}
+.modal-collegue.modal_main_div div#confirm_email_send {
+    top: 5px !important;
+}
+
+/* Select 2 mail css */
+.select2-container {
+    max-width: 100%;
+    width: 100% !important;
+    display: block;
+}
+
+.select2-results__option {
+  padding-right: 20px;
+  vertical-align: middle;
+}
+.select2-results__option:before {
+    content: "";
+    display: inline-block;
+    position: relative;
+    height: 22px;
+    width: 22px;
+    border: 2px solid #E1E8F1;
+    border-radius: 4px;
+    background-color: #fff;
+    margin-right: 15px;
+    vertical-align: middle;
+}
+.select2-results__option[aria-selected=true]:before {
+    font-family: fontAwesome;
+    content: "\f00c";
+    color: #fff;
+    background-color: #00BE71;
+    border: 0;
+    display: inline-block;
+    /* padding-left: 5px; */
+    /* padding-top: 3px; */
+    font-size: 13px;
+    text-align: center;
+    padding-top: 3px;
+}
+.select2-results__option {
+    padding: 12px !important;
+}
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #607FF2 !important;
+}
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: #fff;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #fff;
+    color: #272727;
+}
+.select2-container--default ul.select2-selection__rendered li.select2-selection__choice{
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+   font-size: 14px;
+    color: #2A374A;
+    font-weight: 600;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    margin-right: 8px;
+}
+ul#select2-email_js_select2-results li:last-child{
+    border: none !important;
+}
+form.my_artworks_form .multiselect-container {
+    margin-bottom: 220px;
+}
+.select2-container--default .select2-selection--multiple {
+    margin-bottom: 10px;
+}
+.select2-dropdown {
+    background-color: white;
+    border: 1px solid none;
+   border-radius: 6px;
+    box-shadow: -2px 6px 17px 0px #eaeaea;
+    border: none !important;
+    padding: 8px;
+}
+.select2-container--default .select2-search--inline .select2-search__field {
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+ul#select2-email_js_select2-results::-webkit-scrollbar{
+  width: 5px;
+}
+ul#select2-email_js_select2-results::-webkit-scrollbar-track{
+  background: #f1f1f1; 
+}
+ul#select2-email_js_select2-results::-webkit-scrollbar-thumb{
+  background: #8080809e !important; 
+}
+input.select2-search__field::placeholder ,input.select2-search__field{
+    font-style: normal !important;
+}
+.select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
+    border-radius: 4px;
+}
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #f77750;
+    border-width: 2px;
+}
+.select2-container--default .select2-selection--multiple {
+    border-width: 2px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    height: 56px !important;
+    overflow-y: auto;
+}
+.select2-container--open .select2-dropdown--below {
+    border-radius: 6px;
+    /* box-shadow: 0 0 10px rgb(0 0 0 / 50%); */
+    box-shadow: -2px 6px 17px 0px #eaeaea;
+    border: none !important;
+    padding: 8px;
+}
+.select2-selection .select2-selection--multiple:after {
+    content: 'hhghgh';
+}
+/* select with icons badges single*/
+.select-icon .select2-selection__placeholder .badge {
+    display: none;
+}
+.select-icon .placeholder {
+    display: none;
+}
+.select-icon .select2-results__option:before,
+.select-icon .select2-results__option[aria-selected=true]:before {
+    display: none !important;
+    /* content: "" !important; */
+}
+.select-icon  .select2-search--dropdown {
+    display: none;
+}
+ul#select2-email_js_select2-results li {
+    font-weight: 600;
+     border-bottom: 1px solid #e9f4ff;
+    font-size: 14px;
+    color: #2A374A;
+}
+
+/*----------------||my artwork modal start ||------------------*/
+div.modal_acccount#myModal {
+    background: #2a374abd;
+}
+div.modal_acccount#myModal .modal-dialog {
+    top: 35%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0px 15px;
+    z-index: 99999;
+}
+
+div.modal_acccount#myModal .modal-body {
+    padding: 0px !important;
+}
+div.modal_acccount#myModal .modal-content {
+    padding: 25px 25px 30px 25px !important;
+}
+div.modal_acccount#myModal .modal-header,div.modal_acccount#myModal .modal-footer {
+    border: 0px;
+    padding: 0px;
+}
+div.modal_acccount#myModal .my_account_modal_content p {
+    font-size: 12px;
+    color: #6D8098;
+    font-weight: 500;
+}
+.my_account_modal_delet ul.my_account_modal_menu{
+    padding: 0px;
+    margin: 0px;
+}
+.my_account_modal_delet ul.my_account_modal_menu li {
+    list-style: none;
+    display: inline-block;
+    text-align: left;
+    margin-right: 15px;
+}
+.my_account_modal_delet ul.my_account_modal_menu li a {
+    border: 2px solid #607FF2;
+    padding: 6px 15px;
+    color: #607FF2;
+    background-color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.my_account_modal_delet ul.my_account_modal_menu li.active a{
+    border-color: #FF585F;
+    background-color:#FF585F;
+     color: #fff;
+}
+.modal_account_title span > img {
+    max-width: 40px;
+}
+.modal_account_title {
+    display: flex;
+    padding: 0px 0px 15px;
+}
+.modal_account_title {
+    padding-top: 10px;
+}
+ul#my_account_modal_menu_data li:last-child {
+    margin-right: 0px;
+}
+div.modal_acccount#myModal .modal-footer {
+    display: flow-root;
+    margin-top: 40px;
+}
+.modal_account_title span:first-child {
+    margin-right: 15px;
+    margin-top: -10px;
+}
+.modal_account_title span {
+    color: #2A374A;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 16px;
+}
+
+/*----------------||my artwork modal End ||------------------*/
+ @media(max-width: 767px){
+     .modal-body.modal-collegue {
+         margin-left: 0px;
+         padding-left: 0px !important;
+    }
+    .modal-body.modal-collegue.modal_main_div {
+    margin: 20px 0px;
+}
+}
+ @media(max-width: 575px){
+     .art_work_mailsend form.my_artworks_form span.art_email {
+         word-break: break-word;
+    }
+     .art_work_mailsend {
+         padding: 20px !important;
+    }
+     .art_work_mailsend form.my_artworks_form {
+         padding: 0px 2px 2px 0px !important;
+    }
+     .art_work_mailsend ul.multiselect-container li.form-control:after {
+         bottom: -12px;
+         z-index: 1;
+    }
+     .art_work_mailsend .multiselect-container>li {
+         height: auto !important;
+         margin: 0px 0px 0px !important;
+         padding: 5px 5px 0px 0px !important;
+    }
+     .art_work_mailsend button.artwork_email_btn, .art_work_mailsend button#close {
+         padding: 15px 10px !important;
+    }
+    .art_work_mailsend .img-checked {
+    margin: 25px 0px 8px;
+}
+}
+ @media(max-width: 480px){
+.share-btn {
+    margin: 10px 0px;
+    padding: 0px !important;
+}
+ }
+ @media(max-width: 350px){
+     .art_work_mailsend form.my_artworks_form label.checkbox {
+         display: flex;
+    }
+   
+}
+
+

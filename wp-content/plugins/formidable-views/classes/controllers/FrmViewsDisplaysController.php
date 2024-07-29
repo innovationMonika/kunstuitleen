@@ -47,7 +47,7 @@ class FrmViewsDisplaysController {
 					'singular_name' => __( 'View', 'formidable-views' ),
 					'menu_name'     => __( 'View', 'formidable-views' ),
 					'edit'          => __( 'Edit', 'formidable-views' ),
-					'search_items'  => __( 'Search', 'formidable-views' ),
+					'search_items'  => __( 'Search Views', 'formidable-views' ),
 					'not_found'     => __( 'No Views Found.', 'formidable-views' ),
 					'add_new_item'  => __( 'Add New View', 'formidable-views' ),
 					'edit_item'     => __( 'Edit View', 'formidable-views' ),
@@ -60,7 +60,7 @@ class FrmViewsDisplaysController {
 		FrmAppHelper::force_capability( 'frm_edit_displays' );
 		FrmViewsAppHelper::maybe_redirect_old_view_editor();
 		add_submenu_page( 'formidable', 'Formidable | ' . __( 'Views', 'formidable-views' ), __( 'Views', 'formidable-views' ), 'frm_edit_displays', 'edit.php?post_type=frm_display' );
-		add_submenu_page( '', 'Formidable | ' . __( 'Views', 'formidable-views' ), __( 'Views', 'formidable-views' ), 'frm_edit_displays', 'formidable-views-editor', 'FrmViewsEditorController::view_editor' );
+		add_submenu_page( null, 'Formidable | ' . __( 'Views', 'formidable-views' ), __( 'Views', 'formidable-views' ), 'frm_edit_displays', 'formidable-views-editor', 'FrmViewsEditorController::view_editor' );
 	}
 
 	public static function highlight_menu() {
@@ -180,9 +180,9 @@ class FrmViewsDisplaysController {
 		$is_listing = FrmViewsAppHelper::is_on_views_listing_page();
 
 		if ( $is_listing ) {
-			$header['publish']   = array(
-				'FrmViewsIndexController::admin_nav',
-				array( 'is_top_bar' => true ),
+			$header['link_hook'] = array(
+				'hook'  => 'frm_views_listing_page_admin_nav',
+				'param' => array( 'is_top_bar' => true ),
 			);
 		} else {
 			$header['publish']  = array( __CLASS__ . '::publish_button', array() );
@@ -258,19 +258,8 @@ class FrmViewsDisplaysController {
 	}
 
 	private static function render_new_button() {
-		$atts = array(
-			'id'    => 'frm_new_view',
-			'href'  => '#',
-			'class' => 'button-primary frm-button-primary',
-		);
-
-		if ( FrmViewsAppController::is_expired_outside_grace_period() ) {
-			$atts['class']       .= ' frm_noallow frm_show_upgrade frm_show_expired_modal';
-			$atts['data-upgrade'] = __( 'Add new view', 'formidable-views' );
-		}
-
 		?>
-		<a <?php FrmAppHelper::array_to_html_params( $atts, true ); ?>>
+		<a id="frm_new_view" href="#" class="button-primary frm-button-primary frm-with-plus">
 			<?php
 			FrmProAppHelper::icon_by_class( 'frmfont frm_plus_icon frm_svg15' );
 			esc_html_e( 'Add New', 'formidable-views' );
@@ -281,19 +270,8 @@ class FrmViewsDisplaysController {
 
 	public static function post_row_actions( $actions, $post ) {
 		if ( $post->post_type === self::$post_type ) {
-			$atts = array(
-				'href'  => esc_url( admin_url( 'post-new.php?post_type=frm_display&copy_id=' . $post->ID ) ),
-				'title' => __( 'Duplicate', 'formidable-views' ),
-			);
-
-			if ( FrmViewsAppController::is_expired_outside_grace_period() ) {
-				$atts['class']        = 'frm_inactive_menu frm_show_upgrade frm_show_expired_modal';
-				$atts['data-upgrade'] = __( 'Duplicate view', 'formidable-views' );
-			}
-
-			$actions['duplicate'] = '<a ' . FrmAppHelper::array_to_html_params( $atts ) . '>' . __( 'Duplicate', 'formidable-views' ) . '</a>';
+			$actions['duplicate'] = '<a href="' . esc_url( admin_url( 'post-new.php?post_type=frm_display&copy_id=' . $post->ID ) ) . '" title="' . esc_attr( __( 'Duplicate', 'formidable-views' ) ) . '">' . __( 'Duplicate', 'formidable-views' ) . '</a>';
 		}
-
 		return $actions;
 	}
 
@@ -313,13 +291,7 @@ class FrmViewsDisplaysController {
 	public static function manage_columns( $columns ) {
 		unset( $columns['title'], $columns['date'] );
 
-		$columns['title'] = __( 'View Title', 'formidable-views' );
-
-		if ( class_exists( 'FrmApplicationsController' ) && is_callable( 'FrmProApplicationsHelper::get_application_tags_html' ) ) {
-			wp_enqueue_style( 'frm_applications_common' );
-			$columns['application'] = __( 'Application', 'formidable-pro' );
-		}
-
+		$columns['title']       = __( 'View Title', 'formidable-views' );
 		$columns['id']          = 'ID';
 		$columns['description'] = __( 'Description', 'formidable-views' );
 		$columns['form_id']     = __( 'Form', 'formidable-views' );
@@ -329,26 +301,20 @@ class FrmViewsDisplaysController {
 		$columns['date']        = __( 'Date', 'formidable-views' );
 		$columns['name']        = __( 'Key', 'formidable-views' );
 		$columns['old_id']      = __( 'Former ID', 'formidable-views' );
-		$columns['actions']     = __( 'Actions', 'formidable-views' );
+		$columns['shortcode']   = __( 'Shortcode', 'formidable-views' );
 
 		return $columns;
 	}
 
-	/**
-	 * @param array $columns
-	 * @return array
-	 */
 	public static function sortable_columns( $columns ) {
-		$columns['id']   = 'ID';
-		$columns['name'] = 'name';
+		$columns['name']      = 'name';
+		$columns['shortcode'] = 'ID';
 		return $columns;
 	}
 
 	public static function hidden_columns( $result ) {
 		$return = false;
-		$result = (array) $result;
-
-		foreach ( $result as $r ) {
+		foreach ( (array) $result as $r ) {
 			if ( $r ) {
 				$return = true;
 				break;
@@ -393,8 +359,19 @@ class FrmViewsDisplaysController {
 				$val  = self::strip_tags_and_truncate( $post->post_excerpt );
 				break;
 			case 'show_count':
-				$post = get_post( $id );
-				$val  = FrmViewsDisplaysHelper::get_view_type_label( $post );
+				$show_count = get_post_meta( $id, 'frm_show_count', true );
+				if ( 'calendar' === $show_count ) {
+					$val = __( 'Calendar', 'formidable-views' );
+				} else {
+					$post = get_post( $id );
+					if ( FrmViewsEditorController::is_grid_type( $post ) ) {
+						$val = __( 'Grid', 'formidable-views' );
+					} elseif ( FrmViewsEditorController::is_table_type( $post ) ) {
+						$val = __( 'Table', 'formidable-views' );
+					} else {
+						$val = __( 'Classic', 'formidable-views' );
+					}
+				}
 				break;
 			case 'dyncontent':
 				$val = get_post_meta( $id, 'frm_dyncontent', true );
@@ -404,13 +381,9 @@ class FrmViewsDisplaysController {
 				$form_id = get_post_meta( $id, 'frm_' . $column_name, true );
 				$val     = FrmFormsHelper::edit_form_link( $form_id );
 				break;
-			case 'actions':
-				$val  = '<a href="#" class="frm-embed-view" role="button" aria-label="' . esc_html__( 'Embed View', 'formidable' ) . '">' . FrmAppHelper::icon_by_class( 'frmfont frm_code_icon', array( 'echo' => false ) ) . '</a>';
-				$val  = '<div>' . $val . '</div>';
-				break;
-			case 'application':
-				$application_ids = FrmViewsAppHelper::get_application_ids_for_view( $id );
-				$val             = FrmProApplicationsHelper::get_application_tags_html( $application_ids );
+			case 'shortcode':
+				$code = '[display-frm-data id=' . $id . ' filter=limited]';
+				$val  = '<input type="text" readonly="readonly" class="frm_select_box" value="' . esc_attr( $code ) . '" />';
 				break;
 			default:
 				$val = esc_html( $column_name );
@@ -652,8 +625,7 @@ class FrmViewsDisplaysController {
 
 			$frm_displayed[] = $post->ID;
 
-			$content = self::get_view_data( $post, $content, array( 'entry_id' => false ) );
-			return self::filter_final_content( $content, $post );
+			return self::get_view_data( $post, $content, array( 'entry_id' => false ) );
 		}
 
 		$requires_password = is_singular() && post_password_required();
@@ -714,31 +686,7 @@ class FrmViewsDisplaysController {
 			)
 		);
 
-		return self::filter_final_content( $content, $display );
-	}
-
-	/**
-	 * Allows filtering the final view content.
-	 *
-	 * @since 5.4.2
-	 *
-	 * @param string  $content      The view content.
-	 * @param WP_Post $view         The view object.
-	 * @param bool    $is_shortcode The context, describes whether a shortcode is being processed or now.
-	 */
-	private static function filter_final_content( $content, $view, $is_shortcode = false ) {
-		$is_detail_page = self::is_detail_page( $view );
-		$context        = compact( 'is_detail_page', 'is_shortcode' );
-
-		/**
-		 * Allows updating the view content.
-		 *
-		 * @since 5.4.2
-		 *
-		 * @param string $content
-		 * @param array  $args
-		 */
-		return apply_filters( 'frm_filter_final_view', $content, compact( 'view', 'context' ) );
+		return $content;
 	}
 
 	public static function get_order_row() {
@@ -818,66 +766,11 @@ class FrmViewsDisplaysController {
 		$next_month = gmdate( 'm', strtotime( '+1 month', $this_time ) );
 		$next_year  = gmdate( 'Y', strtotime( '+1 month', $this_time ) );
 
-		$year_range = self::get_year_range( $view, $year );
-		$start_year = $year_range['start'];
-		$end_year   = $year_range['end'];
-
 		ob_start();
 		include FrmViewsAppHelper::plugin_path() . '/classes/views/calendars/calendar-header.php';
 		$content .= ob_get_contents();
 		ob_end_clean();
 		return $content;
-	}
-
-	/**
-	 * Returns an array with start and end years for a Calendar view.
-	 *
-	 * @since 5.5
-	 *
-	 * @param object $view
-	 * @param int $year
-	 *
-	 * @return array
-	 */
-	private static function get_year_range( $view, $year ) {
-		if ( ! FrmViewsCalendarHelper::wp_version_supports_table_column_placeholders() ) {
-			return self::get_default_year_range( $year );
-		}
-
-		$event_dates = array(
-			'start_date' => $view->frm_date_field_id ? $view->frm_date_field_id : 'created_at',
-			'end_date'   => $view->frm_edate_field_id ? $view->frm_edate_field_id : 'created_at',
-		);
-
-		$field_mapped_dates = array_filter( $event_dates, 'is_numeric' );
-		if ( $field_mapped_dates ) {
-			return FrmViewsCalendarHelper::get_year_range_for_date_field( $event_dates, $field_mapped_dates, $year, $view->frm_form_id );
-		}
-
-		$result = FrmViewsCalendarHelper::get_range_from_db( $view );
-
-		if ( $result ) {
-			return array(
-				'start' => $result->min_year ? min( $result->min_year, $year ) : $year,
-				'end'   => $result->max_year ? max( $result->max_year, $year ) : $year,
-			);
-		}
-
-		return self::get_default_year_range( $year );
-	}
-
-	/**
-	 * Returns the legacy +/- 5 year range to current year.
-	 *
-	 * @since 5.5.1
-	 * @param int $year
-	 * @return array
-	 */
-	private static function get_default_year_range( $year ) {
-		return array(
-			'start' => $year - 5,
-			'end'   => $year + 5,
-		);
 	}
 
 	/**
@@ -1187,7 +1080,6 @@ class FrmViewsDisplaysController {
 			'user_id'   => false,
 			'limit'     => '',
 			'page_size' => '',
-			'offset'    => '',
 			'order_by'  => '',
 			'order'     => '',
 			'get'       => '',
@@ -1195,8 +1087,6 @@ class FrmViewsDisplaysController {
 			'drafts'    => 'default',
 			'wpautop'   => '',
 		);
-
-		self::set_shortcode_atts_to_page_state( $atts, $defaults );
 
 		$sc_atts = shortcode_atts( $defaults, $atts );
 		$atts    = array_merge( (array) $atts, (array) $sc_atts );
@@ -1221,7 +1111,7 @@ class FrmViewsDisplaysController {
 			return __( 'There are no views with that ID', 'formidable-views' );
 		}
 
-		$content = self::get_view_data(
+		return self::get_view_data(
 			$display,
 			'',
 			array(
@@ -1229,7 +1119,6 @@ class FrmViewsDisplaysController {
 				'user_id'   => sanitize_text_field( $user_id ),
 				'limit'     => sanitize_text_field( $atts['limit'] ),
 				'page_size' => sanitize_title( $atts['page_size'] ),
-				'offset'    => sanitize_title( $atts['offset'] ),
 				'order_by'  => sanitize_text_field( $atts['order_by'] ),
 				'order'     => sanitize_text_field( $atts['order'] ),
 				'drafts'    => sanitize_title( $atts['drafts'] ),
@@ -1237,51 +1126,6 @@ class FrmViewsDisplaysController {
 				'wpautop'   => sanitize_text_field( $atts['wpautop'] ),
 			)
 		);
-
-		return self::filter_final_content( $content, $display, true );
-	}
-
-	/**
-	 * @since 5.3
-	 *
-	 * @param array $atts
-	 * @param array $defaults
-	 * @return void
-	 */
-	private static function set_shortcode_atts_to_page_state( $atts, $defaults ) {
-		FrmViewsPageState::reset();
-
-		if ( ! empty( $atts['entry_id'] ) ) {
-			// No pagination when defining a single entry, so no need to set a page state.
-			return;
-		}
-
-		foreach ( $atts as $key => $value ) {
-			if ( ! isset( $defaults[ $key ] ) || $value === $defaults[ $key ] ) {
-				// Only add expected keys that do not match the default to state.
-				continue;
-			}
-
-			if ( 'get_value' === $key ) {
-				// Exit early as this gets set with get key.
-				continue;
-			}
-
-			if ( in_array( $key, array( 'get', 'filter', 'page_size', 'drafts' ), true ) ) {
-				$value = sanitize_title( $value );
-			} else {
-				// Applies to keys 'user_id', 'limit', 'order_by', 'order', 'wpautop'.
-				$value = sanitize_text_field( $value );
-			}
-
-			if ( 'get' === $key && isset( $atts['get_value'] ) ) {
-				$value = array(
-					$value => $atts['get_value'],
-				);
-			}
-
-			FrmViewsPageState::set_initial_value( $key, $value );
-		}
 	}
 
 	/**
@@ -1289,7 +1133,7 @@ class FrmViewsDisplaysController {
 	 *
 	 * @param object $view
 	 * @param string $content
-	 * @param array  $atts
+	 * @param array $atts
 	 * @return string
 	 */
 	private static function get_view_data( $view, $content, $atts ) {
@@ -1302,8 +1146,6 @@ class FrmViewsDisplaysController {
 		}
 
 		$view = apply_filters( 'frm_filter_view', $view );
-
-		FrmViewsPageState::sync_view_info_to_state( $view );
 
 		self::load_view_hooks( $view );
 		self::add_to_forms_loaded_vars();
@@ -1320,8 +1162,6 @@ class FrmViewsDisplaysController {
 		} else {
 			$view_content = self::get_detail_page_content( $view, $atts );
 		}
-
-		$view_content = FrmViewsDisplaysHelper::maybe_replace_form_name_shortcodes( $view_content, $view->frm_form_id );
 
 		// Use the filter setting from the view.
 		self::get_content_filter( $view->ID, $atts['filter'] );
@@ -1395,7 +1235,7 @@ class FrmViewsDisplaysController {
 	 */
 	public static function get_atts_for_view( $atts, $view ) {
 		// If old entry ID is set, save it as an att (for reverse compatibility)
-		if ( 'one' === $view->frm_show_count && is_numeric( $view->frm_entry_id ) && $view->frm_entry_id > 0 && empty( $atts['entry_id'] ) ) {
+		if ( 'one' === $view->frm_show_count && is_numeric( $view->frm_entry_id ) && $view->frm_entry_id > 0 && ! $atts['entry_id'] ) {
 			$atts['entry_id'] = $view->frm_entry_id;
 		}
 
@@ -1404,7 +1244,6 @@ class FrmViewsDisplaysController {
 			'user_id'          => '',
 			'limit'            => '',
 			'page_size'        => '',
-			'offset'           => '',
 			'order_by'         => '',
 			'order'            => '',
 			'drafts'           => 'default',
@@ -1428,7 +1267,6 @@ class FrmViewsDisplaysController {
 		self::maybe_update_view_order( $atts, $view );
 		self::maybe_update_view_limit( $atts, $view );
 		self::maybe_update_view_page_size( $atts, $view );
-		self::maybe_update_view_offset( $atts, $view );
 	}
 
 	/**
@@ -1663,22 +1501,31 @@ class FrmViewsDisplaysController {
 	 * @return array
 	 */
 	private static function get_view_page( $view, $where, $args ) {
-		$current_page         = FrmViewsDisplaysHelper::get_current_page_num( $view->ID );
+		$current_page         = self::get_current_page_num( $view->ID );
 		$entry_limit_for_page = self::get_entry_limit_for_current_page( $current_page, $view );
 
 		if ( $entry_limit_for_page < 0 ) {
 			return array();
 		}
 
-		$start_index = $view->frm_page_size * ( $current_page - 1 );
-		if ( ! empty( $view->frm_offset ) && is_numeric( $view->frm_offset ) ) {
-			$start_index += absint( $view->frm_offset );
-		}
-
+		$end_index     = $current_page * $entry_limit_for_page;
+		$start_index   = $end_index - $entry_limit_for_page;
 		$args['limit'] = " LIMIT $start_index,$entry_limit_for_page";
 		$results       = FrmViewsDisplay::get_view_results( $where, $args );
 
 		return $results;
+	}
+
+	/**
+	 * Get the page number from the URL, and make sure it isn't 0
+	 *
+	 * @param int $view_id
+	 * @return int
+	 */
+	private static function get_current_page_num( $view_id ) {
+		$page_param   = ( $_GET && isset( $_GET[ 'frm-page-' . $view_id ] ) ) ? 'frm-page-' . $view_id : 'frm-page';
+		$current_page = FrmAppHelper::simple_get( $page_param, 'absint', 1 );
+		return max( 1, $current_page );
 	}
 
 	/**
@@ -1932,54 +1779,13 @@ class FrmViewsDisplaysController {
 			self::add_or_update_filter( 'is_draft', $draft_value, $view );
 		}
 
-		// Adjust filter when drafts = both to set frm_where_val to draft and submitted.
+		// Remove filter if it sets drafts = both
 		$key = array_search( 'is_draft', $view->frm_where, true );
 		if ( 'both' === $view->frm_where_val[ $key ] ) {
-			self::move_both_drafts_param_to_filter( $view, $key );
+			unset( $view->frm_where[ $key ] );
+			unset( $view->frm_where_is[ $key ] );
+			unset( $view->frm_where_val[ $key ] );
 		}
-	}
-
-	/**
-	 * Handlle the "both" (Draft and Submitted) entry status filter option.
-	 * When abandonment is not active, we unset the draft params.
-	 * This is because we're not filtering for any particular status.
-	 * But if abandonment is on, we want to exclude 2 and 3 values.
-	 *
-	 * @since 5.4.2
-	 *
-	 * @param object $view
-	 * @param int    $key
-	 * @return void
-	 */
-	private static function move_both_drafts_param_to_filter( $view, $key ) {
-		if ( self::should_support_abandonment_statuses( $view ) ) {
-			$submitted_entry_status      = defined( 'FrmEntriesHelper::SUBMITTED_ENTRY_STATUS' ) ? FrmEntriesHelper::SUBMITTED_ENTRY_STATUS : 0;
-			$draft_entry_status          = defined( 'FrmEntriesHelper::DRAFT_ENTRY_STATUS' ) ? FrmEntriesHelper::DRAFT_ENTRY_STATUS : 1;
-			$view->frm_where_val[ $key ] = array( $submitted_entry_status, $draft_entry_status );
-			return;
-		}
-
-		// Keep the query simple if we do not need to check for abandonment statuses.
-		unset( $view->frm_where[ $key ] );
-		unset( $view->frm_where_is[ $key ] );
-		unset( $view->frm_where_val[ $key ] );
-	}
-
-	/**
-	 * Check if we need to check for 2 or 3 entry status values when querying for entries.
-	 *
-	 * @since 5.4.2
-	 *
-	 * @param object $view
-	 * @return bool
-	 */
-	private static function should_support_abandonment_statuses( $view ) {
-		if ( ! class_exists( 'FrmAbandonmentHooksController' ) ) {
-			return false;
-		}
-
-		$form = FrmForm::getOne( $view->frm_form_id );
-		return ! empty( $form->options['enable_abandonment'] );
 	}
 
 	/**
@@ -2419,21 +2225,13 @@ class FrmViewsDisplaysController {
 	}
 
 	/**
-	 * Add the View limit to a query.
+	 * Add the View limit to a query
 	 *
 	 * @param object $view
-	 * @param array  $display_page_query
-	 * @return void
+	 * @param array $display_page_query
 	 */
 	private static function maybe_add_limit_to_query( $view, &$display_page_query ) {
-		if ( ! empty( $view->frm_offset ) && is_numeric( $view->frm_offset ) ) {
-			if ( is_numeric( $view->frm_limit ) ) {
-				$display_page_query['limit'] = FrmDb::esc_limit( absint( $view->frm_offset ) . ',' . $view->frm_limit );
-			} else {
-				// MySQL does not support an offset with no LIMIT, so define a really big number for the limit.
-				$display_page_query['limit'] = FrmDb::esc_limit( absint( $view->frm_offset ) . ', 18446744073709551615' );
-			}
-		} elseif ( is_numeric( $view->frm_limit ) ) {
+		if ( is_numeric( $view->frm_limit ) ) {
 			$display_page_query['limit'] = FrmDb::esc_limit( $view->frm_limit );
 		}
 	}
@@ -2465,6 +2263,24 @@ class FrmViewsDisplaysController {
 	}
 
 	/**
+	 * Get the pagination HTML for a paginated View
+	 *
+	 * @param object $view
+	 * @param int $total_count
+	 * @return string
+	 */
+	private static function setup_pagination( $view, $total_count ) {
+		$pagination = '';
+
+		if ( is_int( $view->frm_page_size ) ) {
+			$current_page = self::get_current_page_num( $view->ID );
+			$pagination   = self::get_pagination( $view, $total_count, $current_page );
+		}
+
+		return $pagination;
+	}
+
+	/**
 	 * Get the page size for a View
 	 * Make sure page_size parameter overrides Page Size setting
 	 *
@@ -2492,12 +2308,6 @@ class FrmViewsDisplaysController {
 		}
 	}
 
-	private static function maybe_update_view_offset( $atts, $view ) {
-		if ( is_numeric( $atts['offset'] ) ) {
-			$view->frm_offset = absint( $atts['offset'] );
-		}
-	}
-
 	/**
 	 * Package the arguments for all the View hooks
 	 *
@@ -2508,15 +2318,11 @@ class FrmViewsDisplaysController {
 	 */
 	private static function package_args_for_view_hooks( $entry_ids_on_current_page, $view, $where ) {
 		$total_entry_count = self::get_total_entry_count( $view, count( $entry_ids_on_current_page ), $where );
-		if ( ! empty( $view->frm_offset ) && is_numeric( $view->frm_offset ) ) {
-			$total_entry_count -= absint( $view->frm_offset );
-		}
-
 		$args              = array(
 			'entry_ids'    => $entry_ids_on_current_page,
 			'total_count'  => count( $entry_ids_on_current_page ),
 			'record_count' => $total_entry_count,
-			'pagination'   => FrmViewsPaginationController::setup_pagination( $view, $total_entry_count ),
+			'pagination'   => self::setup_pagination( $view, $total_entry_count ),
 		);
 		return $args;
 	}
@@ -2610,19 +2416,18 @@ class FrmViewsDisplaysController {
 	public static function get_inner_content_for_listing_page( $view, $args ) {
 		$unfiltered_content = $view->post_content;
 		$content_helper     = new FrmViewsContentHelper( $unfiltered_content );
-		$box_content        = $content_helper->get_content();
 
-		$is_table_view = FrmViewsDisplaysHelper::is_table_type( $view );
+		$is_table_view = FrmViewsEditorController::is_table_type( $view );
 
 		if ( $is_table_view ) {
 			$is_grid_view       = false;
 			$helper             = new FrmViewsLayoutHelper( $view, 'table' );
-			$unfiltered_content = $helper->flatten( $box_content, 'listing' );
+			$unfiltered_content = $helper->flatten( $content_helper->get_content(), 'listing' );
 		} else {
 			$is_grid_view = $content_helper->content_is_an_array();
 			if ( $is_grid_view ) {
 				$helper             = new FrmViewsLayoutHelper( $view );
-				$unfiltered_content = $helper->flatten( $box_content, 'listing' );
+				$unfiltered_content = $helper->flatten( $content_helper->get_content(), 'listing' );
 				$unfiltered_content = self::apply_column( $unfiltered_content );
 			}
 		}
@@ -2632,15 +2437,11 @@ class FrmViewsDisplaysController {
 		$filtered_content = self::build_calendar( $unfiltered_content, $args['entry_ids'], $shortcodes, $view );
 		$filtered_content = apply_filters( 'frm_display_entries_content', $filtered_content, $args['entry_ids'], $shortcodes, $view, 'all', $args );
 
-		$args['is_table_view'] = $is_table_view;
-		$args['is_grid_view']  = $is_grid_view;
-		$args['box_content']   = $box_content;
-
 		if ( $filtered_content != $unfiltered_content ) {
 			$inner_content = $filtered_content;
 		} else {
 			$odd            = 'odd';
-			$count          = isset( $args['offset'] ) ? intval( $args['offset'] ) : 0;
+			$count          = 0;
 			$loop_entry_ids = $args['entry_ids'];
 			while ( $next_set = array_splice( $loop_entry_ids, 0, 30 ) ) {
 				$entries = FrmEntry::getAll( array( 'id' => $next_set ), ' ORDER BY FIELD(it.id,' . implode( ',', $next_set ) . ')', '', true, false );
@@ -2661,47 +2462,15 @@ class FrmViewsDisplaysController {
 
 		FrmProFieldsHelper::replace_non_standard_formidable_shortcodes( array(), $inner_content );
 
-		/**
-		 * Filters the inner content of grid view before the wrapper is added.
-		 *
-		 * @since 5.4
-		 *
-		 * @param string $inner_content The inner content.
-		 * @param object $view          View object.
-		 * @param array  $args          {
-		 *     Args.
-		 *
-		 *     @type array  $entry_ids     Entry ids on current page.
-		 *     @type int    $total_count   Number of entries on current page.
-		 *     @type int    $record_count  Total number of entries.
-		 *     @type string $pagination    The pagination HTML string.
-		 *     @type bool   $is_table_view Is table view?
-		 *     @type bool   $is_grid_view  Is grid view?
-		 *     @type array  $box_content   The data of grid boxes or table columns.
-		 * }
-		 */
-		$inner_content = apply_filters( 'frm_display_inner_content_before_add_wrapper', $inner_content, $view, $args );
-
 		if ( $is_table_view ) {
-			$table_header_content = self::should_omit_table_view_headers( $view ) ? '<table>' : $helper->get_table_header_content( $helper->table_headers() );
+			$headers              = $helper->table_headers();
+			$table_header_content = $helper->get_table_header_content( $headers );
 			$inner_content        = $table_header_content . '<tbody>' . $inner_content . '</tbody></table>';
 		} elseif ( $is_grid_view ) {
-			$inner_content = self::apply_grid_container_to_view( $view->ID, $inner_content, $box_content );
+			$inner_content = self::apply_grid_container_to_view( $view->ID, $inner_content, $content_helper->get_content() );
 		}
 
 		return $inner_content;
-	}
-
-	/**
-	 * Leave the headers out of the table HTML when loading additional pages into an existing table (to reduce load).
-	 *
-	 * @since 5.3
-	 *
-	 * @param object $view
-	 * @return bool
-	 */
-	private static function should_omit_table_view_headers( $view ) {
-		return ! empty( $view->frm_ajax_pagination ) && ! is_numeric( $view->frm_ajax_pagination ) && 'frm_views_load_page' === FrmAppHelper::simple_get( 'action' );
 	}
 
 	/**
@@ -2730,8 +2499,8 @@ class FrmViewsDisplaysController {
 			if ( isset( $box_data['box'] ) && 0 === $box_data['box'] ) {
 				if ( ! empty( $box_data['style'] ) ) {
 					foreach ( $box_data['style'] as $key => $value ) {
-						if ( $value || '0' === $value ) {
-							$wrapped_content .= '--v-tl-' . FrmViewsLayoutHelper::convert_camel_case_style( $key, 'grid-top-level' ) . ': ' . $value . ';';
+						if ( $value ) {
+							$wrapped_content .= '--v-tl-' . FrmViewsLayoutHelper::convert_camel_case_style( $key ) . ': ' . $value . ';';
 						}
 					}
 				}
@@ -2770,7 +2539,7 @@ class FrmViewsDisplaysController {
 			if ( array_key_exists( 'grid_classes', $options ) ) {
 				$custom_grid_classes = array_reduce(
 					explode( ' ', $options['grid_classes'] ),
-					function ( $total, $grid_class ) {
+					function( $total, $grid_class ) {
 						$trimmed_grid_class = trim( $grid_class );
 						if ( $trimmed_grid_class ) {
 							$total[] = $trimmed_grid_class;
@@ -2887,6 +2656,29 @@ class FrmViewsDisplaysController {
 	private static function get_after_content_for_detail_page( $view ) {
 		$after_content = apply_filters( 'frm_after_display_content', '', $view, 'one', array() );
 		return $after_content;
+	}
+
+	/**
+	 * Get View pagination
+	 *
+	 * @param object $view
+	 * @param int $record_count
+	 * @param int $current_page
+	 * @return string
+	 */
+	private static function get_pagination( $view, $record_count, $current_page ) {
+		$pagination = '';
+		$page_count = FrmEntry::getPageCount( $view->frm_page_size, $record_count );
+
+		if ( $page_count > 1 ) {
+			$page_last_record  = FrmAppHelper::get_last_record_num( $record_count, $current_page, $view->frm_page_size );
+			$page_first_record = FrmAppHelper::get_first_record_num( $record_count, $current_page, $view->frm_page_size );
+			$page_param        = 'frm-page-' . $view->ID;
+			$args              = compact( 'current_page', 'record_count', 'page_count', 'page_last_record', 'page_first_record', 'page_param', 'view' );
+			$pagination        = FrmAppHelper::get_file_contents( FrmViewsAppHelper::plugin_path() . '/classes/views/displays/pagination.php', $args );
+		}
+
+		return $pagination;
 	}
 
 	/**
@@ -3234,7 +3026,7 @@ class FrmViewsDisplaysController {
 			}
 		}
 		?>
-		<p><label for="<?php echo esc_attr( $widget->get_field_id( 'display_id' ) ); ?>" class="frm_primary_label"><?php esc_html_e( 'Use Settings from View', 'formidable-views' ); ?>:</label>
+		<p><label for="<?php echo esc_attr( $widget->get_field_id( 'display_id' ) ); ?>"><?php esc_html_e( 'Use Settings from View', 'formidable-views' ); ?>:</label>
 			<select name="<?php echo esc_attr( $widget->get_field_name( 'display_id' ) ); ?>" id="<?php echo esc_attr( $widget->get_field_id( 'display_id' ) ); ?>" class="widefat frm_list_items_display_id">
 				<option value=""> </option>
 				<?php
@@ -3269,116 +3061,5 @@ class FrmViewsDisplaysController {
 			}
 		}
 		return $excerpt;
-	}
-
-	/**
-	 * Filter the canonical URL for views so the proper page is shared.
-	 * This needs to happen for both detail pages and for get param filters.
-	 *
-	 * @since 5.3.3
-	 *
-	 * @param string  $canonical_url The post's canonical URL.
-	 * @param WP_Post $post          Post object.
-	 * @return string
-	 */
-	public static function maybe_filter_canonical_url( $canonical_url, $post ) {
-		if ( self::$post_type !== $post->post_type ) {
-			return $canonical_url;
-		}
-
-		if ( self::is_detail_page( $post ) ) {
-			return self::detail_page_url( $post, $canonical_url );
-		}
-
-		return self::add_get_params_to_url( $post, $canonical_url );
-	}
-
-	/**
-	 * @since 5.3.3
-	 *
-	 * @param WP_Post $view
-	 * @return bool
-	 */
-	private static function is_detail_page( $view ) {
-		$atts           = self::get_atts_for_view( array(), $view );
-		$is_detail_page = ! self::is_listing_page_displayed( $view, $atts );
-		return $is_detail_page;
-	}
-
-	/**
-	 * Get a URL to a view's current active detail page.
-	 * This is called for setting the active canonical URL so that the page can be shared.
-	 * Otherwise without this the canonical URL will just use the view's listing page URL instead.
-	 *
-	 * @since 5.3.3
-	 *
-	 * @param WP_Post $view
-	 * @param string  $listing_page_url The url for the listing page.
-	 * @return string
-	 */
-	private static function detail_page_url( $view, $listing_page_url ) {
-		$param = get_post_meta( $view->ID, 'frm_param', true );
-		$key   = FrmAppHelper::simple_get( $param );
-		$atts  = array(
-			'param'       => $param,
-			'param_value' => $key,
-		);
-		return FrmProContent::get_pretty_url( $atts );
-	}
-
-	/**
-	 * Adds any active get param data to the URL based on view filter settings.
-	 *
-	 * @since 5.3.3
-	 *
-	 * @param WP_Post $view
-	 * @param string  $url
-	 * @return string
-	 */
-	private static function add_get_params_to_url( $view, $url ) {
-		$options = get_post_meta( $view->ID, 'frm_options', true );
-		if ( empty( $options['where_val'] ) || ! is_array( $options['where_val'] ) ) {
-			// Filter data is either unset or not in a valid format.
-			// Since the get params are based on filters, we don't need to change the URL.
-			return $url;
-		}
-
-		foreach ( $options['where_val'] as $val ) {
-			if ( false === strpos( $val, '[get ' ) ) {
-				// Only check the filter settings with a [get param] filter.
-				continue;
-			}
-
-			$previous_value = $val;
-			FrmProFieldsHelper::replace_non_standard_formidable_shortcodes( array(), $val );
-
-			if ( false !== strpos( $val, '[get ' ) ) {
-				// If the shortcode didn't get replaced after calling replace_non_standard_formidable_shortcodes it wasn't really valid.
-				continue;
-			}
-
-			$pattern = get_shortcode_regex( array( 'get' ) );
-			preg_replace_callback(
-				"/$pattern/",
-				/**
-				 * Check for processed get param values and append to the $url.
-				 *
-				 * @param array  $match
-				 * @param string $url
-				 * @param string $val
-				 * @return string
-				 */
-				function ( $match ) use ( &$url, $val ) {
-					$atts = shortcode_parse_atts( $match[3] );
-					if ( ! empty( $atts['param'] ) ) {
-						$url = add_query_arg( array( $atts['param'] => $val ), $url );
-					}
-					return '';
-				},
-				$previous_value
-			);
-		}
-
-		return $url;
 	}
 }

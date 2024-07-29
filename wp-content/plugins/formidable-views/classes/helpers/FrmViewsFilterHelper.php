@@ -48,7 +48,7 @@ class FrmViewsFilterHelper {
 
 		$entry_ids = isset( $where['it.id'] ) ? $where['it.id'] : false;
 
-		for ( $index = 1; $index < $count; ++$index ) {
+		for ( $index = 1; $index < $count; ++ $index ) {
 			$where_index = $this->get_where_for_filter_group( $original_where, $where_by_group[ $index ] );
 			$keys        = array_keys( $where_by_group[ $index ] );
 			$key         = reset( $keys );
@@ -109,20 +109,12 @@ class FrmViewsFilterHelper {
 			}
 		}
 
-		$this->convert_empty_entry_ids_array( $where );
-
 		if ( $this->should_wrap_or ) {
 			$new_where = array();
 
 			if ( isset( $where['it.is_draft '] ) ) {
 				$new_where['it.is_draft'] = $where['it.is_draft '];
 				unset( $where['it.is_draft '] );
-			}
-
-			if ( ! $where ) {
-				// Avoid wrapping nothing.
-				$where = $new_where;
-				return;
 			}
 
 			$where['or'] = 1;
@@ -140,38 +132,6 @@ class FrmViewsFilterHelper {
 			}
 
 			$where = $new_where;
-		}
-	}
-
-	/**
-	 * Converts empty entry IDs in $where to another value to fix when SQL query always returns all entries.
-	 *
-	 * @since 5.5
-	 *
-	 * @param array $where Where array before wrapping.
-	 */
-	private function convert_empty_entry_ids_array( &$where ) {
-
-		if ( ! isset( $where['or'] ) || empty( $where['or'] ) ) {
-			// "AND" relation
-			// If $where['it.id'] is empty, it means there were searches made in a form field / entry value that doesn't contain that value.
-			// This will cause the SQL query to fail when there are search values that do not exist in the form field / entry values.
-			if ( isset( $where['it.id '] ) && empty( $where['it.id '] ) ) {
-				$where['it.id '] = 0;
-			}
-			return $where;
-		}
-
-		foreach ( $where as $key => $value ) {
-			if ( 'it.id' === $key && is_array( $value ) && ! $value ) { // Process the first filter group.
-				$where[ $key ] = 0;
-				continue;
-			}
-
-			// Process other filter groups.
-			if ( is_array( $value ) && isset( $value['it.id'] ) && is_array( $value['it.id'] ) && ! $value['it.id'] ) {
-				$where[ $key ]['it.id'] = 0;
-			}
 		}
 	}
 
@@ -197,16 +157,16 @@ class FrmViewsFilterHelper {
 				continue;
 			}
 
-			if ( $this->prepare_where_val( $i ) === false ) {
+			if ( self::prepare_where_val( $i, $view ) === false ) {
 				if ( ! FrmViewsDisplaysController::entries_are_possible( $view ) ) {
 					break;
 				}
 				continue;
 			}
 
-			$this->prepare_where_is( $i );
+			self::prepare_where_is( $i, $view );
 
-			if ( ! is_numeric( $where_field ) && ! $this->is_name_subfield( $where_field ) ) {
+			if ( ! is_numeric( $where_field ) ) {
 				// Filter by a standard frm_items database column
 				$this->add_to_frm_items_query( $i, $where );
 				continue;
@@ -221,19 +181,14 @@ class FrmViewsFilterHelper {
 				$where['it.id']    = $this->get_all_entry_ids_for_view();
 			}
 
-			$or       = isset( $view->frm_where_or ) && ! empty( $view->frm_where_or[ $i ] );
-			$group_or = isset( $view->frm_group_where_or ) && ! empty( $view->frm_group_where_or[ $i ] );
+			$or = isset( $view->frm_where_or ) && ! empty( $view->frm_where_or[ $i ] );
 
 			if ( $or ) {
 				$where['it.id'] = $this->get_all_entry_ids_for_view();
-				$this->update_entry_ids_with_field_filter( $i, $atts, $where );
+				self::update_entry_ids_with_field_filter( $view, $i, $atts, $where );
 				$where['it.id'] = array_unique( array_merge( $where['it.id'], $previous_item_ids ) );
 			} else {
-				$this->update_entry_ids_with_field_filter( $i, $atts, $where );
-			}
-
-			if ( $group_or && ! empty( $where['it.id'] ) && ! empty( $view->was_get_param[ $i ] ) ) {
-				$this->should_wrap_or = true;
+				self::update_entry_ids_with_field_filter( $view, $i, $atts, $where );
 			}
 
 			if ( empty( $where['it.id'] ) && ! $or ) {
@@ -243,21 +198,6 @@ class FrmViewsFilterHelper {
 		}
 
 		return $where;
-	}
-
-	/**
-	 * @since 5.5.1
-	 *
-	 * @param string $where_field
-	 * @return bool
-	 */
-	private function is_name_subfield( $where_field ) {
-		if ( is_numeric( $where_field ) ) {
-			return false;
-		}
-
-		$split = explode( '_', $where_field );
-		return 2 === count( $split ) && is_numeric( $split[0] ) && in_array( $split[1], array( 'first', 'last' ), true );
 	}
 
 	/**
@@ -278,13 +218,12 @@ class FrmViewsFilterHelper {
 	/**
 	 * Filter down entry IDs with a View field filter
 	 *
-	 * @param int   $i
-	 * @param array $atts
-	 * @param array $where
+	 * @param object $view
+	 * @param int    $i
+	 * @param array  $atts
+	 * @param array  $where
 	 */
-	private function update_entry_ids_with_field_filter( $i, $atts, &$where ) {
-		$view = $this->view;
-
+	private static function update_entry_ids_with_field_filter( $view, $i, $atts, &$where ) {
 		$args = array(
 			'where_opt'   => $view->frm_where[ $i ],
 			'where_is'    => $view->frm_where_is[ $i ],
@@ -310,11 +249,10 @@ class FrmViewsFilterHelper {
 	/**
 	 * Prepare the where_is value for a View filter
 	 *
-	 * @param int $i
-	 * @return void
+	 * @param int    $i
+	 * @param object $view
 	 */
-	private function prepare_where_is( $i ) {
-		$view     = $this->view;
+	private static function prepare_where_is( $i, &$view ) {
 		$where_is = $view->frm_where_is[ $i ];
 
 		if ( is_array( $view->frm_where_val[ $i ] ) && ! empty( $view->frm_where_val[ $i ] ) ) {
@@ -329,56 +267,39 @@ class FrmViewsFilterHelper {
 	}
 
 	/**
-	 * Prepare the where value in a View filter.
+	 * Prepare the where value in a View filter
 	 *
-	 * @param int $i
-	 * @return bool True if there is a value to filter.
+	 * @param int    $i
+	 * @param object $view
+	 * @return bool true if there is a value to filter
 	 */
-	private function prepare_where_val( $i ) {
-		$view = $this->view;
-
+	private static function prepare_where_val( $i, &$view ) {
 		if ( ! isset( $view->frm_where_val[ $i ] ) ) {
 			$view->frm_where_val[ $i ] = '';
-		}
-
-		// No need to prepare where_val if it's an array.
-		if ( is_array( $view->frm_where_val[ $i ] ) ) {
-			return true;
 		}
 
 		$orig_where_val            = $view->frm_where_val[ $i ];
 		$view->frm_where_val[ $i ] = FrmProFieldsHelper::get_default_value( $orig_where_val, false, true, true );
 
-		if ( ! isset( $view->was_get_param ) ) {
-			$view->was_get_param = array();
-		}
-
-		$or                        = ! empty( $view->frm_where_or[ $i ] ) || ! empty( $view->frm_where_group_or[ $i ] );
-		$view->was_get_param[ $i ] = preg_match( "/\[(get|get-(.?))\b(.*?)(?:(\/))?\]/s", $orig_where_val );
-
-		if ( $view->was_get_param[ $i ] ) {
-			if ( '' == $view->frm_where_val[ $i ] ) {
-				// If where_val contains [get] or [get-param] shortcode and the param isn't set, ignore this filter
-				return false;
-			}
-		}
-
-		if ( $this->ignore_entry_id_filter( $orig_where_val, $i ) ) {
+		if ( preg_match( "/\[(get|get-(.?))\b(.*?)(?:(\/))?\]/s", $orig_where_val ) && '' == $view->frm_where_val[ $i ] ) {
+			// If where_val contains [get] or [get-param] shortcode and the param isn't set, ignore this filter
 			return false;
 		}
 
-		$this->convert_current_user_val_to_current_user_id( $view->frm_where_val[ $i ] );
+		if ( self::ignore_entry_id_filter( $orig_where_val, $i, $view ) ) {
+			return false;
+		}
+
+		self::convert_current_user_val_to_current_user_id( $view->frm_where_val[ $i ] );
 
 		if ( 'current_user' === $view->frm_where_val[ $i ] ) {
-			if ( ! $or ) {
-				$this->set_entries_as_impossible();
-			}
+			self::set_entries_as_impossible( $view );
 			return false;
 		}
 
-		$this->do_shortcode_in_where_val( $view->frm_where_val[ $i ] );
-		$this->prepare_where_val_for_date_columns( $i, $view->frm_where_val[ $i ] );
-		$this->prepare_where_val_for_id_and_key_columns( $i, $view->frm_where_val[ $i ] );
+		self::do_shortcode_in_where_val( $view->frm_where_val[ $i ] );
+		self::prepare_where_val_for_date_columns( $view, $i, $view->frm_where_val[ $i ] );
+		self::prepare_where_val_for_id_and_key_columns( $view, $i, $view->frm_where_val[ $i ] );
 
 		return true;
 	}
@@ -386,19 +307,18 @@ class FrmViewsFilterHelper {
 	/**
 	 * Adds indication in View object that no entries will be found
 	 *
-	 * @return void
+	 * @param object $view
 	 */
-	private function set_entries_as_impossible() {
-		$this->view->frm_limit = 0;
+	private static function set_entries_as_impossible( &$view ) {
+		$view->frm_limit = 0;
 	}
 
 	/**
 	 * Convert current_user to the current user's ID
 	 *
 	 * @param string|array $where_val
-	 * @return void
 	 */
-	private function convert_current_user_val_to_current_user_id( &$where_val ) {
+	private static function convert_current_user_val_to_current_user_id( &$where_val ) {
 		if ( 'current_user' === $where_val && is_user_logged_in() ) {
 			$where_val = get_current_user_id();
 		}
@@ -411,10 +331,10 @@ class FrmViewsFilterHelper {
 	 *
 	 * @param string $orig_where_val
 	 * @param int    $i
+	 * @param object $view
 	 * @return bool
 	 */
-	private function ignore_entry_id_filter( $orig_where_val, $i ) {
-		$view   = $this->view;
+	private static function ignore_entry_id_filter( $orig_where_val, $i, &$view ) {
 		$ignore = false;
 
 		if ( 'one' === $view->frm_show_count && 'id' === $view->frm_where[ $i ] && '[get param=entry old_filter=1]' === $orig_where_val ) {
@@ -442,7 +362,7 @@ class FrmViewsFilterHelper {
 	 *
 	 * @param string|array $where_val
 	 */
-	private function do_shortcode_in_where_val( &$where_val ) {
+	private static function do_shortcode_in_where_val( &$where_val ) {
 		if ( ! is_array( $where_val ) ) {
 			$where_val = do_shortcode( $where_val );
 		}
@@ -451,12 +371,11 @@ class FrmViewsFilterHelper {
 	/**
 	 * Prepare the where value for date columns
 	 *
+	 * @param object $view
 	 * @param int    $i
 	 * @param string $where_val
 	 */
-	private function prepare_where_val_for_date_columns( $i, &$where_val ) {
-		$view = $this->view;
-
+	private static function prepare_where_val_for_date_columns( $view, $i, &$where_val ) {
 		if ( ! in_array( $view->frm_where[ $i ], array( 'created_at', 'updated_at' ), true ) ) {
 			return;
 		}
@@ -467,22 +386,18 @@ class FrmViewsFilterHelper {
 	/**
 	 * Prepare the where value for id, item_key, and post_id columns
 	 *
+	 * @param object       $view
 	 * @param int          $i
 	 * @param string|array $where_val
-	 * @return void
 	 */
-	private function prepare_where_val_for_id_and_key_columns( $i, &$where_val ) {
-		$view = $this->view;
-
-		if ( ! in_array( $view->frm_where[ $i ], array( 'id', 'item_key', 'post_id' ), true ) || is_array( $where_val ) ) {
-			return;
-		}
-
-		if ( strpos( $where_val, ',' ) ) {
-			$where_val = explode( ',', $where_val );
-			$where_val = array_filter( $where_val );
-		} elseif ( in_array( $view->frm_where_is[ $i ], array( '=', 'LIKE' ), true ) ) {
-			$where_val = (array) $where_val;
+	private static function prepare_where_val_for_id_and_key_columns( $view, $i, &$where_val ) {
+		if ( in_array( $view->frm_where[ $i ], array( 'id', 'item_key', 'post_id' ), true ) && ! is_array( $where_val ) ) {
+			if ( strpos( $where_val, ',' ) ) {
+				$where_val = explode( ',', $where_val );
+				$where_val = array_filter( $where_val );
+			} elseif ( in_array( $view->frm_where_is[ $i ], array( '=', 'LIKE' ), true ) ) {
+				$where_val = (array) $where_val;
+			}
 		}
 	}
 
@@ -514,7 +429,7 @@ class FrmViewsFilterHelper {
 
 				if ( $group_already_exists ) {
 					$group                              = $where[ $array_key ];
-					$next_available_array_key           = $this->next_available_array_key( $array_key, $group );
+					$next_available_array_key           = self::next_available_array_key( $array_key, $group );
 					$group[ $next_available_array_key ] = $view->frm_where_val[ $i ];
 					$where[ $array_key ]                = $group;
 				} elseif ( 'it.is_draft ' === $array_key ) {
@@ -536,7 +451,7 @@ class FrmViewsFilterHelper {
 				$where[ $array_key ] = $group;
 				return;
 			} else {
-				$array_key = $this->next_available_array_key( $array_key, $where );
+				$array_key = self::next_available_array_key( $array_key, $where );
 			}
 		}
 
@@ -555,34 +470,10 @@ class FrmViewsFilterHelper {
 	 * @param array  $array
 	 * @return string
 	 */
-	private function next_available_array_key( $key, $array ) {
+	private static function next_available_array_key( $key, $array ) {
 		while ( isset( $array[ $key ] ) ) {
 			$key .= ' ';
 		}
 		return $key;
-	}
-
-	/**
-	 * Remove empty array or value from WHERE args.
-	 *
-	 * @since 5.x
-	 * @param array $array
-	 * @return void
-	 */
-	public static function clear_empty_args_where( &$array ) {
-
-		foreach ( $array as $key => &$value ) {
-			if ( is_array( $value ) ) {
-				if ( empty( $value ) || ( 2 === count( $value ) && isset( $value['or'] ) && empty( $value[0] ) ) ) {
-					unset( $array[ $key ] );
-				} else {
-					self::clear_empty_args_where( $value );
-				}
-			}
-
-			if ( '' === $value ) {
-				unset( $array[ $key ] );
-			}
-		}
 	}
 }

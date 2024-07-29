@@ -2,8 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'You are not allowed to call this page directly.' );
 }
-
-$start_over = isset( $values['start_over'] ) ? $values['start_over'] : '';
 ?>
 <tr>
 	<td>
@@ -24,6 +22,15 @@ $start_over = isset( $values['start_over'] ) ? $values['start_over'] : '';
 	</td>
 </tr>
 <?php } ?>
+
+<tr id="frm_save_draft_label_wrapper" class="<?php echo $save_drafts ? '' : 'frm_hidden'; ?>">
+	<td>
+		<label for="frm_save_draft_label"><?php esc_html_e( 'Save Draft Text', 'formidable-pro' ); ?></label>
+	</td>
+	<td>
+		<input id="frm_save_draft_label" type="text" name="options[draft_label]" value="<?php echo esc_attr( '' === $values['draft_label'] ? __( 'Save Draft', 'formidable-pro' ) : $values['draft_label'] ); ?>" />
+	</td>
+</tr>
 
 <tr>
 	<td>
@@ -52,7 +59,7 @@ $start_over = isset( $values['start_over'] ) ? $values['start_over'] : '';
 
 <tr>
 	<td colspan="2">
-		<label class="frm-inline-select">
+		<label>
 			<input type="checkbox" id="logic_link_submit" <?php
 			echo ( ! empty( $submit_conditions['hide_field'] ) && ( count( $submit_conditions['hide_field'] ) > 1 || reset( $submit_conditions['hide_field'] ) != '' ) ) ? ' checked="checked"' : '';
 			?> />
@@ -61,30 +68,3 @@ $start_over = isset( $values['start_over'] ) ? $values['start_over'] : '';
 		<?php include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-forms/_submit_conditional.php'; ?>
 	</td>
 </tr>
-
-<?php if ( method_exists( 'FrmFormsHelper', 'get_start_over_shortcode' ) ) : ?>
-	<tr>
-		<td colspan="2">
-			<label class="frm-inline-select">
-				<input
-						type="checkbox"
-						id="start_over"
-						name="options[start_over]"
-						value="1"
-						<?php checked( $start_over, 1 ); ?>
-						data-toggleclass="frm_start_over_label_wrapper"
-				/>
-				<?php esc_html_e( 'Add Start over button', 'formidable-pro' ); ?>
-			</label>
-		</td>
-	</tr>
-
-	<tr id="frm_start_over_label_wrapper" class="frm_start_over_label_wrapper <?php echo $start_over ? '' : 'frm_hidden'; ?>">
-		<td>
-			<label for="frm_start_over_label"><?php esc_html_e( 'Start Over Button Text', 'formidable-pro' ); ?></label>
-		</td>
-		<td>
-			<input id="frm_start_over_label" type="text" name="options[start_over_label]" value="<?php echo esc_attr( empty( $values['start_over_label'] ) ? __( 'Start Over', 'formidable-pro' ) : $values['start_over_label'] ); ?>" />
-		</td>
-	</tr>
-<?php endif; ?>

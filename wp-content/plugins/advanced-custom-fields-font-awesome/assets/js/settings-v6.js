@@ -153,6 +153,8 @@
 			}
 			return escHtml( markup ); 
 		},
+		dropdownCssClass	: 'fa-select2-drop fa6',
+		containerCssClass	: 'fa-select2 fa6',
 		minimumInputLength	: 1,
 		placeholder			: ACFFA.search_string
 	});
@@ -180,7 +182,11 @@
 			var iconJson = $( icon ).data('icon-json');
 
 			$('select#acffa_new_icon_set').append('<option value="' + strEscape( JSON.stringify( iconJson ) ) + '" data-label="' + iconJson.label + '" selected>' + iconJson.label + '</option>');
-			$('.acffa_row.custom-icon-set .selected-icons').append( '<div class="new-icon" data-icon-json="' + strEscape( JSON.stringify( iconJson ) ) + '" data-label="' + iconJson.label + '"><i class="fa-' + iconJson.family + ' fa-' + iconJson.style + ' fa-' + iconJson.id + ' fa-fw"></i>' + iconJson.label + '</div>' );
+			if ( 'fak' == iconJson.style ) {
+				$('.acffa_row.custom-icon-set .selected-icons').append( '<div class="new-icon" data-icon-json="' + strEscape( JSON.stringify( iconJson ) ) + '" data-label="' + iconJson.label + '"><i class="' + iconJson.style + ' fa-' + iconJson.id + ' fa-fw"></i>' + iconJson.label + '</div>' );
+			} else {
+				$('.acffa_row.custom-icon-set .selected-icons').append( '<div class="new-icon" data-icon-json="' + strEscape( JSON.stringify( iconJson ) ) + '" data-label="' + iconJson.label + '"><i class="fa-' + iconJson.style + ' fa-' + iconJson.id + ' fa-fw"></i>' + iconJson.label + '</div>' );
+			}
 		});
 
 		$('#acffa_new_icon_set_label').val( label );

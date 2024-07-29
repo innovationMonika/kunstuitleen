@@ -90,35 +90,6 @@ class FrmProFieldValue extends FrmFieldValue {
 		}
 	}
 
-	/**
-	 * Get the displayed value for different field types
-	 *
-	 * @since 5.5.2
-	 *
-	 * @param array $atts
-	 *
-	 * @return void
-	 */
-	protected function generate_displayed_value_for_field_type( $atts ) {
-		$this->maybe_set_displayed_value_for_page_break();
-		parent::generate_displayed_value_for_field_type( $atts );
-	}
-
-	/**
-	 * Set a displayed value for break types so that we can set a display value for it in FrmProFieldBreak::get_display_value.
-	 * Lite checks for a displayed_value before calling get_display_value, so set 1 to pass the check.
-	 *
-	 * @since 5.5.2
-	 * @return void
-	 */
-	private function maybe_set_displayed_value_for_page_break() {
-		if ( 'break' !== $this->get_field_type() || ! FrmAppHelper::is_empty_value( $this->displayed_value, '' ) ) {
-			return;
-		}
-
-		$this->displayed_value = 1;
-	}
-
 	protected function prepare_displayed_value_for_field_with_child_entries( $atts = array() ) {
 		if ( ! is_array( $this->saved_value ) ) {
 			return;
@@ -207,6 +178,7 @@ class FrmProFieldValue extends FrmFieldValue {
 		}
 
 		return $has_child_entries;
+
 	}
 
 	/**

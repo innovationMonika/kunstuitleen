@@ -21,3 +21,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'The styling for the date field calendar. Some users may be using this css on pages other than just the ones that include a date field.', 'formidable-pro' ); ?>"></span>
 </p>
 <?php } ?>
+
+
+<?php if ( $frm_settings->accordion_js ) { ?>
+<p>
+	<label for="frm_accordion_js">
+		<input type="checkbox" value="1" id="frm_accordion_js" name="frm_accordion_js" <?php checked( $frm_settings->accordion_js, 1 ); ?> />
+    	<?php esc_html_e( 'Include accordion javascript', 'formidable-pro' ); ?>
+		<span class="howto"><strong><?php esc_html_e( 'Warning: This option will be removed. Please load accordion javascripts from your theme.', 'formidable-pro' ); ?></strong></span>
+	</label>
+	<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php esc_attr_e( 'If you have manually created an accordion form, be sure to include the javascript for it.', 'formidable-pro' ); ?>" ></span>
+</p>
+<?php } ?>

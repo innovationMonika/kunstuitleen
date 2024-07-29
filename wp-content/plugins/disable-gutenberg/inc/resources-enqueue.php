@@ -4,9 +4,13 @@ if (!defined('ABSPATH')) exit;
 
 function disable_gutenberg_admin_enqueue_scripts() {
 	
-	$screen_id = disable_gutenberg_get_current_screen_id();
+	$screen = get_current_screen();
 	
-	if ($screen_id === 'settings_page_disable-gutenberg') {
+	if (!is_object($screen)) $screen = new stdClass();
+	
+	if (!property_exists($screen, 'id')) return;
+	
+	if ($screen->id === 'settings_page_disable-gutenberg') {
 		
 		wp_enqueue_style('wp-jquery-ui-dialog');
 		
@@ -24,9 +28,13 @@ function disable_gutenberg_admin_enqueue_scripts() {
 
 function disable_gutenberg_admin_print_scripts() { 
 	
-	$screen_id = disable_gutenberg_get_current_screen_id();
+	$screen = get_current_screen();
 	
-	if ($screen_id === 'settings_page_disable-gutenberg') : ?>
+	if (!is_object($screen)) $screen = new stdClass();
+	
+	if (!property_exists($screen, 'id')) return;
+	
+	if ($screen->id === 'settings_page_disable-gutenberg') : ?>
 		
 	<script type="text/javascript">
 		var 
@@ -37,17 +45,5 @@ function disable_gutenberg_admin_print_scripts() {
 	</script>
 	
 	<?php endif;
-	
-}
-
-function disable_gutenberg_get_current_screen_id() {
-	
-	if (!function_exists('get_current_screen')) require_once ABSPATH .'/wp-admin/includes/screen.php';
-	
-	$screen = get_current_screen();
-	
-	if ($screen && property_exists($screen, 'id')) return $screen->id;
-	
-	return false;
 	
 }

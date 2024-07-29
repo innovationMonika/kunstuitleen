@@ -85,25 +85,9 @@ class FrmProCurrencyHelper {
 		}
 
 		$form_id  = is_object( $field ) ? $field->form_id : $field['form_id'];
-		$currency = self::get_currency_for_field( $field );
+		$currency = ! empty( $field->field_options['custom_currency'] ) ? self::get_custom_currency( $field->field_options ) : null;
 
 		return self::format_amount_for_currency( $form_id, $value, $currency );
-	}
-
-	/**
-	 * Maybe get the custom currency for a field.
-	 *
-	 * @since 5.5.4 This was moved from self::maybe_format_currency.
-	 *
-	 * @param object|array $field
-	 * @return array|null An array is only returned for a custom currency.
-	 */
-	private static function get_currency_for_field( $field ) {
-		if ( ! FrmField::get_option( $field, 'custom_currency' ) ) {
-			// There is a is_null check in self::format_amount_for_currency that will call self::get_currency to resolve this.
-			return null;
-		}
-		return self::get_custom_currency( is_object( $field ) ? $field->field_options : $field );
 	}
 
 	/**

@@ -30,8 +30,8 @@ FrmAppHelper::show_search_box(
 						echo ' frm_help" title="' . esc_attr( $title );
 					}
 					?>">
-					<?php echo esc_html( $label ); ?>
 					<span>[<?php echo esc_html( $tag ); ?>]</span>
+					<?php echo esc_html( $label ); ?>
 				</a>
 			</li>
 			<?php

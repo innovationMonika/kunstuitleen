@@ -41,7 +41,7 @@ DEFAULT_HTML;
 	 */
 	public function show_extra_field_choices( $args ) {
 		$field = $args['field'];
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/summary-options.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/summary-options.php' );
 
 		parent::show_extra_field_choices( $args );
 	}
@@ -143,7 +143,7 @@ DEFAULT_HTML;
 	 */
 	public static function exclude_fields_settings( $args ) {
 		$field = $args['field'];
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/summary-exclude-fields-settings.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/summary-exclude-fields-settings.php' );
 	}
 
 	/**

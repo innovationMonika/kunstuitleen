@@ -41,8 +41,6 @@ class FrmViewsDisplay {
 			self::setup_table_view( $view_id );
 		}
 
-		$options['ajax_pagination'] = '1'; // Turn on AJAX pagination by default for new views.
-
 		add_post_meta( $view_id, 'frm_show_count', $show_count );
 		add_post_meta( $view_id, 'frm_options', $options );
 
@@ -117,7 +115,7 @@ class FrmViewsDisplay {
 		wp_update_post(
 			array(
 				'ID'           => $view_id,
-				'post_content' => FrmAppHelper::prepare_and_encode( $content ),
+				'post_content' => json_encode( $content ),
 			)
 		);
 	}
@@ -177,8 +175,6 @@ class FrmViewsDisplay {
 	}
 
 	public static function duplicate( $id, $copy_keys = false, $blog_id = false ) {
-		FrmViewsEditorController::check_license();
-
 		global $wpdb;
 
 		$values = self::getOne( $id, $blog_id, true );
@@ -231,7 +227,7 @@ class FrmViewsDisplay {
 		$new_values = array_merge( (array) $new_values, $meta );
 
 		self::update( $post_ID, $new_values );
-		FrmViewsLayout::duplicate_layouts( $id, $post_ID, $blog_id );
+		FrmViewsLayout::duplicate_layouts( $id, $post_ID );
 
 		return $post_ID;
 	}
@@ -304,14 +300,12 @@ class FrmViewsDisplay {
 			);
 
 			if ( is_multisite() && empty( $id ) ) {
-				self::restore_current_blog_in_multisite( $blog_id );
 				return false;
 			}
 		}
 
 		if ( empty( $id ) ) {
 			// don't let it get the current page
-			self::restore_current_blog_in_multisite( $blog_id );
 			return false;
 		}
 
@@ -332,7 +326,6 @@ class FrmViewsDisplay {
 		}
 
 		if ( $post && 'trash' === $post->post_status ) {
-			self::restore_current_blog_in_multisite( $blog_id );
 			return false;
 		}
 
@@ -340,23 +333,14 @@ class FrmViewsDisplay {
 			$check_post = isset( $atts['check_post'] ) ? $atts['check_post'] : false;
 			$post       = FrmViewsDisplaysHelper::setup_edit_vars( $post, $check_post );
 		}
-		self::restore_current_blog_in_multisite( $blog_id );
+
+		if ( $blog_id && is_multisite() ) {
+			restore_current_blog();
+		}
 
 		return $post;
 	}
 
-	/**
-	 * Restores the current blog.
-	 *
-	 * @since 5.5
-	 *
-	 * @param mixed $blog_id
-	 */
-	private static function restore_current_blog_in_multisite( $blog_id ) {
-		if ( $blog_id && is_multisite() ) {
-			restore_current_blog();
-		}
-	}
 	public static function getAll( $where = array(), $order_by = 'post_date', $limit = 99 ) {
 		if ( ! is_numeric( $limit ) ) {
 			$limit = (int) $limit;
@@ -620,8 +604,6 @@ class FrmViewsDisplay {
 		$args               = wp_parse_args( $args, $defaults );
 		$args['time_field'] = false;
 
-		FrmViewsFilterHelper::clear_empty_args_where( $where );
-
 		$query = array(
 			'select' => 'SELECT it.id FROM ' . $wpdb->prefix . 'frm_items it',
 			'where'  => $where,
@@ -638,14 +620,9 @@ class FrmViewsDisplay {
 		if ( ! empty( $query['where'] ) ) {
 			$query['where'] = FrmDb::prepend_and_or_where( 'WHERE ', $query['where'] );
 		}
+
 		$query['order'] = rtrim( $query['order'], ', ' );
-
-		if ( 'ORDER BY' === $query['order'] ) {
-			unset( $query['order'] ); // Unset the query order if there are no actual sorting fields to avoid broken SQL, ORDER BY followed by nothing.
-		}
-
 		$query          = implode( ' ', $query ) . $args['limit'];
-
 		$entry_ids      = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		return $entry_ids;
@@ -661,7 +638,7 @@ class FrmViewsDisplay {
 		// Remove other ordering fields if created_at or updated_at is selected for first ordering field
 		if ( reset( $args['order_by_array'] ) === 'created_at' || reset( $args['order_by_array'] ) === 'updated_at' ) {
 			foreach ( $args['order_by_array'] as $o_key => $order_by_field ) {
-				if ( self::is_field_sort_option( $order_by_field ) ) {
+				if ( is_numeric( $order_by_field ) ) {
 					unset( $args['order_by_array'][ $o_key ] );
 					unset( $args['order_array'][ $o_key ] );
 				}
@@ -669,10 +646,10 @@ class FrmViewsDisplay {
 			$numeric_order_array = array();
 		} else {
 			// Get number of fields in $args['order_by_array'] - this will not include created_at, updated_at, or random
-			$numeric_order_array = array_filter( $args['order_by_array'], self::class . '::is_field_sort_option' );
+			$numeric_order_array = array_filter( $args['order_by_array'], 'is_numeric' );
 		}
 
-		if ( ! $numeric_order_array ) {
+		if ( ! count( $numeric_order_array ) ) {
 			// If ordering by creation date and/or update date without any fields
 			$query['order'] = ' ORDER BY';
 
@@ -689,8 +666,6 @@ class FrmViewsDisplay {
 		foreach ( $args['order_by_array'] as $o_key => $order_by_field ) {
 			if ( is_numeric( $order_by_field ) ) {
 				$order_fields[ $o_key ] = FrmField::getOne( $order_by_field );
-			} elseif ( self::is_field_sort_option( $order_by_field ) ) {
-				$order_fields[ $o_key ] = FrmField::getOne( explode( '_', $order_by_field )[0] );
 			} else {
 				$order_fields[ $o_key ] = $order_by_field;
 			}
@@ -711,73 +686,12 @@ class FrmViewsDisplay {
 		}
 	}
 
-	/**
-	 * Check if a sort option targets a field.
-	 * This is true for anything numeric, as well as a number followed by _first or _last (for Name fields).
-	 *
-	 * @since 5.5
-	 *
-	 * @param string $option
-	 * @return bool
-	 */
-	private static function is_field_sort_option( $option ) {
-		return is_numeric( $option )
-			|| self::is_name_subfield_sort_option( $option )
-			|| self::is_address_subfield_sort_option( $option );
-	}
-
-	/**
-	 * Check for an option that looks like field id + ( '_first' or '_last' ).
-	 *
-	 * @since 5.5
-	 *
-	 * @param string $option
-	 * @return bool
-	 */
-	private static function is_name_subfield_sort_option( $option ) {
-		return self::is_combo_sort_option( $option, array( 'first', 'last' ) );
-	}
-
-	/**
-	 * Check for an option that looks like field id + ( '_country', '_state' or '_city' ).
-	 *
-	 * @since 5.5
-	 *
-	 * @param string $option
-	 * @return bool
-	 */
-	private static function is_address_subfield_sort_option( $option ) {
-		return self::is_combo_sort_option( $option, array( 'country', 'state', 'city', 'zip' ) );
-	}
-
-	/**
-	 * @since 5.5
-	 *
-	 * @param string $option
-	 * @param array  $subfields
-	 * @return bool
-	 */
-	private static function is_combo_sort_option( $option, $subfields ) {
-		$split = explode( '_', $option );
-		if ( 2 !== count( $split ) ) {
-			return false;
-		}
-		return is_numeric( $split[0] ) && in_array( $split[1], $subfields, true );
-	}
-
-	/**
-	 * @param array       $query
-	 * @param array       $args
-	 * @param string      $o_key
-	 * @param object|null $o_field
-	 * @param bool        $first_order
-	 * @return void
-	 */
 	private static function prepare_ordered_entries_query( &$query, &$args, $o_key, $o_field, $first_order ) {
 		global $wpdb;
 
 		$order = $args['order_array'][ $o_key ];
 		FrmDb::esc_order_by( $order );
+
 		$o_key = sanitize_title( $o_key );
 
 		// if field is some type of post field
@@ -787,33 +701,22 @@ class FrmViewsDisplay {
 			if ( 'post_custom' === $o_field->field_options['post_field'] ) {
 				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$query['select'] .= $wpdb->prepare( ' LEFT JOIN ' . $wpdb->postmeta . ' pm' . $o_key . ' ON pm' . $o_key . '.post_id=it.post_id AND pm' . $o_key . '.meta_key = %s ', $o_field->field_options['custom_field'] );
-				$query['order']  .= 'CASE WHEN pm' . $o_key . '.meta_value IS NULL THEN 1 ELSE 0 END, pm' . $o_key . '.meta_value ';
+				$query['order']  .= 'CASE when pm' . $o_key . '.meta_value IS NULL THEN 1 ELSE 0 END, pm' . $o_key . '.meta_value ';
 				$query['order']  .= FrmProAppHelper::maybe_query_as_number( $o_field->type );
 				$query['order']  .= $order . ', ';
 			} elseif ( 'post_category' !== $o_field->field_options['post_field'] ) {
 				// if field is a non-category post field
-				$post_alias       = 'p' . $o_key;
-				$entry_meta_alias = 'em' . $o_key;
-				$post_field       = esc_sql( $o_field->field_options['post_field'] );
-				$query['select'] .= ' LEFT JOIN ' . esc_sql( $wpdb->posts ) . " $post_alias ON $post_alias.ID=it.post_id LEFT JOIN " . $wpdb->prefix . "frm_item_metas $entry_meta_alias ON $entry_meta_alias.item_id=it.id AND $entry_meta_alias.field_id=" . $o_field->id;
-				$query['order']  .= "CASE WHEN $post_alias." . $post_field . " IS NULL THEN $entry_meta_alias.meta_value ELSE $post_alias." . $post_field . ' END ' . $order . ', ';
+				$query['select'] .= $first_order ? ' INNER ' : ' LEFT ';
+				$query['select'] .= 'JOIN ' . sanitize_title( $wpdb->posts ) . ' p' . $o_key . ' ON p' . $o_key . '.ID=it.post_id ';
+				$query['order']  .= 'CASE p' . $o_key . '.' . sanitize_title( $o_field->field_options['post_field'] ) . " WHEN '' THEN 1 ELSE 0 END, p$o_key." . sanitize_title( $o_field->field_options['post_field'] ) . ' ' . $order . ', ';
 			}
-		} elseif ( self::is_field_sort_option( $args['order_by_array'][ $o_key ] ) ) {
-			// Ordering by a normal, non-post field.
-
-			if ( ! is_object( $o_field ) ) {
-				// If the field is deleted, exit early.
-				return;
-			}
-
-			if ( in_array( $o_field->type, array( 'name', 'address' ), true ) ) {
-				self::prepare_order_by_for_combo_field( $query, $o_field, $order, $o_key, $args['order_by_array'][ $o_key ] );
-			} else {
-				$query['select'] .= $wpdb->prepare( ' LEFT JOIN ' . $wpdb->prefix . 'frm_item_metas em' . $o_key . ' ON em' . $o_key . '.item_id=it.id AND em' . $o_key . '.field_id=%d ', $o_field->id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-				$query['order']  .= 'CASE WHEN em' . $o_key . '.meta_value IS NULL THEN 1 ELSE 0 END, em' . $o_key . '.meta_value ';
-				$query['order']  .= FrmProAppHelper::maybe_query_as_number( $o_field->type );
-				$query['order']  .= $order . ', ';
-			}
+		} elseif ( is_numeric( $args['order_by_array'][ $o_key ] ) ) {
+			// if ordering by a normal, non-post field
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$query['select'] .= $wpdb->prepare( ' LEFT JOIN ' . $wpdb->prefix . 'frm_item_metas em' . $o_key . ' ON em' . $o_key . '.item_id=it.id AND em' . $o_key . '.field_id=%d ', $o_field->id );
+			$query['order']  .= 'CASE when em' . $o_key . '.meta_value IS NULL THEN 1 ELSE 0 END, em' . $o_key . '.meta_value ';
+			$query['order']  .= FrmProAppHelper::maybe_query_as_number( $o_field->type );
+			$query['order']  .= $order . ', ';
 
 			// Meta value is only necessary for time field reordering and only if time field is first ordering field
 			// Check if time field (for time field ordering)
@@ -823,66 +726,5 @@ class FrmViewsDisplay {
 		} else {
 			$query['order'] .= 'it.' . sanitize_title( $o_field ) . ' ' . $order . ', ';
 		}
-	}
-
-	/**
-	 * Unserialize a name field in MySQL to determine the proper order.
-	 *
-	 * @since 5.5
-	 *
-	 * @param array  $query
-	 * @param object $o_field
-	 * @param string $order
-	 * @param string $o_key
-	 * @param string $order_by The string setting for the order by field.
-	 *                         This may be "created_at", a field id, or a name field ID
-	 *                         ending with "_first" or "_last".
-	 * @return void
-	 */
-	private static function prepare_order_by_for_combo_field( &$query, $o_field, $order, $o_key, $order_by ) {
-		global $wpdb;
-
-		// Support Name (First) and Name (Last) sort options.
-		if ( self::is_name_subfield_sort_option( $order_by ) || self::is_address_subfield_sort_option( $order_by ) ) {
-			$show = explode( '_', $order_by )[1];
-		} elseif ( 'address' === $o_field->type ) {
-				$show = 'country';
-		} else {
-			// Name field.
-			$show = 'first';
-		}
-
-		$query['select'] = str_replace(
-			'FROM ' . $wpdb->prefix . 'frm_items it',
-			', SUBSTRING_INDEX(
-				SUBSTRING_INDEX(
-					REPLACE(
-						em' . $o_key . '.meta_value,
-						SUBSTRING_INDEX( em' . $o_key . '.meta_value, \'"' . $show . '";s\', 1 ),
-						""
-					),
-					";",
-					2
-				),
-				":",
-				-1
-			) as `SubFieldValue' . $o_key . '`
-			FROM ' . $wpdb->prefix . 'frm_items it',
-			$query['select']
-		);
-		$query['select'] .= $wpdb->prepare( ' LEFT JOIN ' . $wpdb->prefix . 'frm_item_metas em' . $o_key . ' ON em' . $o_key . '.item_id=it.id AND em' . $o_key . '.field_id=%d ', $o_field->id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$query['order']  .= '`SubFieldValue' . $o_key . '` ' . $order . ', ';
-	}
-
-	/**
-	 * Get Views count.
-	 *
-	 * @since 6.x
-	 *
-	 * @return array
-	 */
-	public static function get_views_count() {
-		$views_count = wp_count_posts( 'frm_display' );
-		return $views_count->private + $views_count->publish;
 	}
 }

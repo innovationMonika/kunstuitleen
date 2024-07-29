@@ -2,10 +2,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'You are not allowed to call this page directly.' );
 }
-
-$show_image = FrmProImages::should_show_images( $field );
 ?>
-<div class="frm_image_preview_wrapper frm_option_key field_<?php echo esc_attr( $field['id'] ); ?>_image_id <?php echo esc_attr( $show_image ? '' : ' frm_hidden ' ); ?>">
+<div class="frm_image_preview_wrapper frm_option_key field_<?php echo esc_attr( $field['id'] ); ?>_image_id <?php echo esc_attr( $field['image_options'] ? '' : ' frm_hidden ' ); ?>">
 	<input type="hidden" class="frm_image_id" data-frmchange="trim"
 			name="field_options[options_<?php echo esc_attr( $field['id'] ); ?>][<?php echo esc_attr( $opt_key ); ?>][image]"
 			id="field_image_<?php echo esc_attr( $field['id'] . '-' . $opt_key ); ?>"
@@ -28,5 +26,3 @@ $show_image = FrmProImages::should_show_images( $field );
 		<?php esc_attr_e( 'Upload image', 'formidable-pro' ); ?>
 	</button>
 </div>
-<?php
-unset( $show_image );

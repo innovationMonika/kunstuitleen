@@ -10,6 +10,10 @@ if ( $page_count <= 1 ) {
 <div class="<?php echo esc_attr( apply_filters( 'frm_pagination_class', 'frm_pagination_cont', $atts ) ); ?>">
 <ul class="<?php echo esc_attr( apply_filters( 'frm_ul_pagination_class', 'frm_pagination', $atts ) ); ?>">
 <?php
+if ( ! is_numeric( $current_page ) ) {
+	$current_page = FrmAppHelper::get_param( $page_param, '1', 'get', 'absint' );
+}
+
 $page_params = isset( $page_params ) ? $page_params : '';
 $s           = FrmAppHelper::get_param( 'frm_search', false, 'get', 'sanitize_text_field' );
 

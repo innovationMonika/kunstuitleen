@@ -27,61 +27,7 @@ class FrmProGraphsController {
 
 		$html = self::get_graph_html( $graph_data, $atts );
 
-		$html = self::maybe_add_title_to_table( $html, $graph_data, $atts );
-
 		return $html;
-	}
-
-	/**
-	 * Google Tables do not support titles by default. This function adds the title.
-	 *
-	 * @since 6.8
-	 *
-	 * @param string $html
-	 * @param array  $graph_data
-	 * @param array  $atts
-	 * @return string
-	 */
-	private static function maybe_add_title_to_table( $html, $graph_data, $atts ) {
-		if ( empty( $atts['type'] ) || 'table' !== $atts['type'] || empty( $atts['title'] ) ) {
-			return $html;
-		}
-
-		$params = array();
-		$style  = self::get_styles_for_table_title( $atts );
-		if ( $style ) {
-			$params['style'] = $style;
-		}
-
-		$title = '<div ' . FrmAppHelper::array_to_html_params( $params ) . '>' . $atts['title'] . '<div>';
-
-		return $title . $html;
-	}
-
-	/**
-	 * @since 6.8
-	 *
-	 * @param array $atts
-	 * @return string
-	 */
-	private static function get_styles_for_table_title( $atts ) {
-		$style  = '';
-		if ( ! empty( $atts['title_size'] ) && is_numeric( $atts['title_size'] ) ) {
-			$style .= 'font-size: ' . absint( $atts['title_size'] ) . 'px;';
-		}
-		if ( ! empty( $atts['title_bold'] ) ) {
-			$style .= 'font-weight: bold;';
-		}
-		if ( ! empty( $atts['title_italic'] ) ) {
-			$style .= 'font-style: italic;';
-		}
-		if ( ! empty( $atts['title_color'] ) ) {
-			$style .= 'color: ' . $atts['title_color'] . ';';
-		}
-		if ( ! empty( $atts['title_font'] ) ) {
-			$style .= 'font-family: "' . $atts['title_font'] . '";';
-		}
-		return $style;
 	}
 
 	/**
@@ -258,17 +204,15 @@ class FrmProGraphsController {
 	 * Get the default graph attributes
 	 *
 	 * @since 2.02.05
-	 * @since 6.7.1 This method is public.
 	 * @return array
 	 */
-	public static function get_graph_defaults() {
+	private static function get_graph_defaults() {
 
 		$defaults = array(
 			'fields' => '',
 			'form' => '',
 			'type' => 'column',
 			'data_type' => 'count',
-			'date_format'             => '',
 			'limit' => '',
 			'include_zero' => false,
 			'created_at_greater_than' => '',
@@ -281,7 +225,6 @@ class FrmProGraphsController {
 			'title_size' => 14,
 			'title_font' => '',
 			'title_bold' => false,
-			'title_italic' => false,
 			'title_color' => '#666',
 			'truncate' => 40,
 			'tooltip_label' => '',
@@ -340,32 +283,6 @@ class FrmProGraphsController {
 	}
 
 	/**
-	 * Gets data type options.
-	 *
-	 * @since 6.8.3
-	 *
-	 * @return array
-	 */
-	public static function get_data_type_options() {
-		$options = array(
-			'count'   => __( 'The number of entries', 'formidable-pro' ),
-			'total'   => __( 'Add the field values together', 'formidable-pro' ),
-			'average' => __( 'Average the totaled field values', 'formidable-pro' ),
-			'maximum' => __( 'The highest of a set of field values', 'formidable-pro' ),
-			'minimum' => __( 'The lowest of a set of field values', 'formidable-pro' ),
-		);
-
-		/**
-		 * Filters the graph data type options.
-		 *
-		 * @since 6.8.3
-		 *
-		 * @param array $options Data type options, an array with keys are data types and values are labels.
-		 */
-		return apply_filters( 'frm_pro_graph_data_type_options', $options );
-	}
-
-	/**
 	 * Format the user-defined attributes
 	 *
 	 * @since 2.02.05
@@ -375,9 +292,7 @@ class FrmProGraphsController {
 		self::convert_field_keys_to_ids( $atts );
 
 		if ( ! empty( $atts['fields'] ) ) {
-			$atts['fields'] = self::get_fields_in_defined_order( $atts['fields'] );
-		} elseif ( ! empty( $atts['form'] ) && $atts['form'] === 'all' ) {
-			$atts['form_id'] = 'all';
+			$atts['fields'] = FrmField::getAll( array( 'fi.id' => $atts['fields'] ) );
 		} elseif ( ! empty( $atts['form'] ) ) {
 			$atts['form'] = FrmForm::getOne( $atts['form'] );
 			if ( ! $atts['form'] ) {
@@ -412,37 +327,6 @@ class FrmProGraphsController {
 		}
 
 		self::convert_entry_keys_to_ids( $atts );
-	}
-
-	/**
-	 * Get fields but in the same order that they were defined.
-	 * For example, if array( 10, 2 ) is passed, we expect field ID 10 to be the first item.
-	 *
-	 * @since 6.8
-	 *
-	 * @param array $field_ids
-	 * @return array
-	 */
-	private static function get_fields_in_defined_order( $field_ids ) {
-		$fields = FrmField::getAll( array( 'fi.id' => $field_ids ) );
-		if ( 1 === count( $fields ) ) {
-			// If there is only a single field, there is no need to re-order.
-			return $fields;
-		}
-
-		return array_reduce(
-			$field_ids,
-			function ( $total, $field_id ) use ( $fields ) {
-				foreach ( $fields as $field ) {
-					if ( (int) $field->id === (int) $field_id ) {
-						$total[] = $field;
-						break;
-					}
-				}
-				return $total;
-			},
-			array()
-		);
 	}
 
 	/**
@@ -535,27 +419,12 @@ class FrmProGraphsController {
 		$options = self::get_graph_options( $type, $atts );
 		$graph_package = self::get_graph_package( $type );
 
-		$graph_auto_id = count( $frm_vars['google_graphs']['graphs'] ) + 1;
-		$graph_id      = '_frm_' . strtolower( $type ) . $graph_auto_id;
-
-		/**
-		 * Filter the ID of the graph.
-		 *
-		 * @since 5.4
-		 *
-		 * @param string $graph_id
-		 * @param array  $args {
-		 *     @type int    $graph_auto_id Graph Auto ID.
-		 *     @type string $type          Graph type.
-		 * }
-		 */
-		$graph_id   = apply_filters( 'frm_graph_id', $graph_id, compact( 'graph_auto_id', 'type' ) );
 		$graph_data = array(
-			'type'     => $type,
-			'data'     => $data,
-			'options'  => $options,
-			'package'  => $graph_package,
-			'graph_id' => $graph_id,
+			'type' => $type,
+			'data' => $data,
+			'options' => $options,
+			'package' => $graph_package,
+			'graph_id' => '_frm_' . strtolower( $type ) . ( count( $frm_vars['google_graphs']['graphs'] ) + 1 ),
 		);
 
 		$frm_vars['google_graphs']['graphs'][] = $graph_data;
@@ -632,77 +501,16 @@ class FrmProGraphsController {
 			$data = self::get_data_for_form_graph( $atts );
 		} elseif ( isset( $atts['x_axis'] ) ) {
 			$data = self::get_data_for_x_axis_graph( $atts );
-		} elseif ( ! empty( $atts['fields'] ) && count( $atts['fields'] ) > 1 ) {
+		} elseif ( count( $atts['fields'] ) > 1 ) {
 			$data = self::get_data_for_multi_field_graph( $atts );
 		} else {
 			$data = self::get_data_for_single_field_graph( $atts );
 		}
 
-		self::filter_graph_data_to_match_graph( $data, $atts );
-
 		self::apply_deprecated_filters();
 		$data = apply_filters( 'frm_graph_data', $data, $atts );
 
 		return $data;
-	}
-
-	/**
-	 * Filter data sent to frontend using the shortcode parameters.
-	 *
-	 * @param array $data Data to be filtered.
-	 * @param array $atts The shortcode attributes.
-	 */
-	private static function filter_graph_data_to_match_graph( &$data, $atts ) {
-		if ( $atts['type'] === 'histogram' || $atts['type'] === 'pie' || $atts['type'] === 'geo' ) {
-			return;
-		}
-		$limits = array();
-		$axes   = array( 'x', 'y' );
-
-		foreach ( $axes as $axis ) {
-			if ( isset( $atts[ $axis . '_min' ] ) ) {
-				$limits[] = 'min';
-			}
-			if ( isset( $atts[ $axis . '_max' ] ) ) {
-				$limits[] = 'max';
-			}
-			if ( $limits ) {
-				self::filter_graph_data_to_match_axis( $data, $atts, $axis, $limits );
-			}
-			$limits = array();
-		}
-	}
-
-	/**
-	 * Filter graph data along a single axis.
-	 *
-	 * @param array $data
-	 * @param array $atts
-	 * @param string $axis
-	 * @param array $limits
-	 */
-	private static function filter_graph_data_to_match_axis( &$data, $atts, $axis, $limits ) {
-		$index = $axis === 'x' ? 0 : 1;
-
-		if ( $atts['type'] === 'hbar' ) {
-			$index = $index === 0 ? 1 : 0;
-		}
-
-		foreach ( $limits as $min_or_max ) {
-			$limit = $atts [ $axis . '_' . $min_or_max ];
-			$data  = array_values(
-				array_filter(
-					$data,
-					function ( $row ) use ( $index, $limit, $min_or_max ) {
-						if ( ! is_numeric( $row[ $index ] ) ) {
-							return true;
-						}
-
-						return $min_or_max === 'min' ? floatval( $row[ $index ] ) >= $limit : floatval( $row[ $index ] ) <= $limit;
-					}
-				)
-			);
-		}
 	}
 
 	/**
@@ -778,9 +586,6 @@ class FrmProGraphsController {
 
 		// bold title
 		self::convert_shortcode_att_to_bool_google_att( 'title_bold', 'bold', $atts, $options['titleTextStyle'] );
-
-		// Italic title.
-		self::convert_shortcode_att_to_bool_google_att( 'title_italic', 'italic', $atts, $options['titleTextStyle'] );
 
 		// title size
 		self::convert_shortcode_att_to_google_att( 'title_size', 'fontSize', $atts, $options['titleTextStyle'] );
@@ -1219,7 +1024,7 @@ class FrmProGraphsController {
 	}
 
 	/**
-	 * Get the entry IDs for a field filter.
+	 * Get the entry IDs for a field filter
 	 *
 	 * @since 2.02.05
 	 * @param string $key
@@ -1229,13 +1034,13 @@ class FrmProGraphsController {
 	 */
 	private static function get_entry_ids_for_field_filter( $key, $value, $args ) {
 		$pass_args = array(
-			'orig_f'      => $key,
-			'val'         => $value,
-			'entry_ids'   => $args['entry_ids'],
+			'orig_f' => $key,
+			'val' => $value,
+			'entry_ids' => $args['entry_ids'],
 			'after_where' => $args['after_where'],
-			'drafts'      => isset( $args['is_draft'] ) ? $args['is_draft'] : 0,
-			'form_id'     => $args['form_id'],
-			'form_posts'  => self::get_form_posts( $args ),
+			'drafts' => isset( $args['is_draft'] ) ? $args['is_draft'] : 0,
+			'form_id' => $args['form_id'],
+			'form_posts' => self::get_form_posts( $args ),
 		);
 
 		return FrmProStatisticsController::get_field_matches( $pass_args );
@@ -1347,27 +1152,21 @@ class FrmProGraphsController {
 	 * Get the tooltip text
 	 *
 	 * @since 2.02.05
-	 *
 	 * @param array $atts
 	 * @return string
 	 */
 	private static function get_tooltip_text( $atts ) {
 		if ( isset( $atts['tooltip_label'] ) ) {
-			return $atts['tooltip_label'];
+			$tooltip_text = $atts['tooltip_label'];
+		} elseif ( 'total' === $atts['data_type'] ) {
+			$tooltip_text = __( 'Total', 'formidable-pro' );
+		} elseif ( 'average' === $atts['data_type'] ) {
+			$tooltip_text = __( 'Average', 'formidable-pro' );
+		} else {
+			$tooltip_text = __( 'Submissions', 'formidable-pro' );
 		}
 
-		switch ( $atts['data_type'] ) {
-			case 'total':
-				return __( 'Total', 'formidable-pro' );
-			case 'average':
-				return __( 'Average', 'formidable-pro' );
-			case 'maximum':
-				return __( 'Maximum', 'formidable-pro' );
-			case 'minimum':
-				return __( 'Minimum', 'formidable-pro' );
-		}
-
-		return __( 'Submissions', 'formidable-pro' );
+		return $tooltip_text;
 	}
 
 	/**
@@ -1384,30 +1183,15 @@ class FrmProGraphsController {
 		foreach ( $atts['fields'] as $field ) {
 			$meta_values = self::get_meta_values_for_single_field( $field, $atts );
 
-			switch ( $atts['data_type'] ) {
-				case 'total':
-					// Get total.
-					$y_value = array_sum( $meta_values );
-					break;
-				case 'average':
-					if ( ! $meta_values ) {
-						// Avoid division by zero.
-						$y_value = 0;
-					} else {
-						// Get average.
-						$y_value = array_sum( $meta_values ) / count( $meta_values );
-					}
-					break;
-				case 'maximum':
-					$y_value = max( $meta_values );
-					break;
-				case 'minimum':
-					$y_value = min( $meta_values );
-					break;
-				default:
-					// Get count.
-					$y_value = count( $meta_values );
-					break;
+			if ( 'total' === $atts['data_type'] ) {
+				// get total
+				$y_value = array_sum( $meta_values );
+			} elseif ( 'average' === $atts['data_type'] ) {
+				// get average
+				$y_value = array_sum( $meta_values ) / count( $meta_values );
+			} else {
+				// get count
+				$y_value = count( $meta_values );
 			}
 
 			$graph_data[] = array(
@@ -1437,6 +1221,7 @@ class FrmProGraphsController {
 
 		$x_axis_data = self::get_associative_values_for_x_axis( $atts['x_axis_field'], $atts );
 		$y_axis_data = $x_axis_data;
+
 		self::order_x_axis_values( $atts, $x_axis_data );
 
 		$graph_data = self::combine_data_by_id( $x_axis_data, array( $y_axis_data ), $atts );
@@ -1547,7 +1332,7 @@ class FrmProGraphsController {
 		$start_date     = self::get_start_date_for_x_axis_date_include_zero_graph( $atts, $graph_data );
 		$end_date       = self::get_end_date_for_x_axis_date_include_zero_graph( $atts, $graph_data );
 		$group_by       = isset( $atts['group_by'] ) ? $atts['group_by'] : '';
-		$all_dates      = self::get_all_dates_for_period( $start_date, $end_date, $group_by, $atts );
+		$all_dates      = self::get_all_dates_for_period( $start_date, $end_date, $group_by );
 		$new_graph_data = array();
 		$count          = 0;
 
@@ -1618,18 +1403,12 @@ class FrmProGraphsController {
 	 * @param string $start_date
 	 * @param string $end_date
 	 * @param string $group_by
-	 * @param array  $atts
-	 *
 	 * @return array
 	 */
-	private static function get_all_dates_for_period( $start_date, $end_date, $group_by, $atts ) {
+	private static function get_all_dates_for_period( $start_date, $end_date, $group_by ) {
 		$start_timestamp = strtotime( $start_date );
-		$end_timestamp   = strtotime( $end_date );
-		if ( $end_date === 'NOW' ) {
-			// add a day to make sure the data for current date are considered for graph not grouped
-			$end_timestamp += 86399;
-		}
-		$all_dates = array();
+		$end_timestamp   = strtotime( $end_date ) + 86399;
+		$all_dates       = array();
 
 		if ( $group_by === 'month' ) {
 			for ( $d = $start_timestamp; $d <= $end_timestamp; $d += 60 * 60 * 24 * 25 ) {
@@ -1644,8 +1423,7 @@ class FrmProGraphsController {
 				self::add_formatted_date_to_array( 'Y', $d, $all_dates );
 			}
 		} else {
-			$date_format     = empty( $atts['date_format'] ) ? get_option( 'date_format' ) : $atts['date_format'];
-			$start_timestamp = current_time( $start_timestamp );
+			$date_format = get_option( 'date_format' );
 			for ( $d = $start_timestamp; $d <= $end_timestamp; $d += 60 * 60 * 24 ) {
 				$all_dates[] = date_i18n( $date_format, $d, true );
 			}
@@ -1721,8 +1499,8 @@ class FrmProGraphsController {
 			return;
 		}
 
-		$form_ids = wp_list_pluck( $atts['fields'], 'form_id' );
-		$atts['form_id'] = $form_ids;
+		$atts['form_id'] = $atts['fields'][0]->form_id;
+
 		self::maybe_add_x_start_and_x_end( $atts );
 
 		self::check_field_filters( $atts );
@@ -1814,7 +1592,7 @@ class FrmProGraphsController {
 
 		$labels       = self::get_field_option_labels( $field );
 		$index_by_opt = array_flip( $labels );
-		$compare      = function ( $a, $b ) use ( $index_by_opt ) {
+		$compare      = function( $a, $b ) use ( $index_by_opt ) {
 			$index_a = $index_by_opt[ $a->meta_value ];
 			$index_b = $index_by_opt[ $b->meta_value ];
 			return $index_a - $index_b;
@@ -1834,7 +1612,7 @@ class FrmProGraphsController {
 	 * @return int
 	 */
 	private static function date_compare( $a, $b ) {
-		$t1 = strtotime( $a->meta_value );
+		$t1 = strtotime( $a->meta_value);
 		$t2 = strtotime( $b->meta_value );
 		return $t1 - $t2;
 	}
@@ -2035,7 +1813,7 @@ class FrmProGraphsController {
 		foreach ( $all_field_data as $single_field_data ) {
 
 			if ( isset( $single_field_data[ $entry_id ] ) ) {
-				if ( in_array( $atts['data_type'], array( 'total', 'average', 'maximum', 'minimum' ), true ) ) {
+				if ( $atts['data_type'] == 'total' || $atts['data_type'] == 'average' ) {
 					if ( is_numeric( $single_field_data[ $entry_id ]->meta_value ) ) {
 						$new_row[] = (float) $single_field_data[ $entry_id ]->meta_value;
 					} else {
@@ -2082,33 +1860,18 @@ class FrmProGraphsController {
 			$count++;
 
 			if ( isset( $single_field_data[ $entry_id ] ) ) {
-				$value      = $single_field_data[ $entry_id ]->meta_value;
-				$is_numeric = is_numeric( $value );
-
-				switch ( $atts['data_type'] ) {
-					case 'total':
-						if ( $is_numeric ) {
-							$current_data[ $count ] += $value;
-						}
-						break;
-					case 'average':
-						if ( $is_numeric ) {
-							$current_data[ $count ] = ( ( ( $current_data[ $count ] * ( $data_count - 1 ) ) + $value ) / $data_count );
-						}
-						break;
-					case 'maximum':
-						if ( $is_numeric && $value > $current_data[ $count ] ) {
-							$current_data[ $count ] = floatval( $value );
-						}
-						break;
-					case 'minimum':
-						if ( $is_numeric && $value < $current_data[ $count ] ) {
-							$current_data[ $count ] = floatval( $value );
-						}
-						break;
-					default:
-						$current_data[ $count ]++;
-						break;
+				if ( $atts['data_type'] == 'total' ) {
+					if ( is_numeric( $single_field_data[ $entry_id ]->meta_value ) ) {
+						$current_data[ $count ] += $single_field_data[ $entry_id ]->meta_value;
+					}
+				} elseif ( $atts['data_type'] == 'average' ) {
+					if ( is_numeric( $single_field_data[ $entry_id ]->meta_value ) ) {
+						$current_data[ $count ] = (
+							( ( $current_data[ $count ] * ( $data_count - 1 ) ) + $single_field_data[ $entry_id ]->meta_value ) /
+						$data_count );
+					}
+				} else {
+					$current_data[ $count ]++;
 				}
 			}
 		}
@@ -2147,9 +1910,7 @@ class FrmProGraphsController {
 	private static function get_x_axis_displayed_value( $x_value, $atts ) {
 		self::convert_db_date_to_localized_date( $atts, $x_value );
 
-		if ( ! empty( $atts['date_format'] ) && self::is_valid_date( $x_value ) ) {
-			$x_value = date_i18n( $atts['date_format'], strtotime( $x_value ) );
-		} elseif ( isset( $atts['group_by'] ) ) {
+		if ( isset( $atts['group_by'] ) ) {
 			if ( ! self::is_valid_date( $x_value ) ) {
 				return '';
 			}
@@ -2205,13 +1966,13 @@ class FrmProGraphsController {
 		$value = gmdate( 'Y-m-d', strtotime( $date ) );
 		$y     = gmdate( 'Y', strtotime( $value ) );
 
-		if ( preg_match( '/-(01|02|03)-/', $value ) ) {
+		if ( preg_match('/-(01|02|03)-/', $value ) ) {
 			$value = __( 'Q1', 'formidable-pro' ) . ' ' . $y;
-		} elseif ( preg_match( '/-(04|05|06)-/', $value ) ) {
+		} elseif ( preg_match('/-(04|05|06)-/', $value) ) {
 			$value = __( 'Q2', 'formidable-pro' ) . ' ' . $y;
-		} elseif ( preg_match( '/-(07|08|09)-/', $value ) ) {
+		} elseif ( preg_match('/-(07|08|09)-/', $value) ) {
 			$value = __( 'Q3', 'formidable-pro' ) . ' ' . $y;
-		} elseif ( preg_match( '/-(10|11|12)-/', $value ) ) {
+		} elseif ( preg_match('/-(10|11|12)-/', $value) ) {
 			$value = __( 'Q4', 'formidable-pro' ) . ' ' . $y;
 		}
 
@@ -2231,31 +1992,8 @@ class FrmProGraphsController {
 
 			$displayed_value = self::convert_date_for_graph_display( $value );
 
-		} elseif ( is_object( $field ) ) {
-			$displayed_value = self::get_displayed_value_for_specific_fields( $value, $field );
-		} else {
-			$displayed_value = $value;
-		}
+		} elseif ( is_object( $field ) && ! is_array( $value ) ) {
 
-		$displayed_value = apply_filters( 'frm_graph_value', $displayed_value, $field );
-
-		if ( is_array( $displayed_value ) ) {
-			$displayed_value = reset( $displayed_value );
-		}
-
-		return $displayed_value;
-	}
-
-	/**
-	 * Gets displayed value for specific fields.
-	 *
-	 * @since 5.4.2
-	 *
-	 * @param mixed  $value Field value.
-	 * @param object $field Field object.
-	 */
-	private static function get_displayed_value_for_specific_fields( $value, $field ) {
-		if ( ! is_array( $value ) ) {
 			if ( $field->type === 'date' ) {
 				$displayed_value = self::convert_date_for_graph_display( $value );
 			} elseif ( ! empty( $field->field_options['separate_value'] ) || FrmField::is_option_true( $field, 'other' ) ) {
@@ -2273,11 +2011,14 @@ class FrmProGraphsController {
 			} else {
 				$displayed_value = ucfirst( $value );
 			}
-		} elseif ( 'name' === $field->type ) {
-			$field_obj       = FrmFieldFactory::get_field_object( $field );
-			$displayed_value = $field_obj->get_display_value( $value );
 		} else {
 			$displayed_value = $value;
+		}
+
+		$displayed_value = apply_filters( 'frm_graph_value', $displayed_value, $field );
+
+		if ( is_array( $displayed_value ) ) {
+			$displayed_value = reset( $displayed_value );
 		}
 
 		return $displayed_value;
@@ -2310,13 +2051,8 @@ class FrmProGraphsController {
 	 */
 	private static function convert_formatted_date_to_y_m_d( $date ) {
 		$date_format = get_option( 'date_format' );
-		$date_obj    = DateTime::createFromFormat( $date_format, $date );
-
-		if ( $date_obj ) {
-			return $date_obj->format( 'Y-m-d' );
-		}
-
-		return $date;
+		$date        = DateTime::createFromFormat( $date_format, $date );
+		return $date->format( 'Y-m-d' );
 	}
 
 	/**
@@ -2483,22 +2219,257 @@ class FrmProGraphsController {
 	 * Show the graphs on the form's Reports page
 	 *
 	 * @since 2.02.05
-	 *
-	 * @return void
 	 */
 	public static function show_reports() {
-		FrmProReportsHelper::show_reports();
+		global $wpdb;
+
+		add_filter( 'frm_form_stop_action_reports', '__return_true' );
+		FrmAppHelper::permission_check( 'frm_view_reports' );
+
+		$form = self::get_form_for_reports();
+
+		if ( ! $form ) {
+			require(FrmProAppHelper::plugin_path() . '/classes/views/frmpro-statistics/select.php');
+			return;
+		}
+
+		$entries = FrmDb::get_col( 'frm_items', array( 'form_id' => $form->id ), 'created_at' );
+
+		if ( empty( $entries ) ) {
+			$fields = array();
+			include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-statistics/show.php' );
+			return;
+		}
+
+		$fields = self::get_fields_for_reports( $form->id );
+
+		$data = self::generate_graphs_for_reports( $form, $fields );
+
+		foreach ( $fields as $field ) {
+			if ( ! isset( $data[ $field->id ] ) ) {
+				continue;
+			}
+
+			if ( 'user_id' === $field->type ) {
+				$user_ids = FrmDb::get_col( $wpdb->users, array(), 'ID', 'display_name ASC' );
+				$submitted_user_ids = FrmEntryMeta::get_entry_metas_for_field( $field->id, '', '', array( 'unique' => true ) );
+				break;
+			}
+		}
+
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-statistics/show.php' );
 	}
 
 	/**
 	 * Get a list of boxes to list with the graph on the reports page.
 	 *
 	 * @since 5.0.02
-	 * @deprecated 6.5.5
 	 */
 	public static function get_field_boxes( $args ) {
-		_deprecated_function( __METHOD__, '6.5.5', 'FrmProReportsHelper::get_field_boxes' );
-		return FrmProReportsHelper::get_field_boxes( $args );
+		$field   = $args['field'];
+		$total   = FrmProStatisticsController::stats_shortcode(
+			array(
+				'id'   => $field->id,
+				'type' => 'count',
+			)
+		);
+
+		if ( ! $total ) {
+			return array();
+		}
+
+		$post_boxes = array(
+			array(
+				'label' => __( 'Answered', 'formidable-pro' ),
+				'stat'  => $total . ' (' . round( ( $total / count( $args['entries'] ) ) * 100, 2 ) . '%)',
+			),
+		);
+
+		self::add_average_box( $args, $post_boxes );
+
+		return apply_filters( 'frm_pro_reports_boxes', $post_boxes, $args );
+	}
+
+	/**
+	 * Add the Average and Median reports for some field types.
+	 *
+	 * @since 5.0.02
+	 */
+	private static function add_average_box( $args, &$post_boxes ) {
+		$field = $args['field'];
+		if ( ! in_array( $field->type, array( 'number', 'hidden', 'scale' ) ) ) {
+			return;
+		}
+
+		$post_boxes[] = array(
+			'label' => __( 'Average', 'formidable-pro' ),
+			'stat'  => FrmProStatisticsController::stats_shortcode(
+				array(
+					'id'   => $field->id,
+					'type' => 'average',
+				)
+			),
+		);
+
+		$post_boxes[] = array(
+			'label' => __( 'Median', 'formidable-pro' ),
+			'stat'  => FrmProStatisticsController::stats_shortcode(
+				array(
+					'id'   => $field->id,
+					'type' => 'median',
+				)
+			),
+		);
+	}
+
+	/**
+	 * Get the form for the reports
+	 *
+	 * @since 2.02.05
+	 * @return bool|object
+	 */
+	private static function get_form_for_reports() {
+		$form = false;
+		if ( isset( $_REQUEST['form'] ) ) {
+			$form = FrmForm::getOne( $_REQUEST['form'] );
+		}
+
+		return $form;
+	}
+
+	/**
+	 * Get all fields for the reports page
+	 *
+	 * @since 2.02.05
+	 * @param int $form_id
+	 * @return mixed
+	 */
+	private static function get_fields_for_reports( $form_id ) {
+		$exclude_types = FrmField::no_save_fields();
+		$exclude_types = array_merge(
+			$exclude_types,
+			array( 'file', 'grid', 'password', 'credit_card', 'address', 'signature', 'form', 'table', 'name' )
+		);
+
+		$fields = FrmField::getAll( array( 'fi.form_id' => $form_id, 'fi.type not' => $exclude_types ), 'field_order' );
+
+		/**
+		 * Allows changing fields in the Reports page.
+		 *
+		 * @since 5.0
+		 *
+		 * @param array $fields Array of fields.
+		 * @param array $args   The arguments. Contains `$args`.
+		 */
+		return apply_filters( 'frm_fields_in_reports', $fields, compact( 'form_id' ) );
+	}
+
+	/**
+	 * Generate the graphs for the Reports page
+	 *
+	 * @since 2.02.05
+	 * @param object $form
+	 * @param array $fields
+	 * @return array
+	 */
+	private static function generate_graphs_for_reports( $form, $fields ) {
+		$data = array();
+
+		$common_atts = array(
+			'form' => $form->id,
+			'type' => 'line',
+			'bg_color' => 'transparent',
+			'width' => '100%',
+			'y_min' => 0,
+			'title' => '',
+			'chart_area' => 'top:30;height:90%',
+			'colors'     => '#3177c7',
+		);
+
+		$atts = $common_atts + array( 'created_at_greater_than' => '-1 month' );
+
+		$data['time'] = self::graph_shortcode( $atts );
+
+		$atts = $common_atts + array(
+			'created_at_greater_than' => '-1 year',
+			'created_at_less_than'    => '+1 month',
+			'group_by'                => 'month',
+		);
+		$data['month'] = self::graph_shortcode( $atts );
+
+		self::add_field_graphs_for_reports( $fields, $data );
+
+		return $data;
+	}
+
+	/**
+	 * Add all the field graphs for the reports page
+	 *
+	 * @since 2.02.05
+	 * @param array $fields
+	 * @param array $data
+	 */
+	private static function add_field_graphs_for_reports( $fields, &$data ) {
+		$atts = array(
+			'y_min'          => 0,
+			'width'          => '100%',
+			'height'         => 'auto',
+			'bg_color'       => 'transparent',
+			'title'          => '',
+			'chart_area'     => 'top:30;height:90%',
+			'x_slanted_text' => 0,
+			'x_order'        => 'field_opts',
+			'include_zero'   => 1,
+			'x_grid_color'   => '#fff',
+			'colors'         => '#3177c7',
+			'pagesize'       => 10,
+			'sort_column'    => 1,
+			'sort_ascending' => false,
+		);
+
+		$table_types = self::table_graph_types();
+		$add_table   = array( 'radio', 'checkbox', 'select' );
+
+		foreach ( $fields as $field ) {
+			$atts['id'] = $field->id;
+
+			if ( $field->type === 'user_id' ) {
+				$atts['height'] = '400';
+				$atts['type'] = 'pie';
+			} elseif ( in_array( $field->type, $table_types, true ) ) {
+				$atts['type'] = 'table';
+				$atts['height'] = 'auto';
+			} else {
+				$atts['type']   = 'column';
+				$atts['height'] = '400';
+			}
+
+			if ( in_array( $field->type, array( 'radio', 'checkbox', 'select' ), true ) ) {
+				$atts['x_order'] = 'field_opts';
+			} elseif ( isset( $atts['x_order'] ) ) {
+				unset( $atts['x_order'] );
+			}
+
+			if ( $field->type === 'scale' ) {
+				$atts['x_min'] = FrmField::get_option( $field, 'minnum' ) - 1;
+				$atts['x_max'] = FrmField::get_option( $field, 'maxnum' ) + 1;
+			} elseif ( isset( $atts['x_min'] ) ) {
+				unset( $atts['x_min'], $atts['x_max'] );
+			}
+
+			$this_data = self::graph_shortcode( $atts );
+
+			if ( strpos( $this_data, 'frm_no_data_graph' ) === false ) {
+				$data[ $field->id ] = $this_data;
+
+				if ( in_array( $field->type, $add_table, true ) ) {
+					$atts['type']                  = 'table';
+					$atts['height']                = 'auto';
+					$this_data                     = self::graph_shortcode( $atts );
+					$data[ $field->id . '_table' ] = $this_data;
+				}
+			}
+		}
 	}
 
 	/**

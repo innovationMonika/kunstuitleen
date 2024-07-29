@@ -14,14 +14,6 @@ class FrmFieldTextarea extends FrmFieldType {
 	 */
 	protected $type = 'textarea';
 
-	/**
-	 * @var bool
-	 */
-	protected $array_allowed = false;
-
-	/**
-	 * @return bool[]
-	 */
 	protected function field_settings_for_type() {
 		return array(
 			'size'           => true,
@@ -29,9 +21,6 @@ class FrmFieldTextarea extends FrmFieldType {
 		);
 	}
 
-	/**
-	 * @return array
-	 */
 	protected function extra_field_opts() {
 		return array(
 			'max' => '5',
@@ -40,8 +29,6 @@ class FrmFieldTextarea extends FrmFieldType {
 
 	/**
 	 * @param string $name
-	 *
-	 * @return void
 	 */
 	public function show_on_form_builder( $name = '' ) {
 		$size = FrmField::get_option( $this->field, 'size' );
@@ -69,19 +56,6 @@ class FrmFieldTextarea extends FrmFieldType {
 	}
 
 	/**
-	 * @since 6.0
-	 *
-	 * @param array  $field
-	 * @param string $default_name
-	 * @param mixed  $default_value
-	 *
-	 * @return void
-	 */
-	public function show_default_value_field( $field, $default_name, $default_value ) {
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-fields/back-end/textarea-default-value-field.php';
-	}
-
-	/**
 	 * @param array $args
 	 * @param array $shortcode_atts
 	 *
@@ -90,7 +64,7 @@ class FrmFieldTextarea extends FrmFieldType {
 	public function front_field_input( $args, $shortcode_atts ) {
 		$input_html = $this->get_field_input_html_hook( $this->field );
 		$this->add_aria_description( $args, $input_html );
-		$rows = $this->field['max'] ? 'rows="' . esc_attr( $this->field['max'] ) . '" ' : '';
+		$rows = ( $this->field['max'] ) ? 'rows="' . esc_attr( $this->field['max'] ) . '" ' : '';
 
 		return '<textarea name="' . esc_attr( $args['field_name'] ) . '" id="' . esc_attr( $args['html_id'] ) . '" ' .
 			$rows . $input_html . '>' .

@@ -14,6 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php esc_html_e( 'Confirmation Description', 'formidable-pro' ); ?>
 	</label>
 	<textarea name="field_options[conf_desc_<?php echo absint( $field['id'] ); ?>]" id="field_options_conf_desc_<?php echo esc_attr( $field['id'] ); ?>" class="frm_long_input"><?php
-		echo FrmAppHelper::esc_textarea( $field['conf_desc'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo FrmAppHelper::esc_textarea( $field['conf_desc'] ); // WPCS: XSS ok.
 		?></textarea>
 </p>

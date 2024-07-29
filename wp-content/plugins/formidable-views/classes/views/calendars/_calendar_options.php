@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <label class="frm_left_label">
 	<?php esc_html_e( 'Repeat', 'formidable-views' ); ?>
-	<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php printf( esc_html__( 'Select a field from the form that contains values like 1 week, 2 weeks, 1 year, etc. This will set the repeat period for each event.', 'formidable-views' ), FrmAppHelper::site_url() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" ></span>
+	<span class="frm_help frm_icon_font frm_tooltip_icon" title="<?php printf( esc_html__( 'Select a field from your form that contains values like 1 week, 2 weeks, 1 year, etc. This will set the repeat period for each event.', 'formidable-views' ), FrmAppHelper::site_url() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" ></span>
 </label>
 <select id="repeat_event_field_id" name="options[repeat_event_field_id]">
 	<option value=""><?php esc_html_e( 'No repeating events', 'formidable-views' ); ?></option>

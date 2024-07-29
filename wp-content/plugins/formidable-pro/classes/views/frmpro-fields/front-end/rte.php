@@ -8,17 +8,10 @@ if ( $field['default_value'] !== '' ) {
 	$e_args['editor_class'] = 'frm_has_default';
 }
 
-$rte_is_readonly = ! empty( $field['read_only'] );
-
 if ( FrmAppHelper::is_admin() ) { ?>
 	<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea frm_full_rte">
 		<?php
 		$e_args['dfw'] = true;
-
-		if ( $rte_is_readonly ) {
-			FrmProFieldRte::turnoff_tinymce_controls( $e_args );
-		}
-
 		wp_editor( str_replace( '&quot;', '"', $field['value'] ), $html_id, $e_args );
 		?>
 	</div>
@@ -33,12 +26,7 @@ if ( FrmAppHelper::is_admin() ) { ?>
 		'init_instance_callback' => 'frmProForm.changeRte',
 	);
 
-	if ( $rte_is_readonly ) {
-		FrmProFieldRte::turnoff_tinymce_controls( $e_args );
-	}
-
 	$e_args = apply_filters( 'frm_rte_options', $e_args, $field );
-	FrmProFieldRte::maybe_print_media_templates( $e_args );
 
 	if ( $field['size'] ) {
 	?>

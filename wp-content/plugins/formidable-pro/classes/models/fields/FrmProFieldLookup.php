@@ -39,7 +39,7 @@ class FrmProFieldLookup extends FrmFieldType {
 	public function show_primary_options( $args ) {
 		$field = $args['field'];
 		$field_types = FrmProLookupFieldsController::get_lookup_field_data_types();
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/dynamic-field.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/dynamic-field.php' );
 
 		parent::show_primary_options( $args );
 	}
@@ -52,31 +52,25 @@ class FrmProFieldLookup extends FrmFieldType {
 		$field     = $args['field'];
 		$data_type = FrmField::get_option( $field, 'data_type' );
 
-		if ( 'dropdown' === $data_type ) {
-			// Map the dropdown type back to select. We use select in the db, but dropdown on the front end.
-			// We pass 'dropdown' instead of 'select' because some security tools block 'select'.
-			$data_type          = 'select';
-			$field['data_type'] = 'select';
-		}
-
 		$this->show_get_options( $field );
 
 		if ( $data_type !== 'text' ) {
 			// Option Order.
-			require FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/order.php';
+			require( FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/order.php' );
 
 			// Watch Lookup Fields.
 			$lookup_fields = FrmProLookupFieldsController::get_lookup_fields_for_watch_row( $field );
 			$field['watch_lookup'] = array_filter( $field['watch_lookup'] );
-			include FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/watch.php';
+			include( FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/watch.php' );
 			unset( $lookup_fields );
 		}
 
 		// Filter options.
-		require FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/filter.php';
+		require( FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/filter.php' );
 
 		if ( $data_type === 'select' ) {
-			include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/multi-select.php';
+			include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/multi-select.php' );
+
 			$this->auto_width_setting( $args );
 		}
 	}
@@ -93,7 +87,7 @@ class FrmProFieldLookup extends FrmFieldType {
 
 		// Field size.
 		$display_max = true;
-		include FrmAppHelper::plugin_path() . '/classes/views/frm-fields/back-end/pixels-wide.php';
+		include( FrmAppHelper::plugin_path() . '/classes/views/frm-fields/back-end/pixels-wide.php' );
 
 		FrmFieldsController::show_format_option( $field );
 	}
@@ -112,7 +106,7 @@ class FrmProFieldLookup extends FrmFieldType {
 			$opt_label = __( 'Get Options From', 'formidable-pro' );
 		}
 
-		require FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/get-options-from.php';
+		require( FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/get-options-from.php' );
 	}
 
 	/**
@@ -149,7 +143,7 @@ class FrmProFieldLookup extends FrmFieldType {
 	 */
 	public function get_fields_for_get_values_field_dropdown( $form_id, $field_type ) {
 		if ( in_array( $field_type, array( 'lookup', 'text', 'hidden' ) ) ) {
-			$form_fields = FrmField::get_all_for_form( $form_id, '', 'include' );
+			$form_fields = FrmField::get_all_for_form( $form_id );
 		} else {
 			$where = array( 'type' => $field_type );
 			$where[] = array( 'or' => 1, 'fi.form_id' => $form_id, 'fr.parent_form_id' => $form_id );
@@ -226,24 +220,20 @@ class FrmProFieldLookup extends FrmFieldType {
 	 * @param array $args
 	 */
 	public function maybe_remove_error( $errors, $field, $value, $args ) {
-		remove_filter( 'frm_validate_lookup_field_entry', array( $this, 'maybe_remove_error' ), 20 );
+		remove_filter( 'frm_validate_lookup_field_entry', array( $this, 'maybe_remove_error' ), 20, 4 );
 
-		$error_key = 'field' . $args['id'];
-		if ( isset( $errors[ $error_key ] ) && ! $this->get_dependent_options( $args ) ) {
-			unset( $errors[ $error_key ] );
+		$options = $this->get_dependent_options( $args );
+		if ( empty( $options ) ) {
+			unset( $errors[ 'field' . $args['id'] ] );
 		}
 
 		return $errors;
 	}
 
 	/**
-	 * Check $_POST data to determine if a required field has any options.
-	 * This function is only used for validation.
-	 *
 	 * @since 4.01
 	 *
 	 * @param array $args
-	 * @return array
 	 */
 	private function get_dependent_options( $args ) {
 		$parent_args = array(
@@ -252,10 +242,6 @@ class FrmProFieldLookup extends FrmFieldType {
 		);
 
 		$watch = FrmField::get_option( $this->field, 'watch_lookup' );
-
-		// Remove 'parent_field_id' so that posted meta could be retrieved using FrmEntriesHelper::get_posted_meta.
-		unset( $args['parent_field_id'] );
-
 		foreach ( $watch as $parent ) {
 			$parent_args['parent_field_ids'][] = $parent;
 			$value = '';

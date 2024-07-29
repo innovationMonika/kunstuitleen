@@ -26,12 +26,6 @@ class FrmProCopy {
 
 			if ( $query_results ) {
 				$id = $wpdb->insert_id;
-
-				// Clear caches after adding a new row so stale data isn't retrieved.
-				wp_cache_delete( 'all_templates_' . $blog_id, 'frm_copy' );
-
-				// Since Lite trims any trailing 's' characters for cache groups, our cache group is frmpro_copie with the s truncated.
-				wp_cache_delete( 'blog_id_' . $blog_id . 'form_id_' . $new_values['form_id'] . 'type_' . $new_values['type'] . '_LIMIT_1*_row', 'frmpro_copie' );
 			}
 		}
 		return $id;
@@ -69,7 +63,7 @@ class FrmProCopy {
 		} elseif ( 'display' === $new_values['type'] && is_callable( 'FrmViewsCopy::prepare_values' ) ) {
 			$new_values['copy_key'] = FrmViewsCopy::prepare_values( $new_values['form_id'] );
 		}
-		$new_values['created_at'] = current_time( 'mysql', 1 );
+		$new_values['created_at'] = current_time('mysql', 1);
 	}
 
 	/**
@@ -83,7 +77,13 @@ class FrmProCopy {
 			self::create_table();
 		}
 
-		self::copy_forms( $force );
+		self::copy_forms($force);
+	}
+
+	private static function maybe_create_table() {
+		if ( ! self::table_exists() ) {
+			self::create_table();
+		}
 	}
 
 	/**
@@ -153,7 +153,7 @@ class FrmProCopy {
 	 */
 	private static function maybe_force( &$force ) {
 		if ( ! $force ) { //don't check on every page load
-			$last_checked = get_option( 'frmpro_copies_checked' );
+			$last_checked = get_option('frmpro_copies_checked');
 
 			if ( ! $last_checked || ( ( time() - $last_checked ) >= ( 60 * 60 ) ) ) {
 				//check every hour
@@ -182,19 +182,7 @@ class FrmProCopy {
 				'ORDER BY type DESC';
 		$query = $wpdb->prepare( $query, $blog_id, 'form', 'display' );
 
-		$templates = FrmDb::check_cache( 'all_templates_' . $blog_id, 'frm_copy', $query, 'get_results' );
-
-		// In case there are duplicate entries in the table, index by copy key.
-		$templates_by_copy_key = array_reduce(
-			$templates,
-			function ( $total, $current ) {
-				$total[ $current->copy_key . '-' . $current->type ] = $current;
-				return $total;
-			},
-			array()
-		);
-
-		return array_values( $templates_by_copy_key );
+		return FrmDb::check_cache( 'all_templates_' . $blog_id, 'frm_copy', $query, 'get_results' );
 	}
 
 	/**

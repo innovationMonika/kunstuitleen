@@ -42,8 +42,8 @@ if ( FrmField::is_read_only( $field ) ) {
 	}
 
 	global $frm_vars;
-	$file_settings   = $frm_vars['dropzone_loaded'][ $file_name ];
-	$file_size_range = $this->get_file_size_range( $file_settings['minFilesize'], $file_settings['maxFilesize'] );
+	$file_settings = $frm_vars['dropzone_loaded'][ $file_name ];
+
 ?>
 <input type="hidden" name="<?php echo esc_attr( $input_name ); ?>" <?php echo $required_att; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> value="<?php echo esc_attr( $hidden_value ); ?>" data-frmfile="<?php echo esc_attr( $field['id'] ); ?>" />
 
@@ -58,7 +58,16 @@ if ( FrmField::is_read_only( $field ) ) {
 		<?php foreach ( $file_settings['mockFiles'] as $file ) { ?>
 			<div class="dz-preview dz-complete dz-image-preview frm_clearfix">
 				<div class="dz-image">
-					<?php $src = FrmProFileField::get_safe_file_icon( $file ); ?>
+					<?php
+					if ( ! empty( $file['accessible'] ) && FrmProFileField::file_type_matches_image( $file['type'] ) ) {
+						$src = $file['url'];
+					} elseif ( in_array( $file['ext'], array( 'pdf', 'doc', 'xls', 'docx', 'xlsx' ), true ) ) {
+						$ext = substr( $file['ext'], 0, 3 );
+						$src = FrmProAppHelper::plugin_url() . '/images/' . $ext . '.svg';
+					} else {
+						$src = FrmProAppHelper::plugin_url() . '/images/doc.svg';
+					}
+					?>
 					<img src="<?php echo esc_attr( $src ); ?>" alt="<?php echo esc_attr( $file['name'] ); ?>" />
 				</div>
 				<div class="dz-column">
@@ -72,9 +81,7 @@ if ( FrmField::is_read_only( $field ) ) {
 								<?php } ?>
 							</span>
 						</div>
-						<a class="dz-remove frm_remove_link" href="javascript:undefined;" data-frm-remove="<?php echo esc_attr( $field_name ); ?>" title="<?php esc_attr_e( 'Remove file', 'formidable-pro' ); ?>">
-							<?php FrmProAppHelper::get_svg_icon( 'frm-cancel1-icon', 'frmsvg frm-svg-icon', array( 'echo' => true ) ); ?>
-						</a>
+						<a class="dz-remove frm_remove_link frm_icon_font frm_cancel1_icon" href="javascript:undefined;" data-frm-remove="<?php echo esc_attr( $field_name ); ?>" title="<?php esc_attr_e( 'Remove file', 'formidable-pro' ); ?>"></a>
 						<?php if ( $is_multiple ) { ?>
 							<input type="hidden" name="<?php echo esc_attr( $field_name ); ?>[]" value="<?php echo esc_attr( $file['id'] ); ?>" />
 						<?php } ?>
@@ -85,12 +92,11 @@ if ( FrmField::is_read_only( $field ) ) {
 		<div class="frm_clearfix <?php echo is_admin() ? 'clear' : ''; ?>"></div>
 	</div>
 	<div class="dz-message needsclick">
-		<?php $range_string = $this->get_range_string( $file_size_range ); ?>
-		<?php FrmProAppHelper::get_svg_icon( 'frm-upload-icon', 'frmsvg frm-svg-icon', array( 'echo' => true ) ); ?>
-		<span class="frm_upload_text"><button type="button" aria-label="<?php echo esc_attr( $field['name'] . '. ' . $field['drop_msg'] . '. ' . $range_string ); ?>"><?php echo esc_html( $field['drop_msg'] ); ?></button></span>
-		<span class="frm_compact_text"><button type="button" aria-label="<?php echo esc_attr( $field['name'] . '. ' . $field['choose_msg'] . '. ' . $range_string ); ?>"><?php echo esc_html( $field['choose_msg'] ); ?></button></span>
+		<span class="frm_icon_font frm_upload_icon"></span>
+		<span class="frm_upload_text"><button type="button"><?php echo esc_html( $field['drop_msg'] ); ?></button></span>
+		<span class="frm_compact_text"><button type="button"><?php echo esc_html( $field['choose_msg'] ); ?></button></span>
 		<div class="frm_small_text">
-			<p><?php echo esc_html( $range_string ); ?></p>
+			<?php echo esc_html( sprintf( __( 'Maximum upload size: %sMB', 'formidable-pro' ), $file_settings['maxFilesize'] ) ); ?>
 		</div>
 	</div>
 </div>

@@ -12,7 +12,7 @@ use Yoast\WP\SEO\Surfaces\Helpers_Surface;
 /**
  * Siblings block class
  */
-class Breadcrumbs_Block extends Dynamic_Block_V3 {
+class Breadcrumbs_Block extends Dynamic_Block {
 
 	/**
 	 * The name of the block.
@@ -84,14 +84,12 @@ class Breadcrumbs_Block extends Dynamic_Block_V3 {
 		$this->helpers              = $helpers;
 		$this->indexable_repository = $indexable_repository;
 		$this->request_helper       = $request_helper;
-
-		$this->base_path = \WPSEO_PATH . 'blocks/dynamic-blocks/';
 	}
 
 	/**
 	 * Presents the breadcrumbs output for the current page or the available post_id.
 	 *
-	 * @param array<string, bool|string|int|array> $attributes The block attributes.
+	 * @param array $attributes The block attributes.
 	 *
 	 * @return string The block output.
 	 */

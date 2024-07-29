@@ -16,7 +16,7 @@ class FrmProAddressesController extends FrmProComboFieldsController {
 
 		$sub_fields = self::get_sub_fields( $field );
 
-		include FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/input.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/combo-fields/input.php' );
 	}
 
 	public static function add_optional_class( $class, $field ) {
@@ -99,16 +99,6 @@ class FrmProAddressesController extends FrmProComboFieldsController {
 			}
 		}
 
-		/**
-		 * Filter sub fields so an Address field can be customized.
-		 *
-		 * @since 5.2.06
-		 *
-		 * @param array $fields
-		 * @param array $field
-		 */
-		$fields = apply_filters( 'frm_address_sub_fields', $fields, $field );
-
 		return $fields;
 	}
 
@@ -125,26 +115,8 @@ class FrmProAddressesController extends FrmProComboFieldsController {
 		return $headings;
 	}
 
-	/**
-	 * @return array Empty address data to use as defaults.
-	 */
 	public static function empty_value_array() {
-		/**
-		 * @since 5.2.07
-		 *
-		 * @param array $empty_value_array array of empty address data.
-		 */
-		return apply_filters(
-			'frm_address_empty_value_array',
-			array(
-				'line1'   => '',
-				'line2'   => '',
-				'city'    => '',
-				'state'   => '',
-				'zip'     => '',
-				'country' => '',
-			)
-		);
+		return array( 'line1' => '', 'line2' => '', 'city' => '', 'state' => '', 'zip' => '', 'country' => '' );
 	}
 
 	/**

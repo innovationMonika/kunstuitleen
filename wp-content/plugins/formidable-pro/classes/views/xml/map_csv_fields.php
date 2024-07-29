@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div id="frm_top_bar">
         <a href="<?php echo esc_url( admin_url( 'admin.php?page=formidable' ) ); ?>" class="frm-header-logo">
             <?php FrmAppHelper::show_header_logo(); ?>
-            <span class="screen-reader-text"><?php esc_html_e( 'View Forms', 'formidable-pro' ); ?></span>
         </a>
         <div class="frm_top_left">
             <h1>
@@ -129,7 +128,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <option value="ip" <?php selected( 'ip', strtolower( $header ) ); ?>>
                                                 <?php esc_html_e( 'IP Address', 'formidable-pro' ); ?>
                                             </option>
-                                            <option value="is_draft" <?php selected( in_array( strtolower( $header ), array( 'draft', 'entry status' ), true ) ); ?>>
+                                            <option value="is_draft" <?php selected( 'is_draft', strtolower( $header ) ) . selected( 'draft', strtolower( $header ) ); ?>>
                                                 <?php esc_html_e( 'Is Draft', 'formidable-pro' ); ?>
                                             </option>
                                             <option value="id" <?php selected( __( 'Entry ID', 'formidable-pro' ), htmlspecialchars( $header ) ) . selected( 'id', strtolower( htmlspecialchars( $header ) ) ); ?>>

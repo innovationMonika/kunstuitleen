@@ -118,108 +118,6 @@ class FrmProSummaryValues {
 				$this->add_field_values( $field );
 			}
 		}
-
-		$this->remove_empty_sections();
-	}
-
-	/**
-	 * Remove any sections with no data from the summary field values.
-	 *
-	 * @since 6.8.3
-	 *
-	 * @return void
-	 */
-	private function remove_empty_sections() {
-		foreach ( $this->field_values as $key => $field_value ) {
-			$field = $field_value->get_field();
-			if ( 'divider' !== $field->type || ! empty( $field->field_options['repeat'] ) ) {
-				continue;
-			}
-
-			if ( ! $this->section_is_empty( (int) $field->id ) ) {
-				continue;
-			}
-
-			unset( $this->field_values[ $key ] );
-
-			$end_divider_id = $this->get_end_divider_id( (int) $field->id );
-			if ( $end_divider_id ) {
-				$this->unset_field_values_field_id( $end_divider_id );
-			}
-		}
-	}
-
-	/**
-	 * Check if a target section ID has no summary field data.
-	 *
-	 * @since 6.8.3
-	 *
-	 * @param int $section_id
-	 * @return bool
-	 */
-	private function section_is_empty( $section_id ) {
-		foreach ( $this->field_values as $field_value ) {
-			$field = $field_value->get_field();
-			if ( 'end_divider' === $field->type ) {
-				continue;
-			}
-
-			if ( ! empty( $field->field_options['likert_id'] ) ) {
-				// Ignore likert children in this check.
-				continue;
-			}
-
-			if ( ! empty( $field->field_options['in_section'] ) && $section_id === (int) $field->field_options['in_section'] ) {
-				// A field that matches the section, so return false.
-				return false;
-			}
-		}
-
-		// No applicable fields matched the section so return that the section is empty.
-		return true;
-	}
-
-	/**
-	 * Check the array of fields for the next end divider field after a target section ID.
-	 *
-	 * @since 6.8.3
-	 *
-	 * @param int $section_id
-	 * @return int|false False if no end divider can be found in the array of fields.
-	 */
-	private function get_end_divider_id( $section_id ) {
-		$matched_section_id = false;
-		foreach ( $this->fields as $field ) {
-			if ( $matched_section_id ) {
-				if ( 'end_divider' === $field->type ) {
-					return (int) $field->id;
-				}
-				continue;
-			}
-
-			if ( $section_id === (int) $field->id ) {
-				$matched_section_id = true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Remove summary field values for a given field ID.
-	 *
-	 * @since 6.8.3
-	 *
-	 * @param int $field_id
-	 * @return void
-	 */
-	private function unset_field_values_field_id( $field_id ) {
-		foreach ( $this->field_values as $key => $field_value ) {
-			if ( $field_id === (int) $field_value->get_field_id() ) {
-				unset( $this->field_values[ $key ] );
-				break;
-			}
-		}
 	}
 
 	/**
@@ -263,22 +161,11 @@ class FrmProSummaryValues {
 		foreach ( $value['row_ids'] as $v ) {
 			$child_entry = $this->base_entry( $form_id );
 			foreach ( $value[ $v ] as $child_field => $child_value ) {
-				if ( $child_field === 0 ) {
+				if ( $child_field === 0 || $this->is_excluded_type( FrmField::getOne( $child_field ) ) ) {
 					continue;
 				}
 
-				$child_field = FrmField::getOne( $child_field );
-				if ( ! $child_field ) {
-					continue;
-				}
-
-				$child_field->temp_id = $child_field->id . '-' . $field_value->get_field_id() . '-' . $v;
-				if ( $this->is_excluded_type( $child_field ) ) {
-					continue;
-				}
-
-				$child_entry->metas[ $child_field->id ] = $child_value;
-				unset( $child_field, $child_value );
+				$child_entry->metas[ $child_field ] = $child_value;
 			}
 			$children[ $v ] = $child_entry;
 		}
@@ -294,14 +181,12 @@ class FrmProSummaryValues {
 	 * @return stdClass
 	 */
 	private function base_entry( $form_id = 0 ) {
-		$entry             = new stdClass();
-		$entry->post_id    = 0;
-		$entry->id         = 0;
-		$entry->ip         = '';
-		$entry->form_id    = $form_id;
-		$entry->metas      = array();
-		$entry->user_id    = get_current_user_id();
-		$entry->updated_by = 0;
+		$entry          = new stdClass();
+		$entry->post_id = 0;
+		$entry->id      = 0;
+		$entry->ip      = '';
+		$entry->form_id = $form_id;
+		$entry->metas   = array();
 		return $entry;
 	}
 

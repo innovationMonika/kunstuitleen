@@ -33,12 +33,6 @@ class FrmFieldUserID extends FrmFieldType {
 	protected $holds_email_values = true;
 
 	/**
-	 * @var bool
-	 */
-	protected $array_allowed = false;
-
-
-	/**
 	 * @return string
 	 */
 	protected function include_form_builder_file() {
@@ -60,8 +54,8 @@ class FrmFieldUserID extends FrmFieldType {
 		$user_ID      = ( $user_ID ? $user_ID : '' );
 		$posted_value = ( FrmAppHelper::is_admin() && $_POST && isset( $_POST['item_meta'][ $this->field['id'] ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$action       = ( isset( $args['action'] ) ? $args['action'] : ( isset( $args['form_action'] ) ? $args['form_action'] : '' ) );
-		$updating     = $action === 'update';
-		return is_numeric( $this->field['value'] ) || $posted_value || $updating ? $this->field['value'] : $user_ID;
+		$updating     = $action == 'update';
+		return ( is_numeric( $this->field['value'] ) || $posted_value || $updating ) ? $this->field['value'] : $user_ID;
 	}
 
 	public function validate( $args ) {
@@ -69,23 +63,23 @@ class FrmFieldUserID extends FrmFieldType {
 			return array();
 		}
 
-		// Make sure we have a user ID.
+		// make sure we have a user ID
 		if ( ! is_numeric( $args['value'] ) ) {
 			$args['value'] = FrmAppHelper::get_user_id_param( $args['value'] );
 			FrmEntriesHelper::set_posted_value( $this->field, $args['value'], $args );
 		}
 
-		// Add user id to post variables to be saved with entry.
+		//add user id to post variables to be saved with entry
 		$_POST['frm_user_id'] = $args['value'];
 
 		return array();
 	}
 
 	/**
-	 * @param array|string $value
-	 * @param array        $atts
+	 * @param $value
+	 * @param $atts array
 	 *
-	 * @return array|string A string is returned, but the return signature should match FrmFieldType.
+	 * @return false|mixed|string
 	 */
 	protected function prepare_display_value( $value, $atts ) {
 		$user_info = $this->prepare_user_info_attribute( $atts );
@@ -100,7 +94,7 @@ class FrmFieldUserID extends FrmFieldType {
 	 *
 	 * @since 3.0
 	 *
-	 * @param array $atts
+	 * @param $atts
 	 *
 	 * @return string
 	 */
@@ -119,8 +113,8 @@ class FrmFieldUserID extends FrmFieldType {
 	}
 
 	/**
-	 * @param string $value
-	 * @param array  $atts
+	 * @param $value
+	 * @param $atts
 	 *
 	 * @return int
 	 */
@@ -130,8 +124,6 @@ class FrmFieldUserID extends FrmFieldType {
 
 	/**
 	 * @since 4.0.04
-	 *
-	 * @return void
 	 */
 	public function sanitize_value( &$value ) {
 		FrmAppHelper::sanitize_value( 'intval', $value );

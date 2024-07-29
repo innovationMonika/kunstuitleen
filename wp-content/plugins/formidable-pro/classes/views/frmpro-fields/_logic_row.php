@@ -37,31 +37,25 @@ $field['hide_field_cond'][ $meta_name ] = isset( $field['hide_field_cond'][ $met
 		<?php esc_html_e( 'equals', 'formidable-pro' ); ?>
 	</option>
 	<option value="!=" <?php selected( $field['hide_field_cond'][ $meta_name ], '!=' ); ?>>
-		<?php esc_html_e( 'does not equal', 'formidable-pro' ); ?> &nbsp;
+		<?php esc_html_e( 'not equals', 'formidable-pro' ); ?> &nbsp;
 	</option>
 	<option value=">" <?php selected( $field['hide_field_cond'][ $meta_name ], '>' ); ?>>
-		<?php esc_html_e( 'is greater than', 'formidable-pro' ); ?>
+		<?php esc_html_e( 'greater than', 'formidable-pro' ); ?>
 	</option>
 	<option value=">=" <?php selected( $field['hide_field_cond'][ $meta_name ], '>=' ); ?>>
-		<?php esc_html_e( 'is greater than or equal to', 'formidable-pro' ); ?>
+		<?php esc_html_e( 'greater or equal', 'formidable-pro' ); ?>
 	</option>
 	<option value="<" <?php selected( $field['hide_field_cond'][ $meta_name ], '<' ); ?>>
-		<?php esc_html_e( 'is less than', 'formidable-pro' ); ?>
+		<?php esc_html_e( 'less than', 'formidable-pro' ); ?>
 	</option>
 	<option value="<=" <?php selected( $field['hide_field_cond'][ $meta_name ], '<=' ); ?>>
-		<?php esc_html_e( 'is less than or equal to', 'formidable-pro' ); ?>
+		<?php esc_html_e( 'less or equal', 'formidable-pro' ); ?>
 	</option>
 	<option value="LIKE" <?php selected( $field['hide_field_cond'][ $meta_name ], 'LIKE' ); ?>>
-		<?php esc_html_e( 'contains', 'formidable-pro' ); ?>
+		<?php esc_html_e( 'is like', 'formidable-pro' ); ?>
 	</option>
 	<option value="not LIKE" <?php selected( $field['hide_field_cond'][ $meta_name ], 'not LIKE' ); ?>>
-		<?php esc_html_e( 'does not contain', 'formidable-pro' ); ?> &nbsp;
-	</option>
-	<option value="LIKE%" <?php selected( $field['hide_field_cond'][ $meta_name ], 'LIKE%' ); ?>>
-		<?php esc_html_e( 'starts with', 'formidable-pro' ); ?> &nbsp;
-	</option>
-	<option value="%LIKE" <?php selected( $field['hide_field_cond'][ $meta_name ], '%LIKE' ); ?>>
-		<?php esc_html_e( 'ends with', 'formidable-pro' ); ?> &nbsp;
+		<?php esc_html_e( 'not like', 'formidable-pro' ); ?> &nbsp;
 	</option>
 </select>
 

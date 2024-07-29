@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,32 +101,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 											<span><?php _e( 'Restore', AI1WM_PLUGIN_NAME ); ?></span>
 										</a>
 									</li>
-									<?php if ( $downloadable ) : ?>
-										<li>
-											<?php if ( ai1wm_direct_download_supported() ) : ?>
-												<a tabindex="-1" href="<?php echo esc_url( ai1wm_backup_url( array( 'archive' => $backup['filename'] ) ) ); ?>" role="menuitem" download="<?php echo esc_attr( $backup['filename'] ); ?>" aria-label="<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>">
-													<i class="ai1wm-icon-arrow-down"></i>
-													<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>
-												</a>
-											<?php else : ?>
-												<a tabindex="-1" class="ai1wm-backup-download" href="#" role="menuitem" download="<?php echo esc_attr( $backup['filename'] ); ?>" aria-label="<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>">
-													<i class="ai1wm-icon-arrow-down"></i>
-													<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>
-												</a>
-											<?php endif; ?>
-										</li>
-									<?php else : ?>
-										<li class="ai1wm-disabled">
-											<a tabindex="-1" href="#" role="menuitem" aria-label="<?php _e( 'Downloading is not possible because backups directory is not accessible.', AI1WM_PLUGIN_NAME ); ?>" title="<?php _e( 'Downloading is not possible because backups directory is not accessible.', AI1WM_PLUGIN_NAME ); ?>">
-												<i class="ai1wm-icon-arrow-down"></i>
-												<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>
-											</a>
-										</li>
-									<?php endif; ?>
 									<li>
-										<a tabindex="-1" href="#" class="ai1wm-backup-list-content" data-archive="<?php echo esc_attr( $backup['filename'] ); ?>" role="menuitem" aria-label="<?php _e( 'Show backup content', AI1WM_PLUGIN_NAME ); ?>">
-											<i class="ai1wm-icon-file-content"></i>
-											<span><?php _e( 'List', AI1WM_PLUGIN_NAME ); ?></span>
+										<a tabindex="-1" href="<?php echo esc_url( ai1wm_backup_url( array( 'archive' => $backup['filename'] ) ) ); ?>" role="menuitem" download="<?php echo esc_attr( $backup['filename'] ); ?>" aria-label="<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>">
+											<i class="ai1wm-icon-arrow-down"></i>
+											<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>
 										</a>
 									</li>
 									<li class="divider"></li>

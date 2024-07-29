@@ -9,40 +9,28 @@ class FrmProPost {
 		if ( $entry->post_id ) {
 			$post = get_post( $entry->post_id, ARRAY_A );
 			unset( $post['post_content'] );
-			$new_post = self::setup_post( $action, $entry, $form );
+			$new_post = self::setup_post($action, $entry, $form );
 			self::insert_post( $entry, $new_post, $post, $form, $action );
 		} else {
 			self::create_post( $entry, $form, $action );
 		}
 	}
 
-	/**
-	 * Creates post from entry.
-	 *
-	 * @param object|int   $entry
-	 * @param object|int   $form
-	 * @param object|false $action
-	 * @return int|null
-	 */
 	public static function create_post( $entry, $form, $action = false ) {
 		global $wpdb;
 
-		$entry_id = is_object( $entry ) ? $entry->id : $entry;
-		$form_id  = is_object( $form ) ? $form->id : $form;
+		$entry_id = is_object($entry) ? $entry->id : $entry;
+		$form_id  = is_object($form) ? $form->id : $form;
 
 		if ( ! $action ) {
 			$action = FrmFormAction::get_action_for_form( $form_id, 'wppost', 1 );
 
 			if ( ! $action ) {
-				return null;
+				return;
 			}
 		}
 
-		if ( ! is_object( $entry ) ) {
-			$entry = FrmEntry::getOne( $entry, true );
-		}
-
-		$post              = self::setup_post( $action, $entry, $form );
+		$post              = self::setup_post($action, $entry, $form);
 		$post['post_type'] = $action->post_content['post_type'];
 		$status            = ! empty( $post['post_status'] );
 
@@ -77,7 +65,7 @@ class FrmProPost {
 		$post_fields = self::get_post_fields( $new_post, 'insert_post' );
 
 		$editing = true;
-		if ( empty( $post ) ) {
+		if ( empty($post) ) {
 			$editing = false;
 			$post = array();
 		}
@@ -86,9 +74,9 @@ class FrmProPost {
 			if ( isset( $new_post[ $post_field ] ) ) {
 				$post[ $post_field ] = $new_post[ $post_field ];
 			}
-			unset( $post_field );
+			unset($post_field);
 		}
-		unset( $post_fields );
+		unset($post_fields);
 
 		$dyn_content = '';
 		self::post_value_overrides( $post, $new_post, $editing, $form, $entry, $dyn_content );
@@ -97,14 +85,14 @@ class FrmProPost {
 
 		$post_ID = wp_insert_post( $post );
 
-		if ( is_wp_error( $post_ID ) || empty( $post_ID ) ) {
+		if ( is_wp_error( $post_ID ) || empty($post_ID) ) {
 			return;
 		}
 
 		self::save_taxonomies( $new_post, $post_ID );
 		self::link_post_attachments( $post_ID, $editing );
 		self::save_post_meta( $new_post, $post_ID );
-		self::save_post_id_to_entry( $post_ID, $entry, $editing );
+		self::save_post_id_to_entry($post_ID, $entry, $editing);
 		// Make sure save_post_id_to_entry stays above save_dynamic_content because
 		// save_dynamic_content needs updated entry object from save_post_id_to_entry
 		self::save_dynamic_content( $post, $post_ID, $dyn_content, $form, $entry );
@@ -128,6 +116,10 @@ class FrmProPost {
 			FrmEntry::destroy( $child_entry );
 		}
 
+		// Remove hook to make things consistent
+		// Due to a WP bug, this hook won't be used for parent entry when there are child entries
+		remove_action( 'frm_before_destroy_entry', 'FrmProFormActionsController::trigger_delete_actions', 20, 2 );
+
 		// Trigger delete actions for parent entry
 		FrmProFormActionsController::trigger_delete_actions( $entry_id, $entry );
 
@@ -137,21 +129,18 @@ class FrmProPost {
 	}
 
 	/**
-	 * Insert all post variables into the post array.
+	 * Insert all post variables into the post array
 	 *
-	 * @param WP_Post  $action
-	 * @param stdClass $entry
-	 * @param stdClass $form
 	 * @return array
 	 */
 	public static function setup_post( $action, $entry, $form ) {
-		$temp_fields = FrmField::get_all_for_form( $form->id, '', 'include' );
+		$temp_fields = FrmField::get_all_for_form($form->id);
 		$fields = array();
 		foreach ( $temp_fields as $f ) {
 			$fields[ $f->id ] = $f;
-			unset( $f );
+			unset($f);
 		}
-		unset( $temp_fields );
+		unset($temp_fields);
 
 		$new_post = array(
 			'post_custom' => array(),
@@ -164,12 +153,7 @@ class FrmProPost {
 		self::populate_custom_fields( $action, $entry, $fields, $new_post );
 		self::populate_taxonomies( $action, $entry, $fields, $new_post );
 
-		if ( is_numeric( $action->post_content['post_content'] ) ) {
-			// When post content is created from a field value, do not allow shortcodes from user input.
-			FrmFieldsHelper::sanitize_embedded_shortcodes( compact( 'entry' ), $new_post['post_content'] );
-		}
-
-		$new_post = apply_filters( 'frm_new_post', $new_post, compact( 'form', 'action', 'entry' ) );
+		$new_post = apply_filters('frm_new_post', $new_post, compact('form', 'action', 'entry'));
 
 		return $new_post;
 	}
@@ -183,8 +167,6 @@ class FrmProPost {
 
 	private static function populate_post_fields( $action, $entry, &$new_post ) {
 		$post_fields = self::get_post_fields( $new_post, 'post_fields' );
-
-		$combined_metas = self::get_combined_metas( $entry );
 
 		foreach ( $post_fields as $setting_name ) {
 			if ( ! is_numeric( $action->post_content[ $setting_name ] ) ) {
@@ -202,7 +184,7 @@ class FrmProPost {
 				 */
 				$new_post[ $setting_name ] = apply_filters( 'frm_post_parent', $action->post_content[ $setting_name ], compact( 'action', 'entry' ) );
 			} else {
-				$new_post[ $setting_name ] = isset( $combined_metas[ $action->post_content[ $setting_name ] ] ) ? $combined_metas[ $action->post_content[ $setting_name ] ] : '';
+				$new_post[ $setting_name ] = isset( $entry->metas[ $action->post_content[ $setting_name ] ] ) ? $entry->metas[ $action->post_content[ $setting_name ] ] : '';
 			}
 
 			if ( 'post_date' == $setting_name ) {
@@ -214,30 +196,6 @@ class FrmProPost {
 	}
 
 	/**
-	 * Returns combined entry metas from an entry and its child entries.
-	 *
-	 * @since 6.8
-	 *
-	 * @param object $entry
-	 * @return array
-	 */
-	private static function get_combined_metas( $entry ) {
-		global $wpdb;
-
-		$metas = FrmDb::get_results(
-			$wpdb->prefix . 'frm_item_metas m INNER JOIN ' . $wpdb->prefix . 'frm_items i ON i.id = m.item_id',
-			array(
-				'i.parent_item_id' => $entry->id,
-			),
-			'm.field_id, m.meta_value'
-		);
-
-		$child_entries = array_column( $metas, 'meta_value', 'field_id' );
-
-		return $entry->metas + $child_entries;
-	}
-
-	/**
 	 * Make sure all post fields get included in the new post.
 	 * Add the fields dynamically if they are included in the post.
 	 *
@@ -245,12 +203,8 @@ class FrmProPost {
 	 */
 	private static function get_post_fields( $new_post, $function ) {
 		$post_fields = array(
-			'post_content',
-			'post_excerpt',
-			'post_title',
-			'post_name',
-			'post_date',
-			'post_status',
+			'post_content', 'post_excerpt', 'post_title',
+			'post_name', 'post_date', 'post_status',
 			'post_password',
 			'post_parent',
 			'menu_order',
@@ -271,17 +225,16 @@ class FrmProPost {
 	 * Add custom fields to the post array
 	 */
 	private static function populate_custom_fields( $action, $entry, $fields, &$new_post ) {
-		$combined_metas = self::get_combined_metas( $entry );
 		// populate custom fields
 		foreach ( $action->post_content['post_custom_fields'] as $custom_field ) {
 			if ( empty( $custom_field['field_id'] ) || empty( $custom_field['meta_name'] ) || ! isset( $fields[ $custom_field['field_id'] ] ) ) {
 				continue;
 			}
 
-			$value = isset( $combined_metas[ $custom_field['field_id'] ] ) ? $combined_metas[ $custom_field['field_id'] ] : '';
+			$value = isset( $entry->metas[ $custom_field['field_id'] ] ) ? $entry->metas[ $custom_field['field_id'] ] : '';
 
 			if ( $fields[ $custom_field['field_id'] ]->type == 'date' ) {
-				$value = FrmProAppHelper::maybe_convert_to_db_date( $value );
+				$value = FrmProAppHelper::maybe_convert_to_db_date($value);
 			}
 
 			if ( isset( $new_post['post_custom'][ $custom_field['meta_name'] ] ) ) {
@@ -291,47 +244,47 @@ class FrmProPost {
 				$new_post['post_custom'][ $custom_field['meta_name'] ] = $value;
 			}
 
-			unset( $value );
+			unset($value);
 		}
 	}
 
 	private static function populate_taxonomies( $action, $entry, $fields, &$new_post ) {
 		foreach ( $action->post_content['post_category'] as $taxonomy ) {
-			if ( empty( $taxonomy['field_id'] ) || empty( $taxonomy['meta_name'] ) ) {
+			if ( empty($taxonomy['field_id']) || empty($taxonomy['meta_name']) ) {
 				continue;
 			}
 
-			$tax_type = ( isset( $taxonomy['meta_name'] ) && ! empty( $taxonomy['meta_name'] ) ) ? $taxonomy['meta_name'] : 'frm_tag';
+			$tax_type = ( isset($taxonomy['meta_name']) && ! empty($taxonomy['meta_name']) ) ? $taxonomy['meta_name'] : 'frm_tag';
 			$value = isset( $entry->metas[ $taxonomy['field_id'] ] ) ? $entry->metas[ $taxonomy['field_id'] ] : '';
 
 			if ( isset( $fields[ $taxonomy['field_id'] ] ) && $fields[ $taxonomy['field_id'] ]->type == 'tag' ) {
-				$value = trim( $value );
-				$value = array_map( 'trim', explode( ',', $value ) );
+				$value = trim($value);
+				$value = array_map('trim', explode(',', $value));
 
-				if ( is_taxonomy_hierarchical( $tax_type ) ) {
+				if ( is_taxonomy_hierarchical($tax_type) ) {
 					//create the term or check to see if it exists
 					$terms = array();
 					foreach ( $value as $v ) {
-						$term_id = term_exists( $v, $tax_type );
+						$term_id = term_exists($v, $tax_type);
 
 						// create new terms if they don't exist
 						if ( ! $term_id ) {
-							$term_id = wp_insert_term( $v, $tax_type );
+							$term_id = wp_insert_term($v, $tax_type);
 						}
 
 						if ( $term_id && is_array( $term_id ) ) {
 							$term_id = $term_id['term_id'];
 						}
 
-						if ( is_numeric( $term_id ) ) {
+						if ( is_numeric($term_id) ) {
 							$terms[ $term_id ] = $v;
 						}
 
-						unset( $term_id, $v );
+						unset($term_id, $v);
 					}
 
 					$value = $terms;
-					unset( $terms );
+					unset($terms);
 				}
 
 				if ( isset( $new_post['taxonomies'][ $tax_type ] ) ) {
@@ -343,23 +296,23 @@ class FrmProPost {
 				$value = (array) $value;
 
 				// change text to numeric ids while importing
-				if ( defined( 'WP_IMPORTING' ) ) {
+				if ( defined('WP_IMPORTING') ) {
 					foreach ( $value as $k => $val ) {
-						if ( empty( $val ) ) {
+						if ( empty($val) ) {
 							continue;
 						}
 
-						$term = term_exists( $val, $fields[ $taxonomy['field_id'] ]->field_options['taxonomy'] );
+						$term = term_exists( $val, $fields[ $taxonomy['field_id'] ]->field_options['taxonomy']);
 						if ( $term ) {
 							$value[ $k ] = is_array( $term ) ? $term['term_id'] : $term;
 						}
 
-						unset( $k, $val, $term );
+						unset($k, $val, $term);
 					}
 				}
 
 				if ( 'category' == $tax_type ) {
-					if ( ! empty( $value ) ) {
+					if ( ! empty($value) ) {
 						$new_post['post_category'] = array_merge( $new_post['post_category'], $value );
 					}
 				} else {
@@ -372,7 +325,7 @@ class FrmProPost {
 						$new_value[ $val ] = self::get_taxonomy_term_name_from_id( $val, $fields[ $taxonomy['field_id'] ]->field_options['taxonomy'] );
 					}
 
-					self::fill_taxonomies( $new_post['taxonomies'], $tax_type, $new_value );
+					self::fill_taxonomies($new_post['taxonomies'], $tax_type, $new_value);
 				}
 			}
 		}
@@ -417,7 +370,7 @@ class FrmProPost {
 		$default_display = isset( $new_post['post_custom']['frm_display_id'] ) ? $new_post['post_custom']['frm_display_id'] : 0;
 		$display_id      = $editing ? get_post_meta( $post['ID'], 'frm_display_id', true ) : $default_display;
 
-		if ( ! isset( $post['post_content'] ) && $display_id ) {
+		if ( ! isset($post['post_content']) && $display_id ) {
 			self::update_post_content_if_view_exists( $post, $display_id, $form, $entry, $dyn_content );
 		}
 
@@ -443,13 +396,13 @@ class FrmProPost {
 
 		foreach ( $new_post['taxonomies'] as $taxonomy => $tags ) {
 			// If setting hierarchical taxonomy or post_format, use IDs
-			if ( is_taxonomy_hierarchical( $taxonomy ) || $taxonomy == 'post_format' ) {
-				$tags = array_keys( $tags );
+			if ( is_taxonomy_hierarchical($taxonomy) || $taxonomy == 'post_format' ) {
+				$tags = array_keys($tags);
 			}
 
 			wp_set_post_terms( $post_ID, $tags, $taxonomy );
 
-			unset( $taxonomy, $tags );
+			unset($taxonomy, $tags);
 		}
 	}
 
@@ -457,14 +410,14 @@ class FrmProPost {
 		global $frm_vars, $wpdb;
 
 		$exclude_attached = array();
-		if ( ! empty( $frm_vars['media_id'] ) ) {
+		if ( isset($frm_vars['media_id']) && ! empty($frm_vars['media_id']) ) {
 
 			foreach ( (array) $frm_vars['media_id'] as $media_id ) {
-				$exclude_attached = array_merge( $exclude_attached, (array) $media_id );
+				$exclude_attached = array_merge($exclude_attached, (array) $media_id);
 
-				if ( is_array( $media_id ) ) {
+				if ( is_array($media_id) ) {
 					$attach_string = array_filter( $media_id );
-					if ( ! empty( $attach_string ) ) {
+					if ( ! empty($attach_string) ) {
 						$where = array( 'post_type' => 'attachment', 'ID' => $attach_string );
 						FrmDb::get_where_clause_and_values( $where );
 						array_unshift( $where['values'], $post_ID );
@@ -474,7 +427,7 @@ class FrmProPost {
 						foreach ( $media_id as $m ) {
 							delete_post_meta( $m, '_frm_file' );
 							clean_attachment_cache( $m );
-							unset( $m );
+							unset($m);
 						}
 					}
 				} else {
@@ -485,7 +438,7 @@ class FrmProPost {
 			}
 		}
 
-		self::unlink_post_attachments( $post_ID, $editing, $exclude_attached );
+		self::unlink_post_attachments($post_ID, $editing, $exclude_attached);
 	}
 
 	private static function unlink_post_attachments( $post_ID, $editing, $exclude_attached ) {
@@ -494,10 +447,8 @@ class FrmProPost {
 		}
 
 		$args = array(
-			'post_type' => 'attachment',
-			'numberposts' => -1,
-			'post_status' => null,
-			'post_parent' => $post_ID,
+			'post_type' => 'attachment', 'numberposts' => -1,
+			'post_status' => null, 'post_parent' => $post_ID,
 			'exclude' => $exclude_attached,
 		);
 
@@ -513,15 +464,15 @@ class FrmProPost {
 	private static function save_post_meta( $new_post, $post_ID ) {
 		foreach ( $new_post['post_custom'] as $post_data => $value ) {
 			if ( $value == '' ) {
-				delete_post_meta( $post_ID, $post_data );
+				delete_post_meta($post_ID, $post_data);
 			} else {
 				$is_acf_field = self::maybe_save_acf_field( $post_data, $value, $post_ID );
 				if ( ! $is_acf_field ) {
-					update_post_meta( $post_ID, $post_data, $value );
+					update_post_meta($post_ID, $post_data, $value);
 				}
 			}
 
-			unset( $post_data, $value );
+			unset($post_data, $value);
 		}
 
 		global $user_ID;
@@ -632,7 +583,7 @@ class FrmProPost {
 		$field_ids = array();
 		self::get_post_field_ids_from_settings( $filtered_settings, $field_ids );
 
-		if ( ! empty( $field_ids ) ) {
+		if ( ! empty($field_ids) ) {
 			$where = array( 'item_id' => $entry->id, 'field_id' => $field_ids );
 			FrmDb::get_where_clause_and_values( $where );
 

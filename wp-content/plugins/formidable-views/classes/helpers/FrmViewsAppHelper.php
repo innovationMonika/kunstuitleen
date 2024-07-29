@@ -6,21 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmViewsAppHelper {
 
-	/**
-	 * @var string $plug_version
-	 */
-	public static $plug_version = '5.5.1';
-
-	/**
-	 * @var FrmViewsSettings|null $settings
-	 */
-	private static $settings;
-
-	/**
-	 * @return string
-	 */
 	public static function plugin_version() {
-		return self::$plug_version;
+		$plugin_data = get_plugin_data( self::plugin_path() . '/formidable-views.php' );
+		return $plugin_data['Version'];
 	}
 
 	public static function plugin_folder() {
@@ -28,7 +16,7 @@ class FrmViewsAppHelper {
 	}
 
 	public static function plugin_path() {
-		return dirname( dirname( __DIR__ ) );
+		return dirname( dirname( dirname( __FILE__ ) ) );
 	}
 
 	public static function views_path() {
@@ -81,13 +69,9 @@ class FrmViewsAppHelper {
 		return is_readable( self::plugin_path() . '/js/editor.min.js' );
 	}
 
-	/**
-	 * @param array $arr
-	 * @return array
-	 */
 	public static function reset_keys( $arr ) {
 		$new_arr = array();
-		if ( ! $arr ) {
+		if ( empty( $arr ) ) {
 			return $new_arr;
 		}
 
@@ -98,27 +82,18 @@ class FrmViewsAppHelper {
 		return $new_arr;
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function add_dom_script() {
 		$version = self::plugin_version();
 		wp_register_script( 'formidable_views_dom', self::plugin_url() . '/js/dom.js', array(), $version, true );
 		wp_enqueue_script( 'formidable_views_dom' );
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function add_modal_css() {
 		$version = self::plugin_version();
 		wp_register_style( 'formidable_views_modal', self::plugin_url() . '/css/modal.css', array(), $version );
 		wp_enqueue_style( 'formidable_views_modal' );
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function maybe_redirect_old_view_editor() {
 		if ( ! is_admin() ) {
 			return;
@@ -215,10 +190,6 @@ class FrmViewsAppHelper {
 		return FrmViewsDisplaysController::$post_type === $post_type;
 	}
 
-	/**
-	 * @param int $view_id
-	 * @return void
-	 */
 	private static function maybe_duplicate_and_redirect( $view_id ) {
 		$new_view_id = FrmViewsDisplay::duplicate( $view_id );
 		self::redirect_to_view_editor( $new_view_id );
@@ -244,7 +215,14 @@ class FrmViewsAppHelper {
 	 * @return bool true if the active page is the new view editor.
 	 */
 	public static function view_editor_is_active() {
-		return FrmAppHelper::is_admin_page( 'formidable-views-editor' );
+		$page = basename( FrmAppHelper::get_server_value( 'PHP_SELF' ) );
+
+		global $pagenow;
+		if ( $pagenow && 'edit.php' !== $pagenow ) {
+			return false;
+		}
+
+		return 'index.php' === $page && 'formidable-views-editor' === FrmAppHelper::simple_get( 'page' );
 	}
 
 	/**
@@ -271,10 +249,6 @@ class FrmViewsAppHelper {
 		return admin_url( $path );
 	}
 
-	/**
-	 * @param int $view_id
-	 * @return void
-	 */
 	private static function redirect_to_view_editor( $view_id ) {
 		$url = self::get_url_to_view_editor( $view_id );
 		wp_safe_redirect( esc_url_raw( $url ) );
@@ -292,8 +266,6 @@ class FrmViewsAppHelper {
 
 	/**
 	 * Try to make the new view editor look similar to the legacy view editor so that other plugins still properly load.
-	 *
-	 * @return void
 	 */
 	public static function emulate_legacy_view_editor() {
 		global $pagenow;
@@ -302,11 +274,6 @@ class FrmViewsAppHelper {
 		global $post_type_object;
 		$post_type_object       = new stdClass(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$post_type_object->name = FrmViewsDisplaysController::$post_type;
-
-		global $title;
-		if ( is_null( $title ) ) {
-			$title = __( 'Views', 'formidable-views' ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		}
 
 		$_GET['action'] = 'edit'; // WPML has an is_edit_action check that requires this to render the "Translate this Document" table.
 
@@ -323,20 +290,12 @@ class FrmViewsAppHelper {
 
 		add_action( 'registered_post_type', 'FrmViewsEditorController::setup_screen_after_view_post_type_is_registered' );
 		add_action( 'admin_init', 'FrmViewsEditorController::call_load_post_action_on_admin_init' );
-
-		add_filter(
-			'submenu_file',
-			function () {
-				return 'edit.php?post_type=frm_display';
-			}
-		);
 	}
 
 	/**
 	 * Force the global $post object.
 	 *
 	 * @param object $view
-	 * @return void
 	 */
 	public static function force_view_as_post_global( $view ) {
 		global $post;
@@ -354,10 +313,6 @@ class FrmViewsAppHelper {
 		add_filter( 'frm_page_dots_class', 'FrmViewsAppHelper::gen_dots_class', 1 );
 	}
 
-	/**
-	 * @param string $class
-	 * @return string
-	 */
 	public static function gen_pagination_class( $class ) {
 		$class .= ' archive-pagination pagination';
 		return $class;
@@ -371,37 +326,22 @@ class FrmViewsAppHelper {
 		return apply_filters( 'genesis_next_link_text', __( 'Next Page', 'formidable-views' ) . '&#x000BB;' );
 	}
 
-	/**
-	 * @param string $class
-	 * @return string
-	 */
 	public static function gen_prev_class( $class ) {
 		$class .= ' pagination-previous';
 		return $class;
 	}
 
-	/**
-	 * @param string $class
-	 * @return string
-	 */
 	public static function gen_next_class( $class ) {
 		$class .= ' pagination-next';
 		return $class;
 	}
 
-	/**
-	 * @param string $class
-	 * @return string
-	 */
 	public static function gen_dots_class( $class ) {
 		$class = 'pagination-omission';
 		return $class;
 	}
 	/* End Genesis */
 
-	/**
-	 * @return string
-	 */
 	public static function get_default_content_filter() {
 		return 'limited';
 	}
@@ -427,49 +367,5 @@ class FrmViewsAppHelper {
 	 */
 	public static function get_visual_views_preview_limit() {
 		return apply_filters( 'frm_visual_views_preview_limit', 1000 );
-	}
-
-	/**
-	 * @since 5.2
-	 *
-	 * @param int $view_id
-	 * @return array<int>
-	 */
-	public static function get_application_ids_for_view( $view_id ) {
-		if ( ! taxonomy_exists( 'frm_application' ) ) {
-			return array();
-		}
-
-		$terms = wp_get_object_terms( $view_id, 'frm_application' );
-		if ( is_wp_error( $terms ) ) {
-			return array();
-		}
-
-		return wp_list_pluck( $terms, 'term_id' );
-	}
-
-	/**
-	 * Get Settings object for Views.
-	 *
-	 * @since 5.3
-	 *
-	 * @return FrmViewsSettings
-	 */
-	public static function get_settings() {
-		if ( ! isset( self::$settings ) ) {
-			self::$settings = new FrmViewsSettings();
-		}
-		return self::$settings;
-	}
-
-	/**
-	 * @return void
-	 */
-	public static function add_view_embed_examples_script() {
-		$plugin_url      = self::plugin_url();
-		$version         = self::plugin_version();
-		$js_dependencies = array( 'wp-i18n', 'formidable_embed' );
-		wp_register_script( 'formidable_views_embed_examples', $plugin_url . '/js/embed.js', $js_dependencies, $version, true );
-		wp_enqueue_script( 'formidable_views_embed_examples' );
 	}
 }

@@ -12,6 +12,10 @@ class FrmProEntry {
 	 */
 	public static function admin_edit_link( $id ) {
 		$link = admin_url( 'admin.php?page=formidable-entries&frm_action=edit&id=' . absint( $id ) );
+		if ( is_callable( 'FrmAppHelper::maybe_full_screen_link' ) ) {
+			$link = FrmAppHelper::maybe_full_screen_link( $link );
+		}
+
 		return $link;
 	}
 
@@ -41,10 +45,10 @@ class FrmProEntry {
 				$submit = isset( $form->options['submit_value'] ) ? $form->options['submit_value'] : $frm_settings->submit_value;
 				$values = $fields ? FrmEntriesHelper::setup_new_vars( $fields, $form ) : array();
 
-				require FrmAppHelper::plugin_path() . '/classes/views/frm-entries/new.php';
-				add_filter( 'frm_continue_to_create', '__return_false' );
+				require( FrmAppHelper::plugin_path() . '/classes/views/frm-entries/new.php' );
+				add_filter('frm_continue_to_create', '__return_false');
 			}
-		} elseif ( $entry_id && $form->editable && FrmProFormsHelper::check_single_entry_type( $form->options, 'user' ) && ! FrmProFormsHelper::saving_draft() ) {
+		} elseif ( $entry_id && $form->editable && isset( $form->options['single_entry'] ) && $form->options['single_entry'] && $form->options['single_entry_type'] == 'user' && ! FrmProFormsHelper::saving_draft() ) {
 			$show_form = ( isset( $form->options['show_form'] ) ) ? $form->options['show_form'] : true;
 
 			if ( $show_form ) {
@@ -98,7 +102,7 @@ class FrmProEntry {
 	 */
 	public static function save_sub_entries( $values, $action = 'create' ) {
 		$form_id = isset( $values['form_id'] ) ? (int) $values['form_id'] : 0;
-		if ( ! $form_id || ! isset( $values['item_meta'] ) ) {
+		if ( ! $form_id || ! isset($values['item_meta']) ) {
 			return $values;
 		}
 
@@ -108,22 +112,22 @@ class FrmProEntry {
 			$action       = 'update';
 		}
 
-		$form_fields    = FrmProFormsHelper::has_field( 'form', $form_id, false );
-		$section_fields = FrmProFormsHelper::has_field( 'divider', $form_id, false );
+		$form_fields    = FrmProFormsHelper::has_field('form', $form_id, false);
+		$section_fields = FrmProFormsHelper::has_field('divider', $form_id, false);
 
 		if ( ! $form_fields && ! $section_fields ) {
 			// only continue if there could be sub entries
 			return $values;
 		}
 
-		$form_fields = array_merge( $section_fields, $form_fields );
+		$form_fields = array_merge($section_fields, $form_fields);
 
 		$new_values = $values;
 		unset( $new_values['item_meta'], $new_values['item_key'] );
 
 		// allow for multiple embeded forms
 		foreach ( $form_fields as $field ) {
-			if ( ! isset( $values['item_meta'][ $field->id ] ) || ! isset( $field->field_options['form_select'] ) || ! isset( $values['item_meta'][ $field->id ]['form'] ) ) {
+			if ( ! isset($values['item_meta'][ $field->id ]) || ! isset($field->field_options['form_select']) || ! isset($values['item_meta'][ $field->id ]['form']) ) {
 				// don't continue if we don't know which form to insert the sub entries into
 
 				self::delete_all_sub_entries( $action, $values, $field->id );
@@ -132,14 +136,14 @@ class FrmProEntry {
 				continue;
 			}
 
-			if ( 'divider' === $field->type && ! FrmField::is_repeating_field( $field ) ) {
+			if ( 'divider' == $field->type && ! FrmField::is_repeating_field($field) ) {
 				// only create sub entries for repeatable sections
 				continue;
 			}
 
 			self::save_sub_entry( $field, $action, $new_values, $values );
 
-			unset( $field );
+			unset($field);
 		}
 
 		return $values;
@@ -236,7 +240,7 @@ class FrmProEntry {
 	private static function get_existing_sub_entries( $entry_id, $section_id ) {
 		$old_ids = FrmEntryMeta::get_entry_meta_by_field( $entry_id, $section_id );
 		if ( $old_ids ) {
-			$old_ids = array_filter( (array) $old_ids, 'is_numeric' );
+			$old_ids = array_filter( (array) $old_ids, 'is_numeric');
 		} else {
 			$old_ids = array();
 		}
@@ -253,7 +257,7 @@ class FrmProEntry {
 	 * @param array $child_entry_ids
 	 */
 	private static function delete_sub_entries( $child_entry_ids ) {
-		if ( ! empty( $child_entry_ids ) ) {
+		if ( ! empty( $child_entry_ids) ) {
 
 			foreach ( $child_entry_ids as $old_id ) {
 				FrmEntry::destroy( $old_id );
@@ -267,15 +271,15 @@ class FrmProEntry {
 	 * @since 2.0
 	 */
 	public static function duplicate_sub_entries( $entry_id, $form_id, $args ) {
-		$form_fields = FrmProFormsHelper::has_field( 'form', $form_id, false );
-		$section_fields = FrmProFormsHelper::has_repeat_field( $form_id, false );
-		$form_fields = array_merge( $section_fields, $form_fields );
-		if ( empty( $form_fields ) ) {
+		$form_fields = FrmProFormsHelper::has_field('form', $form_id, false);
+		$section_fields = FrmProFormsHelper::has_repeat_field($form_id, false);
+		$form_fields = array_merge($section_fields, $form_fields);
+		if ( empty($form_fields) ) {
 			// there are no fields for child entries
 			return;
 		}
 
-		$entry = FrmEntry::getOne( $entry_id, true );
+		$entry = FrmEntry::getOne($entry_id, true);
 
 		$sub_ids = array();
 		foreach ( $form_fields as $field ) {
@@ -286,28 +290,28 @@ class FrmProEntry {
 			$field_ids = array();
 			$ids = $entry->metas[ $field->id ];
 			FrmProAppHelper::unserialize_or_decode( $ids );
-			if ( ! empty( $ids ) ) {
+			if ( ! empty($ids) ) {
 				// duplicate all entries for this field
 				foreach ( (array) $ids as $sub_id ) {
 					$field_ids[] = FrmEntry::duplicate( $sub_id );
-					unset( $sub_id );
+					unset($sub_id);
 				}
 
-				FrmEntryMeta::update_entry_meta( $entry_id, $field->id, null, $field_ids );
-				$sub_ids = array_merge( $field_ids, $sub_ids );
+				FrmEntryMeta::update_entry_meta($entry_id, $field->id, null, $field_ids);
+				$sub_ids = array_merge($field_ids, $sub_ids);
 			}
 
-			unset( $field, $field_ids );
+			unset($field, $field_ids);
 		}
 
-		if ( ! empty( $sub_ids ) ) {
+		if ( ! empty($sub_ids) ) {
 			// update the parent id for new entries
 			global $wpdb;
 			$where = array( 'id' => $sub_ids );
 			FrmDb::get_where_clause_and_values( $where );
 			array_unshift( $where['values'], $entry_id );
 
-			$wpdb->query( $wpdb->prepare( 'UPDATE ' . $wpdb->prefix . 'frm_items SET parent_item_id = %d ' . $where['where'], $where['values'] ) );
+			$wpdb->query( $wpdb->prepare('UPDATE ' . $wpdb->prefix . 'frm_items SET parent_item_id = %d ' . $where['where'], $where['values'] ) );
 		}
 	}
 
@@ -317,15 +321,15 @@ class FrmProEntry {
 	 * @since 2.0
 	 */
 	public static function update_parent_id( $entry_id, $form_id ) {
-		$form_fields = FrmProFormsHelper::has_field( 'form', $form_id, false );
-		$section_fields = FrmProFormsHelper::has_repeat_field( $form_id, false );
+		$form_fields = FrmProFormsHelper::has_field('form', $form_id, false);
+		$section_fields = FrmProFormsHelper::has_repeat_field($form_id, false);
 
 		if ( ! $form_fields && ! $section_fields ) {
 			return;
 		}
 
-		$form_fields = array_merge( $section_fields, $form_fields );
-		$entry = FrmEntry::getOne( $entry_id, true );
+		$form_fields = array_merge($section_fields, $form_fields);
+		$entry = FrmEntry::getOne($entry_id, true);
 
 		if ( ! $entry || $entry->form_id != $form_id ) {
 			return;
@@ -339,14 +343,14 @@ class FrmProEntry {
 
 			$ids = $entry->metas[ $field->id ];
 			FrmProAppHelper::unserialize_or_decode( $ids );
-			if ( ! empty( $ids ) ) {
-				$sub_ids = array_merge( $ids, $sub_ids );
+			if ( ! empty($ids) ) {
+				$sub_ids = array_merge($ids, $sub_ids);
 			}
 
-			unset( $field );
+			unset($field);
 		}
 
-		if ( ! empty( $sub_ids ) ) {
+		if ( ! empty($sub_ids) ) {
 			$where = array( 'id' => $sub_ids );
 			FrmDb::get_where_clause_and_values( $where );
 			array_unshift( $where['values'], $entry_id );
@@ -395,7 +399,7 @@ class FrmProEntry {
 						if ( $saved_val && ! empty( $values['item_meta'][ $f_id ][ $opt_key ] ) ) {
 							$values['item_meta'][ $f_id ][ $opt_key ] = $saved_val;
 						}
-						unset( $opt_key, $saved_val );
+						unset( $opt_key, $saved_val);
 					}
 				} elseif ( isset( $values['item_meta'][ $f_id ] ) ) {
 					$values['item_meta'][ $f_id ] = array_merge( (array) $values['item_meta'][ $f_id ], $o_val );
@@ -460,17 +464,75 @@ class FrmProEntry {
 		}
 	}
 
+	//If page size is set for views, only get the current page of entries
+	public static function get_view_page( $current_p, $p_size, $where, $args ) {
+		_deprecated_function( __FUNCTION__, '2.02', 'FrmProEntry::get_view_results' );
+
+		//Make sure values are ints for use in DB call
+		$current_p = (int) $current_p;
+		$p_size = (int) $p_size;
+
+		//Calculate end_index and start_index
+		$end_index = $current_p * $p_size;
+		$start_index = $end_index - $p_size;
+
+		//Set limit and pass it to get_view_results
+		$args['limit'] = " LIMIT $start_index,$p_size";
+		$results = self::get_view_results($where, $args);
+
+		return $results;
+	}
+
+	//Get ordered and filtered entries for Views
+	public static function get_view_results( $where, $args ) {
+		global $wpdb;
+
+		$defaults = array(
+			'order_by_array' => array(),
+			'order_array' => array(),
+			'limit'   => '',
+			'posts'   => array(),
+			'display' => false,
+		);
+
+		$args = wp_parse_args($args, $defaults);
+		$args['time_field'] = false;
+
+		$query = array(
+			'select'    => 'SELECT it.id FROM ' . $wpdb->prefix . 'frm_items it',
+			'where'     => $where,
+			'order'     => 'ORDER BY it.created_at ASC',
+		);
+
+		//If order is set
+		if ( ! empty($args['order_by_array']) ) {
+			self::prepare_entries_query($query, $args);
+		}
+		$query = apply_filters('frm_view_order', $query, $args);
+
+		if ( ! empty($query['where']) ) {
+			$query['where'] = FrmDb::prepend_and_or_where( 'WHERE ', $query['where'] );
+		}
+
+		$query['order'] = rtrim($query['order'], ', ');
+
+		$query = implode( ' ', $query ) . $args['limit'];
+		$entry_ids = $wpdb->get_col( $query );
+
+		return $entry_ids;
+	}
+
 	private static function prepare_entries_query( &$query, &$args ) {
-		if ( in_array( 'rand', $args['order_by_array'], true ) ) {
+		if ( in_array( 'rand', $args['order_by_array']) ) {
 			//If random is set, set the order to random
 			$query['order'] = ' ORDER BY RAND()';
 			return;
 		}
 
 		//Remove other ordering fields if created_at or updated_at is selected for first ordering field
-		if ( reset( $args['order_by_array'] ) === 'created_at' || reset( $args['order_by_array'] ) === 'updated_at' ) {
+		if ( reset($args['order_by_array']) == 'created_at' || reset($args['order_by_array']) == 'updated_at' ) {
 			foreach ( $args['order_by_array'] as $o_key => $order_by_field ) {
-				if ( is_numeric( $order_by_field ) ) {
+				if ( is_numeric($order_by_field) ) {
 					unset( $args['order_by_array'][ $o_key ] );
 					unset( $args['order_array'][ $o_key ] );
 				}
@@ -478,10 +540,10 @@ class FrmProEntry {
 			$numeric_order_array = array();
 		} else {
 		//Get number of fields in $args['order_by_array'] - this will not include created_at, updated_at, or random
-			$numeric_order_array = array_filter( $args['order_by_array'], 'is_numeric' );
+			$numeric_order_array = array_filter($args['order_by_array'], 'is_numeric');
 		}
 
-		if ( ! count( $numeric_order_array ) ) {
+		if ( ! count($numeric_order_array) ) {
 			//If ordering by creation date and/or update date without any fields
 			$query['order'] = ' ORDER BY';
 
@@ -514,7 +576,7 @@ class FrmProEntry {
 		foreach ( $order_fields as $o_key => $o_field ) {
 			self::prepare_ordered_entries_query( $query, $args, $o_key, $o_field, $first_order );
 			$first_order = false;
-			unset( $o_field );
+			unset($o_field);
 		}
 	}
 
@@ -527,7 +589,7 @@ class FrmProEntry {
 		$o_key = sanitize_title( $o_key );
 
 		//if field is some type of post field
-		if ( isset( $o_field->field_options['post_field'] ) && $o_field->field_options['post_field'] ) {
+		if ( isset($o_field->field_options['post_field']) && $o_field->field_options['post_field'] ) {
 
 			//if field is custom field
 			if ( $o_field->field_options['post_field'] == 'post_custom' ) {
@@ -564,70 +626,6 @@ class FrmProEntry {
 	 */
 	public static function is_draft( $entry_id ) {
 		$entry = FrmEntry::getOne( $entry_id );
-		return ( $entry && self::is_draft_status( $entry->is_draft ) );
-	}
-
-	/**
-	 * Confirm if passed value is a valid entry draft status.
-	 *
-	 * @since 6.8
-	 *
-	 * @param string|int $status Entry status.
-	 *
-	 * @return bool
-	 */
-	public static function is_draft_status( $status ) {
-		$draft_status = defined( 'FrmEntriesHelper::DRAFT_ENTRY_STATUS' ) ? FrmEntriesHelper::DRAFT_ENTRY_STATUS : 1;
-
-		return $draft_status === (int) $status;
-	}
-
-	/**
-	 * Get ordered and filtered entries for Views.
-	 *
-	 * @deprecated 6.6
-	 *
-	 * @param array $where
-	 * @param array $args
-	 * @return array
-	 */
-	public static function get_view_results( $where, $args ) {
-		_deprecated_function( __METHOD__, '6.6', 'FrmViewsDisplay::get_view_results' );
-
-		global $wpdb;
-
-		$defaults = array(
-			'order_by_array' => array(),
-			'order_array' => array(),
-			'limit'   => '',
-			'posts'   => array(),
-			'display' => false,
-		);
-
-		$args = wp_parse_args( $args, $defaults );
-		$args['time_field'] = false;
-
-		$query = array(
-			'select'    => 'SELECT it.id FROM ' . $wpdb->prefix . 'frm_items it',
-			'where'     => $where,
-			'order'     => 'ORDER BY it.created_at ASC',
-		);
-
-		//If order is set
-		if ( ! empty( $args['order_by_array'] ) ) {
-			self::prepare_entries_query( $query, $args );
-		}
-		$query = apply_filters( 'frm_view_order', $query, $args );
-
-		if ( ! empty( $query['where'] ) ) {
-			$query['where'] = FrmDb::prepend_and_or_where( 'WHERE ', $query['where'] );
-		}
-
-		$query['order'] = rtrim( $query['order'], ', ' );
-
-		$query = implode( ' ', $query ) . $args['limit'];
-		$entry_ids = $wpdb->get_col( $query );
-
-		return $entry_ids;
+		return ( $entry && $entry->is_draft );
 	}
 }

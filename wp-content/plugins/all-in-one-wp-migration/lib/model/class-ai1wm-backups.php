@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,15 +101,9 @@ class Ai1wm_Backups {
 	 * @return boolean
 	 */
 	public static function delete_file( $file ) {
-		if ( ai1wm_is_filename_supported( $file ) ) {
-			if ( $deleted = @unlink( ai1wm_backup_path( array( 'archive' => $file ) ) ) ) {
-				do_action( 'ai1wm_status_backup_deleted', $file );
-			}
-
-			return $deleted;
+		if ( validate_file( $file ) === 0 ) {
+			return @unlink( ai1wm_backup_path( array( 'archive' => $file ) ) );
 		}
-
-		return false;
 	}
 
 	/**
@@ -163,26 +157,5 @@ class Ai1wm_Backups {
 		}
 
 		return ( $a['mtime'] > $b['mtime'] ) ? - 1 : 1;
-	}
-
-	/**
-	 * Check if backups are downloadable
-	 */
-	public static function are_downloadable() {
-		static $downloadable = null;
-		if ( is_null( $downloadable ) ) {
-			$downloadable = Ai1wm_Backups::are_in_wp_content_folder() || strpos( AI1WM_BACKUPS_PATH, untrailingslashit( ABSPATH ) ) === 0;
-		}
-
-		return $downloadable;
-	}
-
-	public static function are_in_wp_content_folder() {
-		static $in_wp_content = null;
-		if ( is_null( $in_wp_content ) ) {
-			$in_wp_content = strpos( AI1WM_BACKUPS_PATH, untrailingslashit( WP_CONTENT_DIR ) ) === 0;
-		}
-
-		return $in_wp_content;
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ class Ai1wm_Export_Controller {
 	}
 
 	public static function export( $params = array() ) {
-		global $ai1wm_params;
 		ai1wm_setup_environment();
 
 		// Set params
@@ -60,8 +59,6 @@ class Ai1wm_Export_Controller {
 			exit;
 		}
 
-		$ai1wm_params = $params;
-
 		// Loop over filters
 		if ( ( $filters = ai1wm_get_filters( 'ai1wm_export' ) ) ) {
 			while ( $hooks = current( $filters ) ) {
@@ -73,24 +70,22 @@ class Ai1wm_Export_Controller {
 							$params = call_user_func_array( $hook['function'], array( $params ) );
 
 						} catch ( Ai1wm_Database_Exception $e ) {
-							do_action( 'ai1wm_status_export_error', $params, $e );
-
 							if ( defined( 'WP_CLI' ) ) {
 								WP_CLI::error( sprintf( __( 'Unable to export. Error code: %s. %s', AI1WM_PLUGIN_NAME ), $e->getCode(), $e->getMessage() ) );
+							} else {
+								status_header( $e->getCode() );
+								echo json_encode( array( 'errors' => array( array( 'code' => $e->getCode(), 'message' => $e->getMessage() ) ) ) );
 							}
-
-							status_header( $e->getCode() );
-							ai1wm_json_response( array( 'errors' => array( array( 'code' => $e->getCode(), 'message' => $e->getMessage() ) ) ) );
+							Ai1wm_Directory::delete( ai1wm_storage_path( $params ) );
 							exit;
 						} catch ( Exception $e ) {
-							do_action( 'ai1wm_status_export_error', $params, $e );
-
 							if ( defined( 'WP_CLI' ) ) {
 								WP_CLI::error( sprintf( __( 'Unable to export: %s', AI1WM_PLUGIN_NAME ), $e->getMessage() ) );
+							} else {
+								Ai1wm_Status::error( __( 'Unable to export', AI1WM_PLUGIN_NAME ), $e->getMessage() );
+								Ai1wm_Notification::error( __( 'Unable to export', AI1WM_PLUGIN_NAME ), $e->getMessage() );
 							}
-
-							Ai1wm_Status::error( __( 'Unable to export', AI1WM_PLUGIN_NAME ), $e->getMessage() );
-							Ai1wm_Notification::error( __( 'Unable to export', AI1WM_PLUGIN_NAME ), $e->getMessage() );
+							Ai1wm_Directory::delete( ai1wm_storage_path( $params ) );
 							exit;
 						}
 					}
@@ -110,7 +105,7 @@ class Ai1wm_Export_Controller {
 						}
 
 						if ( isset( $params['ai1wm_manual_export'] ) ) {
-							ai1wm_json_response( $params );
+							echo json_encode( $params );
 							exit;
 						}
 
@@ -255,13 +250,23 @@ class Ai1wm_Export_Controller {
 		return array_merge( $active_filters, $static_filters );
 	}
 
+	public static function http_export_headers( $headers = array() ) {
+		if ( ( $user = get_option( AI1WM_AUTH_USER ) ) && ( $password = get_option( AI1WM_AUTH_PASSWORD ) ) ) {
+			if ( ( $hash = base64_encode( sprintf( '%s:%s', $user, $password ) ) ) ) {
+				$headers['Authorization'] = sprintf( 'Basic %s', $hash );
+			}
+		}
+
+		return $headers;
+	}
+
 	public static function cleanup() {
 		try {
 			// Iterate over storage directory
 			$iterator = new Ai1wm_Recursive_Directory_Iterator( AI1WM_STORAGE_PATH );
 
 			// Exclude index.php
-			$iterator = new Ai1wm_Recursive_Exclude_Filter( $iterator, array( 'index.php', 'index.html' ) );
+			$iterator = new Ai1wm_Recursive_Exclude_Filter( $iterator, array( 'index.php' ) );
 
 			// Loop over folders and files
 			foreach ( $iterator as $item ) {

@@ -15,11 +15,6 @@ class FrmProFieldToggle extends FrmFieldType {
 	 */
 	protected $type = 'toggle';
 
-	/**
-	 * @var bool
-	 */
-	protected $array_allowed = false;
-
 	protected function field_settings_for_type() {
 		$settings = array();
 
@@ -41,7 +36,7 @@ class FrmProFieldToggle extends FrmFieldType {
 	 */
 	public function show_primary_options( $args ) {
 		$field = $args['field'];
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/toggle-labels.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/toggle-labels.php' );
 
 		parent::show_primary_options( $args );
 	}
@@ -57,7 +52,7 @@ class FrmProFieldToggle extends FrmFieldType {
 	}
 
 	protected function builder_text_field( $name = '' ) {
-		$this->set_field_column( 'value', $this->get_field_column( 'default_value' ) );
+		$this->set_field_column( 'value', $this->get_field_column('default_value') );
 		$args = array(
 			'html_id'    => $this->html_id(),
 			'field_name' => $this->html_name( $name ),
@@ -74,7 +69,7 @@ class FrmProFieldToggle extends FrmFieldType {
 			$this->add_aria_description( $args, $input_html );
 		}
 
-		$checked_values = $this->get_field_column( 'value' );
+		$checked_values = $this->get_field_column('value');
 
 		$show_labels = FrmField::get_option( $this->field, 'show_label' );
 		$off_label   = FrmField::get_option( $this->field, 'toggle_off' );

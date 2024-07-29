@@ -105,9 +105,9 @@ function disable_gutenberg_get_enabled_user_roles() {
 
 function disable_gutenberg_get_post_types() {
 	
-	$post_types = get_post_types(array('show_ui' => true), 'objects');
+	$post_types = get_post_types(array(), 'objects');
 	
-	$unset = array('attachment', 'custom_css', 'customize_changeset', 'nav_menu_item', 'oembed_cache', 'revision', 'user_request', 'wp_block', 'wp_navigation');
+	$unset = array('attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'oembed_cache', 'user_request', 'wp_block');
 	
 	$unset = apply_filters('disable_gutenberg_post_types_unset', $unset);
 	
@@ -178,7 +178,7 @@ function disable_gutenberg_disable_post_type() {
 	
 	if ($pagenow === 'edit.php') {
 		
-		// if (empty($typenow)) $typenow = 'post';
+		if (empty($typenow)) $typenow = 'post';
 		
 		$post_type = $typenow;
 		

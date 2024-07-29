@@ -10,27 +10,25 @@ if ( ! defined( 'ABSPATH' ) )
  *  @TODO: temporary solution
  *
  *  @since    2.5
- *  @since    2.9.2 register scripts for Elementor added
  *  @created  28/01/18
  */
 
-add_action( 'elementor/editor/before_enqueue_scripts', 'wpuxss_eml_register_scripts' );
-
 add_action( 'elementor/editor/after_enqueue_scripts', 'wpuxss_eml_elementor_scripts' );
 
-function wpuxss_eml_elementor_scripts() {
+if ( ! function_exists( 'wpuxss_eml_elementor_scripts' ) ) {
 
-    global $wpuxss_eml_dir;
+    function wpuxss_eml_elementor_scripts() {
+
+        global $wpuxss_eml_dir;
 
 
-    wp_enqueue_style( 'common' );
-    wp_enqueue_style(
-        'wpuxss-eml-elementor-media-style',
-        $wpuxss_eml_dir . 'css/eml-admin-media.css'
-    );
+        wp_enqueue_style( 'common' );
+        wp_enqueue_style(
+            'wpuxss-eml-elementor-media-style',
+            $wpuxss_eml_dir . 'css/eml-admin-media.css'
+        );
+    }
 }
-
-
 
 
 
@@ -41,11 +39,14 @@ function wpuxss_eml_elementor_scripts() {
  *  @created  08/2021
  */
 
-add_action( 'after_setup_theme', 'wpuxss_eml_after_setup_theme_impreza', 9 );
+add_action( 'after_setup_theme', 'wpuxss_after_setup_theme_impreza', 9 );
 
-function wpuxss_eml_after_setup_theme_impreza() {
+if ( ! function_exists( 'wpuxss_after_setup_theme_impreza' ) ) {
 
-    remove_filter( 'attachment_fields_to_edit', 'us_attachment_fields_to_edit_categories' );
+    function wpuxss_after_setup_theme_impreza() {
+
+        remove_filter( 'attachment_fields_to_edit', 'us_attachment_fields_to_edit_categories' );
+    }
 }
 
 
@@ -57,11 +58,14 @@ function wpuxss_eml_after_setup_theme_impreza() {
  *  @created  10/2021
  */
 
-add_action( 'wp_loaded', 'wpuxss_eml_compat_on_wp_loaded' );
+add_action( 'wp_loaded', 'wpuxss_wp_loaded' );
 
-function wpuxss_eml_compat_on_wp_loaded() {
+if ( ! function_exists( 'wpuxss_wp_loaded' ) ) {
 
-    remove_filter( 'ajax_query_attachments_args', 'pgc_sgb_ajaxQueryAttachmentsArgs', 20 );
+    function wpuxss_wp_loaded() {
+
+        remove_filter( 'ajax_query_attachments_args', 'pgc_sgb_ajaxQueryAttachmentsArgs', 20 );
+    }
 }
 
 
@@ -116,18 +120,23 @@ if ( wpuxss_eml_enhance_media_shortcodes() ) {
     add_filter( 'foogallery_shortcode_atts', 'wpuxss_eml_foogallery_shortcode_atts' );
 }
 
-function wpuxss_eml_foogallery_shortcode_atts( $atts ) {
 
-    $id = isset( $atts['id'] ) ? intval( $atts['id'] ) : 0;
-    unset( $atts['id'] );
 
-    $atts = wpuxss_eml_shortcode_atts( array(), array(), $atts );
-    $atts['id'] = $id;
+if ( ! function_exists( 'wpuxss_eml_foogallery_shortcode_atts' ) ) {
 
-    if ( isset( $atts['ids'] ) ) {
-        $atts['attachment_ids'] = $atts['ids'];
-        unset( $atts['ids'] );
+    function wpuxss_eml_foogallery_shortcode_atts( $atts ) {
+
+        $id = isset( $atts['id'] ) ? intval( $atts['id'] ) : 0;
+        unset( $atts['id'] );
+
+        $atts = wpuxss_eml_shortcode_atts( array(), array(), $atts );
+        $atts['id'] = $id;
+
+        if ( isset( $atts['ids'] ) ) {
+            $atts['attachment_ids'] = $atts['ids'];
+            unset( $atts['ids'] );
+        }
+
+        return $atts;
     }
-
-    return $atts;
 }

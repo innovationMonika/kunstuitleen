@@ -28,7 +28,7 @@ class FrmFieldGridHelper {
 	private $active_field_size;
 
 	/**
-	 * @var bool flagged while calling get_field_layout_class, true if classes contain frm_first class.
+	 * @var bool $is_frm_first flagged while calling get_field_layout_class, true if classes contain frm_first class.
 	 */
 	private $is_frm_first;
 
@@ -38,17 +38,17 @@ class FrmFieldGridHelper {
 	private $field;
 
 	/**
-	 * @var FrmFieldGridHelper
+	 * @var FrmFieldGridHelper $section_helper
 	 */
 	private $section_helper;
 
 	/**
-	 * @var bool
+	 * @var bool $nested
 	 */
 	private $nested;
 
 	/**
-	 * @var int
+	 * @var int $section_size
 	 */
 	private $section_size;
 
@@ -63,8 +63,6 @@ class FrmFieldGridHelper {
 
 	/**
 	 * @param stdClass $field
-	 *
-	 * @return void
 	 */
 	public function set_field( $field ) {
 		$this->field = $field;
@@ -81,7 +79,7 @@ class FrmFieldGridHelper {
 			$this->maybe_close_section_helper();
 		} else {
 			$this->field_layout_class = $this->get_field_layout_class();
-			$this->active_field_size  = self::get_size_of_class( $this->field_layout_class );
+			$this->active_field_size  = $this->get_size_of_class( $this->field_layout_class );
 		}
 
 		if ( 'divider' === $field->type && empty( $this->nested ) ) {
@@ -91,9 +89,6 @@ class FrmFieldGridHelper {
 		}
 	}
 
-	/**
-	 * @return void
-	 */
 	private function maybe_close_section_helper() {
 		if ( empty( $this->section_helper ) ) {
 			return;
@@ -125,9 +120,6 @@ class FrmFieldGridHelper {
 		return '';
 	}
 
-	/**
-	 * @return void
-	 */
 	public function maybe_begin_field_wrapper() {
 		if ( $this->should_first_close_the_active_field_wrapper() ) {
 			$this->close_field_wrapper();
@@ -155,9 +147,6 @@ class FrmFieldGridHelper {
 		return ! $this->can_support_current_layout() || $this->is_frm_first;
 	}
 
-	/**
-	 * @return void
-	 */
 	private function begin_field_wrapper() {
 		echo '<li class="frm_field_box"><ul class="frm_grid_container frm_sorting">';
 		$this->parent_li           = true;
@@ -196,11 +185,8 @@ class FrmFieldGridHelper {
 		return 12;
 	}
 
-	/**
-	 * @return void
-	 */
 	public function sync_list_size() {
-		if ( empty( $this->field ) ) {
+		if ( ! isset( $this->field ) ) {
 			return;
 		}
 
@@ -217,7 +203,7 @@ class FrmFieldGridHelper {
 		}
 
 		if ( false !== $this->parent_li ) {
-			++$this->current_field_count;
+			$this->current_field_count ++;
 			$this->current_list_size += $this->active_field_size;
 			if ( 12 === $this->current_list_size ) {
 				$this->close_field_wrapper();
@@ -228,8 +214,6 @@ class FrmFieldGridHelper {
 	/**
 	 * It is possible that there was still space for another field so the wrapper could still be open after looping the fields.
 	 * If it is, make sure it's closed now.
-	 *
-	 * @return void
 	 */
 	public function force_close_field_wrapper() {
 		if ( false !== $this->parent_li ) {
@@ -237,9 +221,6 @@ class FrmFieldGridHelper {
 		}
 	}
 
-	/**
-	 * @return void
-	 */
 	private function close_field_wrapper() {
 		$this->maybe_close_section_helper();
 		echo '</ul></li>';
@@ -248,9 +229,6 @@ class FrmFieldGridHelper {
 		$this->current_field_count = 0;
 	}
 
-	/**
-	 * @return bool
-	 */
 	private function can_support_current_layout() {
 		if ( 'end_divider' === $this->field->type ) {
 			return true;
@@ -263,7 +241,7 @@ class FrmFieldGridHelper {
 	 * @return bool
 	 */
 	private function can_support_an_additional_layout( $class ) {
-		$size = self::get_size_of_class( $class );
+		$size = $this->get_size_of_class( $class );
 		return $this->current_list_size + $size <= 12;
 	}
 

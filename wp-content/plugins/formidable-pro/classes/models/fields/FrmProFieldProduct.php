@@ -55,14 +55,14 @@ class FrmProFieldProduct extends FrmFieldType {
 
 	public function show_extra_field_choices( $args ) {
 		$field = $args['field'];
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/separate-values.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/separate-values.php' );
 		parent::show_extra_field_choices( $args );
 	}
 
 	public function show_primary_options( $args ) {
 		$field = $args['field'];
 		$data_types = $this->get_data_type_settings();
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/product-options.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/product-options.php' );
 		parent::show_primary_options( $args );
 	}
 
@@ -262,7 +262,7 @@ class FrmProFieldProduct extends FrmFieldType {
 
 			$checked = ( isset( $field['default_value'] ) && ( ( ! is_array( $field['default_value'] ) && $field['default_value'] == $field_val ) || ( is_array( $field['default_value'] ) && in_array( $field_val, $field['default_value'] ) ) ) );
 
-			require FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/product-single-option.php';
+			require( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/product-single-option.php' );
 
 			unset( $checked );
 		}
@@ -280,7 +280,7 @@ class FrmProFieldProduct extends FrmFieldType {
 		$default_type = self::get_default_value_type( $field );
 		$field_name  .= ( $default_type === 'checkbox' ? '[' . $opt_key . ']' : '' );
 
-		require FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/product-single-option.php';
+		require( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/product-single-option.php' );
 	}
 
 	private static function get_default_value_type( $field ) {

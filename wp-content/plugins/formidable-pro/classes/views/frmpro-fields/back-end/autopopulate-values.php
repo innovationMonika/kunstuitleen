@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</label>
 		<div id="frm_watch_lookup_block_<?php echo absint( $field['id'] ); ?>" class="frm_add_remove"><?php
 			if ( empty( $field['watch_lookup'] ) && ! empty( $lookup_fields ) ) {
-			$field_id = $field['id'];
-			$row_key = 0;
-			$selected_field = '';
-			include FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/watch-row.php';
+				$field_id = $field['id'];
+				$row_key = 0;
+				$selected_field = '';
+				include( FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/watch-row.php' );
 			} elseif ( isset( $field['watch_lookup'] ) ) {
-			$field_id = $field['id'];
-			foreach ( $field['watch_lookup'] as $row_key => $selected_field ) {
-				include FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/watch-row.php';
+				$field_id = $field['id'];
+				foreach ( $field['watch_lookup'] as $row_key => $selected_field ) {
+					include( FrmProAppHelper::plugin_path() . '/classes/views/lookup-fields/back-end/watch-row.php' );
 				}
 			}
 		?></div>

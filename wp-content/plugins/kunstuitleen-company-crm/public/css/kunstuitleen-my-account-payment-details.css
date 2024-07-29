@@ -1,0 +1,256 @@
+/*---------------||Betaalgegevens Start ||-------------------*/
+.main{
+    margin-top: 40px;
+}
+.main .h4{
+    color: #2a374a;
+}
+.condition{
+    border-left: 1px solid #f3f3f3;
+    margin-top: 30px;
+    border-top: 0;
+    margin-left: 0px;
+    margin-right: -56px;
+}
+.col-form{
+    padding-left: 30px;
+}
+.condition .h4{
+    color:#9dafc2
+}
+.condition .col-md-10{
+    border-right: 1px solid #f3f3f3;
+    padding-left: 30px;
+}
+#condition{
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 30px;
+}
+.gift-cards{
+    color: #9dafc2;
+}
+.mailing-address{
+    padding-left: 0;
+}
+.ps-0{
+    padding-left: 0;
+}
+.form-control{
+    height: 45px;
+    font-size: 16px;
+    border: 1px solid #e1e8f1;
+    color: #2a374a;
+    background-color: #f6fafc;
+    box-shadow: none;
+    font-family: 'MrJones-Book', sans-serif;
+    font-weight: bold;
+}
+.sample{
+    padding-top: 15px;
+}
+.mail-address .h4{
+    margin-bottom: 0;
+}
+.form-group{
+    margin-bottom: 20px;
+}
+.inp-check{
+    padding-right: 0;
+}
+form .h4, .h5{
+    color:#344052;
+}
+form .btn-primary{
+    margin-left: -15px;
+    width: 100px;
+    color: white;
+    background-color: #607ff2;
+    margin-right: 14px;
+    border-color: #607ff2;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+}
+form .btn-default{
+    border-color: #607ff2;
+    font-weight: bold;
+    color: #607ff2;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+}
+.form-control::placeholder{
+    color: #9dafc2;
+}
+.form-control:focus{
+    border-color: #e1e8f1;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary{
+    background-color: #607ff2;
+    border-color: #607ff2;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus{
+    outline: none;
+}
+.btn:active, .btn.active{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default{
+    background-color: white;
+    border: 1px solid #607ff2;
+    color: #607ff2;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.margin-bottom{
+    margin-bottom: 40px;
+}
+p .fa{
+    padding-right: 6px;
+    color: #b7c4d2;
+}
+p{
+    color: #b7c4d2;
+    padding-left: 2px;
+    padding-top: 4px;
+}
+.title{
+    color: #2a374a;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid #e1e8f1;
+  -webkit-text-fill-color: #2a374a;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.company-details .row label strong,.information .row label strong {
+    color: #9dafc2;
+}
+.company-details .details_heading strong,.information .details_heading strong{
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color:#2f3c4f !important;
+}
+.box-shadow label.mr-jonas.h4 {
+    margin: 0px;
+}
+.box-shadow .btn-default {
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+}
+.kunstuitleen-main-account .fa {
+    font-size: 22px;
+    padding-left: 10px;
+    position: absolute;
+    top: 50%;
+    transform: translatey(-50%);
+}
+.box-shadow {
+    padding-bottom: 20px;
+    -webkit-box-shadow: 6px 5px -3px 5px #eaeaea;
+    -moz-box-shadow: 6px 5px -3px 5px #eaeaea;
+    box-shadow: 6px 5px -3px 5px #eaeaea;
+}
+.mt-40 {
+    margin-top: 40px;
+}
+.mt-15 {
+    margin-top: 15px;
+}
+.information {
+    display: flex;
+}
+.create-account .btn.btn-default {
+    border: none !important;
+}
+.create-account {
+    margin-top: 10px;
+    float: right !important;
+}
+.manage-acount-btn {
+    margin-top: 15px;
+    padding-bottom: 30px;
+}
+.mb50px {
+    margin-bottom: 50px;
+}
+.main-col .col-md-12 .h5 {
+    margin-bottom: 0;
+}
+.manage-acount-btn a {
+    display: flex;
+    padding-left: 0px !important;
+
+}
+.manage-acount-btn a span i{
+   position: static !important;
+   transform: translatey(0%) !important;
+}
+.Beheer_btn a strong, .row.desired-deatils a.h4.mr-jonas, .row.account-management a.btn.btn-default.kunstuitleen-url {
+    color: #2A374A !important;
+    font-size: 16px !important;
+    font-weight: 600;
+    text-decoration: none !important;
+    line-height: 24px;
+}
+.box-account-management .box-shadow,.box-account-management_main .box-shadow{
+    padding:30px ;
+}
+.box-account-management,.box-account-management_main{
+    padding:0px 15px;
+}
+.box-account-management_main{
+    margin-top: 30px;
+}
+.row.account-management label.col-md-12.h5.mr-jonas,.row.account-management .col-md-12.mt-15 {
+    padding-left: 0px;
+}
+.heir_content{
+color: #2A374A;
+font-size: 12px;
+}
+.kunstuitleen-my-details {
+    padding: 30px !important;
+}
+.plr-15{
+    padding-left:15px;
+    padding-right:15px;
+}
+.Beheer_btn a{
+    padding-left: 15px !important;
+}
+@media (max-width:  991px) {
+    .row.account-management {
+    display: flex;
+}
+.img-col ,.grp-img-col{
+    align-self: center;
+}
+}
+@media (max-width:  767px) {
+.box-shadow .btn-default {
+    width: 100%;
+    display: block;
+    text-align: left;
+}
+}
+@media (max-width:  575px) {
+.box-account-management .box-shadow, .box-account-management_main .box-shadow {
+    padding: 20px;
+}
+}
+/*---------------|| Betaalgegevens End ||-------------------*/

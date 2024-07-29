@@ -21,8 +21,6 @@ class FrmAntiSpam extends FrmValidate {
 
 	/**
 	 * @param int $form_id
-	 *
-	 * @return void
 	 */
 	public static function maybe_init( $form_id ) {
 		$antispam = new self( $form_id );
@@ -35,8 +33,6 @@ class FrmAntiSpam extends FrmValidate {
 	 * Initialise the actions for the Anti-spam.
 	 *
 	 * @since 4.11
-	 *
-	 * @return void
 	 */
 	public function init() {
 		add_filter( 'frm_form_attributes', array( $this, 'add_token_to_form' ), 10, 1 );
@@ -107,10 +103,8 @@ class FrmAntiSpam extends FrmValidate {
 		$valid_token_times_before = apply_filters(
 			'frm_form_token_check_before_today',
 			array(
-				// Two days ago.
-				2 * DAY_IN_SECONDS,
-				// One day ago.
-				1 * DAY_IN_SECONDS,
+				( 2 * DAY_IN_SECONDS ), // Two days ago.
+				( 1 * DAY_IN_SECONDS ), // One day ago.
 			)
 		);
 
@@ -119,8 +113,7 @@ class FrmAntiSpam extends FrmValidate {
 		$valid_token_times_after = apply_filters(
 			'frm_form_token_check_after_today',
 			array(
-				// Add in 45 minutes past today to catch some midnight edge cases.
-				45 * MINUTE_IN_SECONDS,
+				( 45 * MINUTE_IN_SECONDS ), // Add in 45 minutes past today to catch some midnight edge cases.
 			)
 		);
 
@@ -177,8 +170,6 @@ class FrmAntiSpam extends FrmValidate {
 
 	/**
 	 * @param int $form_id
-	 *
-	 * @return void
 	 */
 	public static function maybe_echo_token( $form_id ) {
 		$antispam = new self( $form_id );
@@ -223,6 +214,22 @@ class FrmAntiSpam extends FrmValidate {
 		}
 
 		return $this->process_antispam_filter( true );
+	}
+
+	/**
+	 * @return bool True if saving a draft.
+	 */
+	private function is_saving_a_draft() {
+		global $frm_vars;
+		if ( empty( $frm_vars['form_params'] ) ) {
+			return false;
+		}
+		$form_params = $frm_vars['form_params'];
+		if ( ! isset( $form_params[ $this->form_id ] ) ) {
+			return false;
+		}
+		$this_form_params = $form_params[ $this->form_id ];
+		return ! empty( $this_form_params['action'] ) && 'update' === $this_form_params['action'];
 	}
 
 	/**
@@ -274,7 +281,7 @@ class FrmAntiSpam extends FrmValidate {
 		}
 
 		// If the user is an admin, return text with a link to support.
-		// We add a space here to separate the sentences, but outside of the localized
+		// We add a space here to seperate the sentences, but outside of the localized
 		// text to avoid it being removed.
 		return ' ' . sprintf(
 			// translators: %1$s start link, %2$s end link.
@@ -286,8 +293,6 @@ class FrmAntiSpam extends FrmValidate {
 
 	/**
 	 * Clear third party cache plugins to avoid data-tokens missing or appearing when the antispam setting is changed.
-	 *
-	 * @return void
 	 */
 	public static function clear_caches() {
 		self::clear_w3_total_cache();
@@ -296,25 +301,16 @@ class FrmAntiSpam extends FrmValidate {
 		self::clear_wp_optimize();
 	}
 
-	/**
-	 * @return void
-	 */
 	private static function clear_w3_total_cache() {
 		if ( is_callable( 'w3tc_flush_all' ) ) {
 			w3tc_flush_all();
 		}
 	}
 
-	/**
-	 * @return void
-	 */
 	private static function clear_wp_fastest_cache() {
 		do_action( 'wpfc_clear_all_cache' );
 	}
 
-	/**
-	 * @return void
-	 */
 	private static function clear_wp_super_cache() {
 		if ( function_exists( 'wp_cache_clean_cache' ) ) {
 			global $file_prefix;
@@ -322,9 +318,6 @@ class FrmAntiSpam extends FrmValidate {
 		}
 	}
 
-	/**
-	 * @return void
-	 */
 	private static function clear_wp_optimize() {
 		if ( class_exists( 'WP_Optimize' ) ) {
 			WP_Optimize()->get_page_cache()->purge();

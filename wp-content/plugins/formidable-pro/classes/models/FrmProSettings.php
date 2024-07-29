@@ -4,7 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'You are not allowed to call this page directly.' );
 }
 
-#[\AllowDynamicProperties]
 class FrmProSettings extends FrmSettings {
 	public $option_name = 'frmpro_options';
 
@@ -16,7 +15,6 @@ class FrmProSettings extends FrmSettings {
 	public $date_format;
 	public $menu_icon;
 	public $inbox;
-	public $repeater_row_delete_confirmation;
 
 	/**
 	 * @return array
@@ -37,7 +35,6 @@ class FrmProSettings extends FrmSettings {
 				'news'     => 1,
 				'feedback' => 1,
 			),
-			'repeater_row_delete_confirmation' => __( 'Are you sure you want to delete this row?', 'formidable-pro' ),
 		);
 	}
 
@@ -49,7 +46,7 @@ class FrmProSettings extends FrmSettings {
 	 * @since 4.06.01
 	 */
 	public function fill_with_defaults( $params = array() ) {
-		$params['additional_filter_keys'] = array( 'edit_msg', 'update_value', 'already_submitted', 'repeater_row_delete_confirmation' );
+		$params['additional_filter_keys'] = array( 'edit_msg', 'update_value', 'already_submitted' );
 		parent::fill_with_defaults( $params );
 		$this->fill_inbox_defaults();
 	}
@@ -77,7 +74,7 @@ class FrmProSettings extends FrmSettings {
 		}
 		$this->get_cal_date();
 
-		$this->fill_with_defaults( $params );
+		$this->fill_with_defaults($params);
 	}
 
 	/**
@@ -111,7 +108,7 @@ class FrmProSettings extends FrmSettings {
 		// Save the posted value in the database
 		update_option( $this->option_name, $this, 'no' );
 
-		delete_transient( $this->option_name );
-		set_transient( $this->option_name, $this );
+		delete_transient($this->option_name);
+		set_transient($this->option_name, $this);
 	}
 }

@@ -11,7 +11,6 @@ use Yoast\WP\SEO\Helpers\Image_Helper;
 use Yoast\WP\SEO\Helpers\Indexable_Helper;
 use Yoast\WP\SEO\Helpers\Options_Helper;
 use Yoast\WP\SEO\Helpers\Permalink_Helper;
-use Yoast\WP\SEO\Helpers\Request_Helper;
 use Yoast\WP\SEO\Helpers\Schema\ID_Helper;
 use Yoast\WP\SEO\Helpers\Site_Helper;
 use Yoast\WP\SEO\Helpers\Url_Helper;
@@ -26,36 +25,35 @@ use Yoast\WP\SEO\Repositories\Indexable_Repository;
  *
  * Class that contains all relevant data for rendering the meta tags.
  *
- * @property string          $canonical
- * @property string          $permalink
- * @property string          $title
- * @property string          $description
- * @property string          $id
- * @property string          $site_name
- * @property string          $alternate_site_name
- * @property string          $wordpress_site_name
- * @property string          $site_url
- * @property string          $company_name
- * @property string          $company_alternate_name
- * @property int             $company_logo_id
- * @property array           $company_logo_meta
- * @property int             $person_logo_id
- * @property array           $person_logo_meta
- * @property int             $site_user_id
- * @property string          $site_represents
- * @property array|false     $site_represents_reference
- * @property string|string[] $schema_page_type
- * @property string|string[] $schema_article_type      Represents the type of article.
- * @property string          $main_schema_id
- * @property string|array    $main_entity_of_page
- * @property bool            $open_graph_enabled
- * @property string          $open_graph_publisher
- * @property string          $twitter_card
- * @property string          $page_type
- * @property bool            $has_article
- * @property bool            $has_image
- * @property int             $main_image_id
- * @property string          $main_image_url
+ * @property string       $canonical
+ * @property string       $permalink
+ * @property string       $title
+ * @property string       $description
+ * @property string       $id
+ * @property string       $site_name
+ * @property string       $alternate_site_name
+ * @property string       $wordpress_site_name
+ * @property string       $site_url
+ * @property string       $company_name
+ * @property string       $company_alternate_name
+ * @property int          $company_logo_id
+ * @property array        $company_logo_meta
+ * @property int          $person_logo_id
+ * @property array        $person_logo_meta
+ * @property int          $site_user_id
+ * @property string       $site_represents
+ * @property array|false  $site_represents_reference
+ * @property string       schema_page_type
+ * @property string       $main_schema_id
+ * @property string|array $main_entity_of_page
+ * @property bool         $open_graph_enabled
+ * @property string       $open_graph_publisher
+ * @property string       $twitter_card
+ * @property string       $page_type
+ * @property bool         $has_article
+ * @property bool         $has_image
+ * @property int          $main_image_id
+ * @property string       $main_image_url
  */
 class Meta_Tags_Context extends Abstract_Presentation {
 
@@ -123,13 +121,6 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	private $id_helper;
 
 	/**
-	 * The request helper.
-	 *
-	 * @var Request_Helper
-	 */
-	private $request_helper;
-
-	/**
 	 * The WPSEO Replace Vars object.
 	 *
 	 * @var WPSEO_Replace_Vars
@@ -184,7 +175,6 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	 * @param Permalink_Helper     $permalink_helper     The permalink helper.
 	 * @param Indexable_Helper     $indexable_helper     The indexable helper.
 	 * @param Indexable_Repository $indexable_repository The indexable repository.
-	 * @param Request_Helper       $request_helper       The request helper.
 	 */
 	public function __construct(
 		Options_Helper $options,
@@ -196,8 +186,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		User_Helper $user,
 		Permalink_Helper $permalink_helper,
 		Indexable_Helper $indexable_helper,
-		Indexable_Repository $indexable_repository,
-		Request_Helper $request_helper
+		Indexable_Repository $indexable_repository
 	) {
 		$this->options              = $options;
 		$this->url                  = $url;
@@ -209,7 +198,6 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		$this->permalink_helper     = $permalink_helper;
 		$this->indexable_helper     = $indexable_helper;
 		$this->indexable_repository = $indexable_repository;
-		$this->request_helper       = $request_helper;
 	}
 
 	/**
@@ -249,7 +237,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 			return $this->presentation->permalink;
 		}
 
-		return \add_query_arg( 's', \rawurlencode( \get_search_query() ), \trailingslashit( $this->site_url ) );
+		return \add_query_arg( 's', \get_search_query(), \trailingslashit( $this->site_url ) );
 	}
 
 	/**
@@ -317,7 +305,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		/**
 		 * Filter: 'wpseo_schema_company_name' - Allows filtering company name
 		 *
-		 * @param string $company_name.
+		 * @api string $company_name.
 		 */
 		$company_name = \apply_filters( 'wpseo_schema_company_name', $this->options->get( 'company_name' ) );
 
@@ -352,7 +340,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		/**
 		 * Filter: 'wpseo_schema_person_logo_id' - Allows filtering person logo id.
 		 *
-		 * @param int $person_logo_id.
+		 * @api integer $person_logo_id.
 		 */
 		return \apply_filters( 'wpseo_schema_person_logo_id', $person_logo_id );
 	}
@@ -360,7 +348,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	/**
 	 * Retrieve the person logo meta.
 	 *
-	 * @return array<string|array<int>>|bool
+	 * @return array|bool
 	 */
 	public function generate_person_logo_meta() {
 		$person_logo_meta = $this->image->get_attachment_meta_from_settings( 'person_logo' );
@@ -373,7 +361,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		/**
 		 * Filter: 'wpseo_schema_person_logo_meta' - Allows filtering person logo meta.
 		 *
-		 * @param string $person_logo_meta.
+		 * @api string $person_logo_meta.
 		 */
 		return \apply_filters( 'wpseo_schema_person_logo_meta', $person_logo_meta );
 	}
@@ -393,7 +381,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		/**
 		 * Filter: 'wpseo_schema_company_logo_id' - Allows filtering company logo id.
 		 *
-		 * @param int $company_logo_id.
+		 * @api integer $company_logo_id.
 		 */
 		return \apply_filters( 'wpseo_schema_company_logo_id', $company_logo_id );
 	}
@@ -401,7 +389,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	/**
 	 * Retrieve the company logo meta.
 	 *
-	 * @return array<string|array<int>>|bool
+	 * @return array|bool
 	 */
 	public function generate_company_logo_meta() {
 		$company_logo_meta = $this->image->get_attachment_meta_from_settings( 'company_logo' );
@@ -409,7 +397,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		/**
 		 * Filter: 'wpseo_schema_company_logo_meta' - Allows filtering company logo meta.
 		 *
-		 * @param string $company_logo_meta.
+		 * @api string $company_logo_meta.
 		 */
 		return \apply_filters( 'wpseo_schema_company_logo_meta', $company_logo_meta );
 	}
@@ -460,7 +448,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	/**
 	 * Returns the site represents reference.
 	 *
-	 * @return array<string>|bool The site represents reference. False if none.
+	 * @return array|bool The site represents reference. False if none.
 	 */
 	public function generate_site_represents_reference() {
 		if ( $this->site_represents === 'person' ) {
@@ -510,7 +498,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	/**
 	 * Returns the schema page type.
 	 *
-	 * @return string|array<string> The schema page type.
+	 * @return string|array The schema page type.
 	 */
 	public function generate_schema_page_type() {
 		switch ( $this->indexable->object_type ) {
@@ -552,7 +540,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		/**
 		 * Filter: 'wpseo_schema_webpage_type' - Allow changing the WebPage type.
 		 *
-		 * @param string|array $type The WebPage type.
+		 * @api string|array $type The WebPage type.
 		 */
 		return \apply_filters( 'wpseo_schema_webpage_type', $type );
 	}
@@ -560,7 +548,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	/**
 	 * Returns the schema article type.
 	 *
-	 * @return string|array<string> The schema article type.
+	 * @return string|array The schema article type.
 	 */
 	public function generate_schema_article_type() {
 		$additional_type = $this->indexable->schema_article_type;
@@ -625,10 +613,6 @@ class Meta_Tags_Context extends Abstract_Presentation {
 			return $this->image->get_attachment_image_url( $this->main_image_id, 'full' );
 		}
 
-		if ( $this->request_helper->is_rest_request() ) {
-			return $this->get_main_image_url_for_rest_request();
-		}
-
 		if ( ! \is_singular() ) {
 			return null;
 		}
@@ -642,15 +626,11 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	}
 
 	/**
-	 * Generates the main image ID.
+	 * Gets the main image ID.
 	 *
 	 * @return int|null The main image ID.
 	 */
 	public function generate_main_image_id() {
-		if ( $this->request_helper->is_rest_request() ) {
-			return $this->get_main_image_id_for_rest_request();
-		}
-
 		switch ( true ) {
 			case \is_singular():
 				return $this->get_singular_post_image( $this->id );
@@ -686,7 +666,7 @@ class Meta_Tags_Context extends Abstract_Presentation {
 	/**
 	 * Strips all nested dependencies from the debug info.
 	 *
-	 * @return array<Indexable,Indexable_Presentation>
+	 * @return array
 	 */
 	public function __debugInfo() {
 		return [
@@ -732,42 +712,28 @@ class Meta_Tags_Context extends Abstract_Presentation {
 		return null;
 	}
 
-	/**
-	 * Gets the main image ID for REST requests.
-	 *
-	 * @return int|null The main image ID.
-	 */
-	private function get_main_image_id_for_rest_request() {
-		switch ( $this->page_type ) {
-			case 'Post_Type':
-				if ( $this->post instanceof WP_Post ) {
-					return $this->get_singular_post_image( $this->post->ID );
-				}
-				return null;
-			default:
-				return null;
-		}
-	}
+	/* ********************* DEPRECATED METHODS ********************* */
 
 	/**
-	 * Gets the main image URL for REST requests.
+	 * Generates whether or not breadcrumbs are enabled.
 	 *
-	 * @return string|null The main image URL.
+	 * @deprecated 15.8
+	 * @codeCoverageIgnore
+	 *
+	 * @return bool Whether or not breadcrumbs are enabled.
 	 */
-	private function get_main_image_url_for_rest_request() {
-		switch ( $this->page_type ) {
-			case 'Post_Type':
-				if ( $this->post instanceof WP_Post ) {
-					$url = $this->image->get_post_content_image( $this->post->ID );
-					if ( $url === '' ) {
-						return null;
-					}
-					return $url;
-				}
-				return null;
-			default:
-				return null;
+	public function generate_breadcrumbs_enabled() {
+		\_deprecated_function( __METHOD__, 'WPSEO 15.8' );
+		$breadcrumbs_enabled = \current_theme_supports( 'yoast-seo-breadcrumbs' );
+		if ( ! $breadcrumbs_enabled ) {
+			$breadcrumbs_enabled = $this->options->get( 'breadcrumbs-enable', false );
 		}
+
+		if ( ! empty( $this->blocks['yoast-seo/breadcrumbs'] ) ) {
+			$breadcrumbs_enabled = true;
+		}
+
+		return $breadcrumbs_enabled;
 	}
 }
 

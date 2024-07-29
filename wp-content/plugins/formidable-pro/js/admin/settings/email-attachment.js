@@ -50,8 +50,8 @@
 				}
 				container.find( '.frm_email_attachment_icon' ).html( '<img src="' + icon + '" class="frm_image_preview" />' );
 
-				button.addClass( 'frm_hidden' );
-				$( '.frm_email_remove_attachment' ).removeClass( 'frm_hidden' );
+				button.hide();
+				$( '.frm_email_remove_attachment' ).show();
 			});
 
 			mediaUploader.open();
@@ -76,8 +76,8 @@
 			container.find( '.frm_email_attachment' ).val( '' );
 			container.find( '.frm_email_attachment_name' ).text( '' );
 			container.find( '.frm_email_attachment_icon' ).html( '' );
-			button.addClass( 'frm_hidden' );
-			$( '.frm_email_add_attachment' ).removeClass( 'frm_hidden' );
+			button.hide();
+			$( '.frm_email_add_attachment' ).show();
 		});
 	});
 }( jQuery ) );

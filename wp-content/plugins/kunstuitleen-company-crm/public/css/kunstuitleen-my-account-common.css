@@ -1,0 +1,447 @@
+/*---------------|| Slide-left Menu Start ||-------------------*/
+@font-face {
+    font-family: 'MrJones-Book';
+    src: url(../mr_jones/Mr_Jones/MrJonesBook.ttf);
+}
+.margin-top{
+    margin-top: 6rem;
+}
+.cinzel{
+    font-family: 'Cinzel', serif;
+}
+.mr-jonas{
+    font-family: "MrJones-Book", sans-serif;
+}
+.kunstuitleen-menu{
+    padding-inline-start: 2px;
+    list-style: none;
+}
+@media screen and (min-width: 1199px){
+    .d-lg-flex {
+        display: -ms-flexbox !important;
+        display: flex !important;
+    }
+}
+
+main.kunstuitleen-main-account .kunstuitleen-menu li {
+     border: 1px solid #e9f4ff;
+    border-left: 2px solid #e9f4ff;
+    padding-left: 10px;
+    border-bottom:unset;
+    margin-bottom: 0px;
+    display: block;
+    border-collapse: collapse;
+}
+main.kunstuitleen-main-account .kunstuitleen-menu li:last-child {
+     border-bottom:  1px solid #e9f4ff;
+}
+main.kunstuitleen-main-account button.btn.btn-default.search-btn {
+    color: #2A374A;
+    font-size: 16px;
+    font-weight: 600;
+}
+main.kunstuitleen-main-account .kunstuitleen-menu li a .h5 strong {
+    cursor: pointer;
+    font-size: 16px;
+    color: #2A374A;
+    line-height: 24px;
+}
+ul.kunstuitleen-menu li a {
+    padding: 10px 10px !important;
+}
+.kunstuitleen-menu li a{
+    color: #2a374a;
+    background-color: transparent !important;
+}
+.kunstuitleen-menu li a .h5 strong{
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.kunstuitleen-menu .active,.kunstuitleen-menu .active:hover {
+    background-color: #e9f4ff !important;
+    color: #607ff2;
+    border-left: 2px solid #607ff2 !important;
+    border-radius: 0 30px 30px 0;
+}
+.kunstuitleen-menu .active a{
+    color: #607ff2 !important;
+     background-color: transparent;
+}
+.kunstuitleen-menu li:hover {
+    background-color: #e9f4ff !important;
+    border-left: 2px solid #607ff2 !important;
+    border-radius: 0 30px 30px 0;
+}
+.kunstuitleen-menu li:hover a{
+   color: #607ff2 !important;
+}
+.kunstuitleen-menu li a strong {
+    font-size: 16px;
+}
+.kunstuitleen-menu li .btn:active, .kunstuitleen-menu li .btn.active{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.btn{
+    display: inline-block;
+    padding: 6px 12px !important;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    height: inherit !important;
+    line-height: normal!important;
+   
+}
+* {
+    vertical-align: inherit;
+}
+.kunstuitleen-main-account .m0{
+    margin: 0px !important;
+}
+.kunstuitleen-main-account *{
+    font-family: Roboto;
+}
+.kunstuitleen-main-account .btn,.kunstuitleen-main-account button{
+background-color: transparent !important;
+height: unset !important;
+}
+.kunstuitleen-menu-parent .kunstuitleen-menu li.active a{
+    color: #607ff2 !important;
+}
+
+/*---------------|| Slide-left Menu End ||-------------------*/
+/*---------------|| my_account_head Start||-------------------*/
+.kunstuitleen-main-account label.title strong {
+    font-size: 32px;
+    color: #2A374A;
+}
+.mb-30px {
+    margin-bottom: 30px;
+}
+button.btn {
+    outline: none !important;
+}
+.kunstuitleen-main-account  button.btn strong{
+     line-height: 30px;
+}
+.table-gift-card table.table th.mr-jonas a {
+    display: flex;
+}
+label.h3.mr-jonas.text-capitalize strong {
+    font-size: 18px;
+}
+table.table.table-borderless, table.table.table-borderless th, table.table.table-borderless td {
+    border: none !important;
+}
+.img-download {
+    height: 18px !important;
+    padding-right: 10px !important;
+    display: inline-block !important;
+}
+.kunstuitleen-account_group ul.kunstuitleen-menu li.active a strong {
+    color: #4C51C6 !important;
+}
+
+
+table.table.table-borderless th.mr-jonas a {
+    color:#6382F3;
+    text-decoration: none;
+}
+.select-year select{ 
+    border: 1px solid #e1e8f1;
+    color: #2a374a;
+    font-weight: bold;
+    background-color:transparent !important;
+    font-family: 'MrJones-Book',sans-serif;
+}
+.box-shadow{
+    -webkit-box-shadow: 0px 10px 20px 0px #eaeaea !important;
+    -moz-box-shadow: 0px 10px 20px 0px #eaeaea !important;
+   box-shadow:0px 10px 20px 0px #eaeaea !important;
+}
+
+
+/*---------------|| my_account_head End ||-------------------*/
+/*---------------|| 18-08-2021 Start ||-------------------*/
+.kunstuitleen-account_group  .account_total_group label.h4.mr-jonas strong,.kunstuitleen-account_group  .voucher-col p.mr-jonas.h4 strong,.kunstuitleen-account_group .main_account_group .middle_content label.h4.mr-jonas,.kunstuitleen-account_group .main_account_group .title_heading strong{
+     color: #2A374A !important;
+}
+.kunstuitleen-account_group .main_account_group .title_heading strong,.kunstuitleen-account_group  .account_total_group label.h4.mr-jonas strong {
+    font-size: 18px;
+}
+.kunstuitleen-account_group .main_account_group .middle_content label.h4.mr-jonas,.kunstuitleen-account_group  .voucher-col p.mr-jonas.h4 strong {
+    font-size: 16px;
+}
+.p0{
+    padding: 0px !important;
+}
+.kunstuitleen-account_group .main_account_group p.mr-jonas.expire-date {
+ color: #9DAFC2 !important;
+}
+.kunstuitleen-account_group .main_account_group p.mr-jonas.expire-date {
+    font-size: 12px;
+}
+/*---------------|| 18-08-2021 End ||-------------------*/
+
+
+.my-details ,.row.art-block .row.content{
+    padding: 22px !important;
+}
+.voucher-col .box-shadow, .row.main-row .box-shadow {
+    padding: 22px 22px 0px;
+}
+.content {
+    border-bottom: 1px solid #e1e8f1;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+    border-left: 1px solid #fdfdfd;
+    border-right: 1px solid #fdfdfd;
+    -webkit-box-shadow: 0px 10px 20px 0px #eaeaea !important;
+    -moz-box-shadow: 0px 10px 20px 0px #eaeaea !important;
+    box-shadow: 0px 10px 20px 0px #eaeaea !important;
+}
+.search-btn .fa {
+    padding-left: 18px;
+    position: relative;
+    font-size: 26px;
+    top: -1px;
+}
+.search-btn {
+    font-weight: 600;
+    font-size: 16px;
+    color: #2A374A !important;
+}
+.present {
+    padding-top: 30px;
+}
+.row.search-btn input[type="text"]::placeholder {
+    color: #9DAFC2;
+}
+.row.search-btn input[type="text"] {
+    border: 1px solid #9DAFC2;
+    font-family: 'MrJones-Book';
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    height: 45px !important;
+}
+.row.table-gift-card.table-responsive {
+    margin-top: 0px;
+}
+.main #label .h5 {
+    color: #2f3c4e;
+    padding: 8px 10px;
+}
+.row.table-gift-card.table-responsive {
+    margin: 0px;
+}
+.table-gift-card.table-responsive table,.table-gift-card.table-responsive table th, .table-gift-card.table-responsive table td {
+    border: 1px solid #F6FAFC !important;
+}
+.table-responsive.kunstuitleen-table table.table tr td strong,.table-responsive.kunstuitleen-table table.table tr td a{
+font-size: 14px !important;
+}
+.table-responsive {
+   border: none !important;
+}
+.table-borderless span.fa.fa-minus {
+    margin-top: 4px;
+} 
+.kunstuitleen-table td i.fa.fa-check, .kunstuitleen-table td i.fa.fa-sign-in {
+    margin-top: 5px;
+}
+.table-gift-card.table-responsive .table th,.table-gift-card.table-responsive .table td{
+    padding: 20px !important;
+}
+.gift-cards .box-shadow buttom.btn.btn-default{
+    border: none !important;
+    margin: 0px;
+    padding: 15px 5px !important;
+}
+.row.search-btn form {
+    margin-top: 0px !important;
+}
+/* 
+.row.current-artworks .view-artworks-btn {
+    padding-left: 0px !important;
+} */
+.account_page_first {
+    padding: 20px 0px 0px !important;
+}
+.kunstuitleen-main-account .row.table-gift-card button.btn.btn-default {
+    border: none !important;
+}
+ul.kunstuitleen-menu_item{
+    margin: 0px !important;
+}
+img.share_logo {
+    max-width: 20px !important;
+    margin-right: 10px;
+}
+img.sign_in {
+    margin-right: 0px;
+    margin-left: 15px;
+}
+.voucher_logo img {
+    height: 45px;
+    max-width: 56px;
+}
+img.img-responsive.pdf {
+    max-height: 20px;
+    margin-right: 15px;
+}
+.panel-body {
+    padding: 0px;
+}
+.table-responsive.kunstuitleen-table table.table.table-borderless, .table-responsive.kunstuitleen-table table.table.table-borderless th, .table-responsive.kunstuitleen-table table.table.table-borderless td {
+    border: 1px solid #F6FAFC !important;
+    border-collapse: collapse !important;
+    padding: 20px;
+}
+main.kunstuitleen-main-account .row.box-shadow {
+    padding: 20px 20px 0px;
+}
+.accont_title_heading .account_head{
+    padding: 0px 10px;
+}
+
+.account_voicher{
+    margin-top: 10px;
+}
+.main_account_group .row{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+.main_account_group .voucher-col{
+padding: 0px;
+}
+
+@media(max-width: 991px){
+    .border {
+        border: none !important;
+        margin-bottom: 15px;
+    }
+}
+@media(min-width: 768px){
+.kunstuitleen-my-details_moblie {
+    margin-top: -40px;
+}
+}
+@media(max-width: 767px){
+body table.table.table-borderless img.img-responsive.img-download {
+    height: 20px !important;
+}
+.container.mb-30px.kunstuitleen-account_group .col-md-9.main.main_account_group label.h4.mr-jonas.text-capitalize {
+    padding: 0px 15px;
+}
+.account_main_menu{
+margin: 40px 0px 0px !important;
+}
+body .my_account_overview {
+    padding: 0px 0px !important;
+}
+}
+@media (max-width: 575px) {
+.kunstuitleen-main-account label.title strong {
+    font-size: 26px !important;
+}
+    
+}
+/*---- others----*/
+.row.art-block .col-md-7 {
+    padding: 0px;
+}
+.row.art-block > .col-md-12{
+padding: 0px;
+}
+.box-shadow label.col-md-12.mr-jonas.h4.text-uppercase {
+    font-size: 16px;
+    line-height: normal;
+}
+body .table-responsive.kunstuitleen-table table.table.table-borderless, body .table-responsive.kunstuitleen-table table.table.table-borderless th, body .table-responsive.kunstuitleen-table table.table.table-borderless td {
+    border: 1px solid #F6FAFC !important;
+    border-collapse: collapse !important;
+    padding: 10px 8px;
+}
+.row.box-account-management_main .row.mt-15 .col-md-12 {
+    padding: 0px;
+}
+.col-md-12.mt-15.Beheer_btn a {
+    padding-left: 0px !important;
+}
+.row.box-account-management_main {
+    padding: 0px;
+}
+.row.information label.h5.mr-jonas.col-md-12 {
+    padding: 0px;
+}
+.row.desired-deatils.mt-15 > .col-md-12 {
+    padding: 0px;
+}
+ .plr-30{
+    padding-left:30px !important;
+    padding-right:30px!important;
+}
+i.fa.fa-angle-right ,i.fa.fa-refresh{
+    align-self: center;
+}
+.row.current-artworks-headings .row.content.d-lg-flex img.img-responsive {
+    max-height: 150px;
+    min-height: 150px;
+    max-width: 100%;
+    width: 100%;
+    object-fit: cover;
+    padding-top: 10px;
+}
+.container.mb-30px.kunstuitleen-account_group .row.current-artworks-headings .row.content {
+    margin: 20px 15px !important;
+}
+.my_account_overview {
+    padding: 0px 15px !important;
+}
+.plr-15{
+padding-left: 15px;
+padding-right: 15px;
+}
+.table-responsive.kunstuitleen-table {
+    padding: 0px 15px;
+}
+.row.search-btn .col-md-12 {
+    padding: 0px;
+}
+.row.current-artworks-headings .row.content.d-lg-flex .col-md-4.border .row.m0 label.h4.mr-jonas {
+    font-size: 16px;
+}
+.select-year:before {
+    content: "\f078";
+    font-family: 'FontAwesome';
+    display: block;
+    font-size: 10px;
+    right: 25px;
+    position: absolute;
+    top: 50%;
+    transform: translatey(-50%);
+      z-index: -2;
+}
+.select-year {
+    position: relative;
+}
+.select-year select {
+    padding: 8px 20px 8px 8px !important;
+    cursor: pointer;
+    background: transparent;
+    z-index: 8;
+}

@@ -127,4 +127,5 @@ class FrmProFieldSettings {
 	private function has_field_options() {
 		return ! empty( $this->field_options );
 	}
+
 }

@@ -4,14 +4,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div id="form_show_entry_page" class="frm_wrap frm_single_entry_page">
-	<div>
+	<div class="frm_page_container">
+
 		<?php
 		FrmAppHelper::get_admin_header(
 			array(
-				'label'      => __( 'View Entry', 'formidable' ),
-				'form'       => $form,
-				'hide_title' => true,
-				'close'      => '?page=formidable-entries&form=' . $form->id,
+				'label'       => __( 'View Entry', 'formidable' ),
+				'form'        => $form,
+				'hide_title'  => true,
+				'close'       => '?page=formidable-entries&form=' . $form->id,
 			)
 		);
 		?>
@@ -19,26 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="columns-2">
 
 		<div id="post-body-content" class="frm-fields">
-			<?php
-			/**
-			 * Fires after the `#post-body-content` element on the entry show page.
-			 *
-			 * This action is used in Pro to display the pagination buttons. It allows developers
-			 * to add custom HTML content after the main post body content.
-			 *
-			 * @since 6.4.1
-			 *
-			 * @param array $args Associative array with 'id' for entry ID and 'form' for form object.
-			 *
-			 * @type int    $args['id']   The ID of the entry.
-			 * @type object $args['form'] The form object.
-			 */
-			do_action( 'frm_show_entry_start_content', compact( 'id', 'form' ) );
-			?>
-
 			<div class="wrap frm-with-margin frm_form_fields">
 				<div class="postbox">
-					<a href="#" id="frm-entry-show-empty-fields" class="alignright frm-pre-hndle" data-frmtoggle=".frm-empty-row" data-toggletext="<?php esc_attr_e( 'Hide empty fields', 'formidable' ); ?>">
+					<a href="#" class="alignright frm-pre-hndle" data-frmtoggle=".frm-empty-row" data-toggletext="<?php esc_attr_e( 'Hide empty fields', 'formidable' ); ?>">
 						<?php esc_html_e( 'Show empty fields', 'formidable' ); ?>
 					</a>
 					<h3 class="hndle">

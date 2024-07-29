@@ -34,126 +34,126 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	 *
 	 * @var string
 	 */
-	public const COMPLETE_ROUTE = 'indexing/complete';
+	const COMPLETE_ROUTE = 'indexing/complete';
 
 	/**
 	 * The full indexing complete route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_COMPLETE_ROUTE = Main::API_V1_NAMESPACE . '/' . self::COMPLETE_ROUTE;
+	const FULL_COMPLETE_ROUTE = Main::API_V1_NAMESPACE . '/' . self::COMPLETE_ROUTE;
 
 	/**
 	 * The indexables complete route constant.
 	 *
 	 * @var string
 	 */
-	public const INDEXABLES_COMPLETE_ROUTE = 'indexing/indexables-complete';
+	const INDEXABLES_COMPLETE_ROUTE = 'indexing/indexables-complete';
 
 	/**
 	 * The full indexing complete route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_INDEXABLES_COMPLETE_ROUTE = Main::API_V1_NAMESPACE . '/' . self::INDEXABLES_COMPLETE_ROUTE;
+	const FULL_INDEXABLES_COMPLETE_ROUTE = Main::API_V1_NAMESPACE . '/' . self::INDEXABLES_COMPLETE_ROUTE;
 
 	/**
 	 * The indexing prepare route constant.
 	 *
 	 * @var string
 	 */
-	public const PREPARE_ROUTE = 'indexing/prepare';
+	const PREPARE_ROUTE = 'indexing/prepare';
 
 	/**
 	 * The full indexing prepare route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_PREPARE_ROUTE = Main::API_V1_NAMESPACE . '/' . self::PREPARE_ROUTE;
+	const FULL_PREPARE_ROUTE = Main::API_V1_NAMESPACE . '/' . self::PREPARE_ROUTE;
 
 	/**
 	 * The posts route constant.
 	 *
 	 * @var string
 	 */
-	public const POSTS_ROUTE = 'indexing/posts';
+	const POSTS_ROUTE = 'indexing/posts';
 
 	/**
 	 * The full posts route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_POSTS_ROUTE = Main::API_V1_NAMESPACE . '/' . self::POSTS_ROUTE;
+	const FULL_POSTS_ROUTE = Main::API_V1_NAMESPACE . '/' . self::POSTS_ROUTE;
 
 	/**
 	 * The terms route constant.
 	 *
 	 * @var string
 	 */
-	public const TERMS_ROUTE = 'indexing/terms';
+	const TERMS_ROUTE = 'indexing/terms';
 
 	/**
 	 * The full terms route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_TERMS_ROUTE = Main::API_V1_NAMESPACE . '/' . self::TERMS_ROUTE;
+	const FULL_TERMS_ROUTE = Main::API_V1_NAMESPACE . '/' . self::TERMS_ROUTE;
 
 	/**
 	 * The terms route constant.
 	 *
 	 * @var string
 	 */
-	public const POST_TYPE_ARCHIVES_ROUTE = 'indexing/post-type-archives';
+	const POST_TYPE_ARCHIVES_ROUTE = 'indexing/post-type-archives';
 
 	/**
 	 * The full terms route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_POST_TYPE_ARCHIVES_ROUTE = Main::API_V1_NAMESPACE . '/' . self::POST_TYPE_ARCHIVES_ROUTE;
+	const FULL_POST_TYPE_ARCHIVES_ROUTE = Main::API_V1_NAMESPACE . '/' . self::POST_TYPE_ARCHIVES_ROUTE;
 
 	/**
 	 * The general route constant.
 	 *
 	 * @var string
 	 */
-	public const GENERAL_ROUTE = 'indexing/general';
+	const GENERAL_ROUTE = 'indexing/general';
 
 	/**
 	 * The full general route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_GENERAL_ROUTE = Main::API_V1_NAMESPACE . '/' . self::GENERAL_ROUTE;
+	const FULL_GENERAL_ROUTE = Main::API_V1_NAMESPACE . '/' . self::GENERAL_ROUTE;
 
 	/**
 	 * The posts route constant.
 	 *
 	 * @var string
 	 */
-	public const POST_LINKS_INDEXING_ROUTE = 'link-indexing/posts';
+	const POST_LINKS_INDEXING_ROUTE = 'link-indexing/posts';
 
 	/**
 	 * The full posts route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_POST_LINKS_INDEXING_ROUTE = Main::API_V1_NAMESPACE . '/' . self::POST_LINKS_INDEXING_ROUTE;
+	const FULL_POST_LINKS_INDEXING_ROUTE = Main::API_V1_NAMESPACE . '/' . self::POST_LINKS_INDEXING_ROUTE;
 
 	/**
 	 * The terms route constant.
 	 *
 	 * @var string
 	 */
-	public const TERM_LINKS_INDEXING_ROUTE = 'link-indexing/terms';
+	const TERM_LINKS_INDEXING_ROUTE = 'link-indexing/terms';
 
 	/**
 	 * The full terms route constant.
 	 *
 	 * @var string
 	 */
-	public const FULL_TERM_LINKS_INDEXING_ROUTE = Main::API_V1_NAMESPACE . '/' . self::TERM_LINKS_INDEXING_ROUTE;
+	const FULL_TERM_LINKS_INDEXING_ROUTE = Main::API_V1_NAMESPACE . '/' . self::TERM_LINKS_INDEXING_ROUTE;
 
 	/**
 	 * The post indexing action.
@@ -267,6 +267,8 @@ class Indexing_Route extends Abstract_Indexation_Route {
 		$this->indexable_indexing_complete_action  = $indexable_indexing_complete_action;
 		$this->indexing_complete_action            = $indexing_complete_action;
 		$this->prepare_indexing_action             = $prepare_indexing_action;
+		$this->post_link_indexing_action           = $post_link_indexing_action;
+		$this->term_link_indexing_action           = $term_link_indexing_action;
 		$this->options_helper                      = $options_helper;
 		$this->post_link_indexing_action           = $post_link_indexing_action;
 		$this->term_link_indexing_action           = $term_link_indexing_action;
@@ -275,8 +277,6 @@ class Indexing_Route extends Abstract_Indexation_Route {
 
 	/**
 	 * Registers the routes used to index indexables.
-	 *
-	 * @return void
 	 */
 	public function register_routes() {
 		$route_args = [

@@ -2,7 +2,6 @@
 namespace LiteSpeed;
 defined( 'WPINC' ) || exit;
 
-$this->form_action();
 ?>
 <h3 class="litespeed-title-short">
 	<?php echo __( 'Tuning Settings', 'litespeed-cache' ); ?>
@@ -54,5 +53,3 @@ $this->form_action();
 		</td>
 	</tr>
 </tbody></table>
-
-<?php $this->form_end(); ?>

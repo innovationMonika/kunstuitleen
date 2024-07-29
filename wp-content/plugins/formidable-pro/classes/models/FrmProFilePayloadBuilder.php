@@ -148,3 +148,4 @@ class FrmProFilePayloadBuilder {
 		return ! empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'];
 	}
 }
+

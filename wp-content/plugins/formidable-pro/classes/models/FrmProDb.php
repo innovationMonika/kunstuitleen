@@ -6,20 +6,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmProDb {
 
-	public static $db_version = 84;
+	public static $db_version = 83;
 
 	/**
 	 * @since 3.0.02
 	 */
-	public static $plug_version = '6.8.4';
+	public static $plug_version = '5.2.05';
 
 	/**
 	 * @since 2.3
 	 */
 	public static function needs_upgrade( $needs_upgrade = false ) {
 		if ( ! $needs_upgrade ) {
-			if ( is_callable( 'FrmAppController::compare_for_update' ) ) {
-				$needs_upgrade = FrmAppController::compare_for_update(
+			if ( is_callable( 'FrmAppHelper::compare_for_update' ) ) {
+				$needs_upgrade = FrmAppHelper::compare_for_update(
 					array(
 						'option'             => 'frmpro_db_version',
 						'new_db_version'     => self::$db_version,
@@ -55,7 +55,7 @@ class FrmProDb {
 		}
 
 		if ( $old_db_version && is_numeric( $old_db_version ) ) {
-			$migrations = array( 16, 17, 25, 27, 28, 29, 30, 31, 32, 34, 36, 37, 39, 43, 44, 50, 62, 65, 66, 71, 78, 79, 81, 83 );
+			$migrations = array( 16, 17, 25, 27, 28, 29, 30, 31, 32, 34, 36, 37, 39, 43, 44, 50, 62, 65, 66, 71, 78, 79, 81, 82, 83 );
 			foreach ( $migrations as $migration ) {
 				if ( $db_version >= $migration && $old_db_version < $migration ) {
 					call_user_func( array( __CLASS__, 'migrate_to_' . $migration ) );
@@ -76,14 +76,14 @@ class FrmProDb {
 			wp_die( esc_html( $frm_settings->admin_permission ) );
 		}
 
-		delete_option( 'frmpro_options' );
-		delete_option( 'frmpro_db_version' );
+		delete_option('frmpro_options');
+		delete_option('frmpro_db_version');
 
 		//locations
 		delete_option( 'frm_usloc_options' );
 
-		delete_option( 'frmpro_copies_db_version' );
-		delete_option( 'frmpro_copies_checked' );
+		delete_option('frmpro_copies_db_version');
+		delete_option('frmpro_copies_checked');
 
 		// updating
 		delete_site_option( 'frmpro-authorized' );
@@ -99,50 +99,6 @@ class FrmProDb {
 	 */
 	public static function before_free_version_db_upgrade() {
 		FrmProContent::add_rewrite_endpoint();
-	}
-
-	/**
-	 * Add an index to the frm_item_metas table to speed up lookup fields.
-	 *
-	 * @since 6.3
-	 *
-	 * @return void
-	 */
-	private static function migrate_to_84() {
-		global $wpdb;
-
-		$table_name = "{$wpdb->prefix}frm_items";
-		$index_name = 'idx_form_id_is_draft';
-
-		if ( self::index_exists( $table_name, $index_name ) ) {
-			return;
-		}
-
-		$wpdb->query( "CREATE INDEX idx_form_id_is_draft ON `{$wpdb->prefix}frm_items` (form_id, is_draft)" );
-	}
-
-	/**
-	 * Check that an index exists in a database table before trying to add it (which results in an error).
-	 *
-	 * @since 6.3
-	 *
-	 * @param string $table_name
-	 * @param string $index_name
-	 * @return bool
-	 */
-	private static function index_exists( $table_name, $index_name ) {
-		global $wpdb;
-		$row = $wpdb->get_row(
-			$wpdb->prepare(
-				'SELECT 1 FROM information_schema.statistics
-					WHERE table_schema = database()
-						AND table_name = %s
-						AND index_name = %s
-					LIMIT 1',
-				array( $table_name, $index_name )
-			)
-		);
-		return (bool) $row;
 	}
 
 	/**
@@ -185,8 +141,157 @@ class FrmProDb {
 		}
 	}
 
+	/**
+	 * Attempt to move formidable/views to formidable-views and activate
+	 *
+	 * @since 4.09
+	 */
+	private static function migrate_to_82() {
+		if ( ! class_exists( 'FrmViewsAppHelper' ) ) {
+			return;
+		}
+
+		self::add_views_to_inbox();
+
+		if ( ! self::views_plugin_is_nested() || self::views_plugin_exists_outside_of_pro() ) {
+			return;
+		}
+
+		self::try_to_move_views_with_wp_filesystem() || self::try_to_download_views();
+	}
+
+	private static function add_views_to_inbox() {
+		$link   = FrmAppHelper::admin_upgrade_link( 'view-separation', 'account/downloads/' );
+		$addons = admin_url( 'admin.php?page=formidable-addons' );
+
+		if ( ! class_exists( 'FrmInbox' ) ) {
+			return;
+		}
+
+		$inbox = new FrmInbox();
+		$inbox->add_message(
+			array(
+				'key'     => 'views-separation',
+				'subject' => 'Formidable Views are now in a new plugin',
+				'message' => 'Guess what? Our views have a huge redesign coming. In order to make this easier to manage, we have moved Views into a new add-on. No worries. You will not lose access to Formidable Views.<br/>
+					This change should be fully automatic. Please check to make sure you have the new Formidable Views plugin on your site. If it\'s missing, please download it from your <a href="' . esc_url( $addons ) . '">Add-ons page</a> or <a href="' . esc_url( $link ) . '" target="_blank" rel="noopener">account page</a>.',
+				'cta'     => '<a href="' . esc_url( $addons ) . '" class="button-primary frm-button-primary">' . esc_html__( 'Check Add-ons', 'formidable-pro' ) . '</a>',
+				'icon'    => 'frm_folder_icon',
+				'type'    => 'news',
+			)
+		);
+	}
+
+	private static function desired_views_folder_location() {
+		return WP_PLUGIN_DIR . '/formidable-views';
+	}
+
+	private static function nested_views_folder_location() {
+		return FrmProAppHelper::plugin_path() . '/views';
+	}
+
+	private static function views_plugin_exists_outside_of_pro() {
+		return file_exists( self::desired_views_folder_location() );
+	}
+
+	private static function views_plugin_is_nested() {
+		return FrmViewsAppHelper::plugin_path() === self::nested_views_folder_location();
+	}
+
+	/**
+	 * @return bool true on success
+	 */
+	private static function try_to_move_views_with_wp_filesystem() {
+		$attempted = get_option( 'frm_attempt_views_copy' );
+		if ( false !== $attempted ) {
+			return false;
+		}
+
+		update_option( 'frm_attempt_views_copy', true, 'no' );
+		self::setup_wp_filesystem();
+
+		$nested_views_path  = self::nested_views_folder_location();
+		$desired_views_path = self::desired_views_folder_location();
+		$plugin_helper      = new FrmProInstallPlugin(
+			array(
+				'plugin_file' => 'formidable-views/formidable-views.php',
+			)
+		);
+
+		global $wp_filesystem;
+
+		if ( is_null( $wp_filesystem ) ) {
+			return false;
+		}
+
+		$desired_path_exists = $wp_filesystem->mkdir( $desired_views_path );
+
+		if ( ! $desired_path_exists ) {
+			return false;
+		}
+
+		$result = copy_dir( $nested_views_path, $desired_views_path );
+
+		if ( true === $result ) {
+			$plugin_helper->activate_plugin();
+			wp_schedule_single_event( time() + 1, 'delete_nested_views' );
+			return true;
+		}
+
+		return false;
+	}
+
+	private static function setup_wp_filesystem() {
+		new FrmCreateFile( array( 'file_name' => '' ) );
+	}
+
 	public static function delete_nested_views_folder() {
-		_deprecated_function( __METHOD__, '5.3.1' );
+		self::setup_wp_filesystem();
+		global $wp_filesystem;
+		if ( ! is_null( $wp_filesystem ) ) {
+			$wp_filesystem->rmdir( self::nested_views_folder_location(), true );
+		}
+	}
+
+	/**
+	 * @return bool true on success
+	 */
+	private static function try_to_download_views() {
+		$license   = FrmProAddonsController::get_pro_license();
+		$api       = new FrmFormApi( $license );
+		$downloads = $api->get_api_info();
+		$views     = self::get_views_from_addons( $downloads );
+
+		if ( empty( $views['url'] ) ) {
+			return false;
+		}
+
+		$download_url = esc_url_raw( $views['url'] );
+
+		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+
+		// Create the plugin upgrader with our custom skin.
+		$installer = new Plugin_Upgrader( new FrmProInstallerSkin() );
+		$installer->install( $download_url );
+
+		// Flush the cache and get the newly installed plugin basename.
+		wp_cache_flush();
+		$installed = $installer->plugin_info();
+		if ( ! $installed ) {
+			return false;
+		}
+
+		$network_wide = is_plugin_active_for_network( 'formidable-pro/formidable-pro.php' );
+		activate_plugin( $installed, '', $network_wide );
+
+		return true;
+	}
+
+	/**
+	 * @since 4.09
+	 */
+	private static function get_views_from_addons( $addons ) {
+		return isset( $addons['28027505'] ) ? $addons['28027505'] : array();
 	}
 
 	/**
@@ -334,7 +439,7 @@ class FrmProDb {
 			return;
 		}
 
-		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+		require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
 
 		$download_url = esc_url_raw( FrmProAddonsController::get_pro_download_url() );
 
@@ -832,19 +937,19 @@ class FrmProDb {
 		);
 
 		if ( $exists ) {
-			$new_post['ID'] = reset( $exists )->ID;
+			$new_post['ID'] = reset($exists)->ID;
 		}
 
-		$frmpro_settings = get_option( 'frmpro_options' );
+		$frmpro_settings = get_option('frmpro_options');
 
 		// If unserializing didn't work
-		if ( ! is_object( $frmpro_settings ) ) {
+		if ( ! is_object($frmpro_settings) ) {
 			if ( $frmpro_settings ) { //workaround for W3 total cache conflict
-				$frmpro_settings = unserialize( serialize( $frmpro_settings ) );
+				$frmpro_settings = unserialize(serialize($frmpro_settings));
 			}
 		}
 
-		if ( ! is_object( $frmpro_settings ) ) {
+		if ( ! is_object($frmpro_settings) ) {
 			return;
 		}
 
@@ -852,12 +957,12 @@ class FrmProDb {
 		$default_styles = $frm_style->get_defaults();
 
 		foreach ( $default_styles as $setting => $default ) {
-			if ( isset( $frmpro_settings->{$setting} ) ) {
+			if ( isset($frmpro_settings->{$setting}) ) {
 				$new_post['post_content'][ $setting ] = $frmpro_settings->{$setting};
 			}
 		}
 
-		$frm_style->save( $new_post );
+		$frm_style->save($new_post);
 	}
 
 	/**
@@ -878,22 +983,22 @@ class FrmProDb {
 		$form = FrmForm::getAll();
 		$field_ids = array();
 		foreach ( $form as $f ) {
-			if ( isset( $f->options['single_entry'] ) && $f->options['single_entry'] && is_numeric( $f->options['single_entry_type'] ) ) {
+			if ( isset($f->options['single_entry']) && $f->options['single_entry'] && is_numeric($f->options['single_entry_type']) ) {
 				$f->options['single_entry'] = 0;
 				$wpdb->update( $wpdb->prefix . 'frm_forms', array( 'options' => serialize( $f->options ) ), array( 'id' => $f->id ) );
 				$field_ids[] = $f->options['single_entry_type'];
 			}
-			unset( $f );
+			unset($f);
 		}
 
-		if ( ! empty( $field_ids ) ) {
+		if ( ! empty($field_ids) ) {
 			$fields = FrmDb::get_results( 'frm_fields', array( 'id' => $field_ids ), 'id, field_options' );
 			foreach ( $fields as $f ) {
 				$opts = $f->field_options;
 				FrmProAppHelper::unserialize_or_decode( $opts );
 				$opts['unique'] = 1;
 				$wpdb->update( $wpdb->prefix . 'frm_fields', array( 'field_options' => serialize( $opts ) ), array( 'id' => $f->id ) );
-				unset( $f );
+				unset($f);
 			}
 		}
 	}
@@ -906,7 +1011,7 @@ class FrmProDb {
 
 		$display_posts = array();
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}frm_display'" ) ) { //only migrate if table exists
-			$dis = FrmDb::get_results( 'frm_display' );
+			$dis = FrmDb::get_results('frm_display');
 		} else {
 			$dis = array();
 		}
@@ -922,39 +1027,32 @@ class FrmProDb {
 				'post_type'       => 'frm_display',
 			);
 			$post_ID = wp_insert_post( $post );
-			unset( $post );
+			unset($post);
 
-			update_post_meta( $post_ID, 'frm_old_id', $d->id );
+			update_post_meta($post_ID, 'frm_old_id', $d->id);
 
-			if ( ! isset( $d->show_count ) || empty( $d->show_count ) ) {
+			if ( ! isset($d->show_count) || empty($d->show_count) ) {
 				$d->show_count = 'none';
 			}
 
 			foreach ( array(
-				'dyncontent',
-				'param',
-				'form_id',
-				'post_id',
-				'entry_id',
-				'param',
-				'type',
-				'show_count',
-				'insert_loc',
+				'dyncontent', 'param', 'form_id', 'post_id', 'entry_id',
+				'param', 'type', 'show_count', 'insert_loc',
 			) as $f ) {
 				update_post_meta( $post_ID, 'frm_' . $f, $d->{$f} );
-				unset( $f );
+				unset($f);
 			}
 
 			FrmProAppHelper::unserialize_or_decode( $d->options );
-			update_post_meta( $post_ID, 'frm_options', $d->options );
+			update_post_meta($post_ID, 'frm_options', $d->options);
 
 			if ( isset( $d->options['insert_loc'] ) && $d->options['insert_loc'] != 'none' && is_numeric( $d->options['post_id'] ) && ! isset( $display_posts[ $d->options['post_id'] ] ) ) {
 				$display_posts[ $d->options['post_id'] ] = $post_ID;
 			}
 
-			unset( $d, $post_ID );
+			unset($d, $post_ID);
 		}
-		unset( $dis );
+		unset($dis);
 
 		//get all post_ids from frm_entries
 		$entry_posts = FrmDb::get_results( $wpdb->prefix . 'frm_items', array( 'post_id >' => 1 ), 'id, post_id, form_id' );
@@ -969,16 +1067,17 @@ class FrmProDb {
 				unset( $d );
 			}
 
-			unset( $ep );
+			unset($ep);
 		}
-		unset( $form_display );
+		unset($form_display);
 
 		foreach ( $display_posts as $post_ID => $d ) {
 			if ( $d ) {
-				update_post_meta( $post_ID, 'frm_display_id', $d );
+				update_post_meta($post_ID, 'frm_display_id', $d);
 			}
-			unset( $d, $post_ID );
+			unset($d, $post_ID);
 		}
-		unset( $display_posts );
+		unset($display_posts);
 	}
+
 }

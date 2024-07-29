@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ class Ai1wm_Export_Enumerate_Themes {
 					$iterator = new Ai1wm_Recursive_Directory_Iterator( $theme_dir );
 
 					// Exclude themes files
-					$iterator = new Ai1wm_Recursive_Exclude_Filter( $iterator, apply_filters( 'ai1wm_exclude_themes_from_export', ai1wm_theme_filters( $exclude_filters ) ) );
+					$iterator = new Ai1wm_Recursive_Exclude_Filter( $iterator, apply_filters( 'ai1wm_exclude_themes_from_export', $exclude_filters ) );
 
 					// Recursively iterate over themes directory
 					$iterator = new Ai1wm_Recursive_Iterator_Iterator( $iterator, RecursiveIteratorIterator::LEAVES_ONLY, RecursiveIteratorIterator::CATCH_GET_CHILD );

@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div id="frm_top_bar">
         <a href="<?php echo esc_url( admin_url( 'admin.php?page=formidable' ) ); ?>" class="frm-header-logo">
             <?php FrmAppHelper::show_header_logo(); ?>
-            <span class="screen-reader-text"><?php esc_html_e( 'View Forms', 'formidable-pro' ); ?></span>
         </a>
         <div class="frm_top_left">
             <h1>

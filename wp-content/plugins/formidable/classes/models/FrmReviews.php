@@ -15,8 +15,6 @@ class FrmReviews {
 	 * Add admin notices as needed for reviews
 	 *
 	 * @since 3.04.03
-	 *
-	 * @return void
 	 */
 	public function review_request() {
 
@@ -34,7 +32,7 @@ class FrmReviews {
 			$dismissed = false;
 		}
 
-		$week_ago = $this->review_status['time'] + WEEK_IN_SECONDS <= time();
+		$week_ago = ( $this->review_status['time'] + WEEK_IN_SECONDS ) <= time();
 
 		if ( empty( $dismissed ) && $week_ago ) {
 			$this->review();
@@ -45,8 +43,6 @@ class FrmReviews {
 	 * When was the review request last dismissed?
 	 *
 	 * @since 3.04.03
-	 *
-	 * @return void
 	 */
 	private function set_review_status() {
 		$user_id = get_current_user_id();
@@ -71,8 +67,6 @@ class FrmReviews {
 	 * Maybe show review request
 	 *
 	 * @since 3.04.03
-	 *
-	 * @return void
 	 */
 	private function review() {
 
@@ -119,18 +113,11 @@ class FrmReviews {
 		$this->add_to_inbox( $title, $name, $asked );
 
 		// We have a candidate! Output a review message.
-		include FrmAppHelper::plugin_path() . '/classes/views/shared/review.php';
+		include( FrmAppHelper::plugin_path() . '/classes/views/shared/review.php' );
 	}
 
-	/**
-	 * @param string $title
-	 * @param string $name
-	 * @param int    $asked
-	 *
-	 * @return void
-	 */
 	private function add_to_inbox( $title, $name, $asked ) {
-		$message  = new FrmInbox();
+		$message = new FrmInbox();
 		$requests = $message->get_messages();
 		$key      = $this->inbox_key . ( $asked ? $asked : '' );
 
@@ -158,7 +145,7 @@ class FrmReviews {
 					'- Steph Wells<br/>' .
 					'<span>' . esc_html__( 'Co-Founder and CTO of Formidable Forms', 'formidable' ) . '<span>',
 				'subject' => str_replace( $name, '', $title ),
-				'cta'     => '<a href="https://wordpress.org/support/plugin/formidable/reviews/?filter=5#new-post" class="frm-dismiss-review-notice frm-review-out button frm-button-secondary" data-link="yes" target="_blank" rel="noopener noreferrer">' .
+				'cta'     => '<a href="https://wordpress.org/support/plugin/formidable/reviews/?filter=5#new-post" class="frm-dismiss-review-notice frm-review-out button-secondary frm-button-secondary" data-link="yes" target="_blank" rel="noopener noreferrer">' .
 					esc_html__( 'Ok, you deserve it', 'formidable' ) . '</a>',
 				'type'    => 'feedback',
 			)
@@ -169,8 +156,6 @@ class FrmReviews {
 	 * If there are already later requests, don't add it to the inbox again.
 	 *
 	 * @since 4.05.02
-	 *
-	 * @return bool
 	 */
 	private function has_later_request( $requests, $asked ) {
 		return isset( $requests[ $this->inbox_key . ( $asked + 1 ) ] ) || isset( $requests[ $this->inbox_key . ( $asked + 2 ) ] );
@@ -178,8 +163,6 @@ class FrmReviews {
 
 	/**
 	 * @since 4.05.02
-	 *
-	 * @return array
 	 */
 	private function inbox_keys() {
 		return array(
@@ -191,8 +174,6 @@ class FrmReviews {
 
 	/**
 	 * @since 4.05.01
-	 *
-	 * @return void
 	 */
 	private function set_inbox_dismissed() {
 		$message = new FrmInbox();
@@ -203,8 +184,6 @@ class FrmReviews {
 
 	/**
 	 * @since 4.05.01
-	 *
-	 * @return void
 	 */
 	private function set_inbox_read() {
 		$message = new FrmInbox();
@@ -217,8 +196,6 @@ class FrmReviews {
 	 * Save the request to hide the review
 	 *
 	 * @since 3.04.03
-	 *
-	 * @return void
 	 */
 	public function dismiss_review() {
 		FrmAppHelper::permission_check( 'frm_change_settings' );

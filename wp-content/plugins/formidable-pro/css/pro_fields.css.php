@@ -15,17 +15,17 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 	}
 }
 	?>
-	--progress-border-color-b: <?php echo esc_html( FrmStylesHelper::adjust_brightness( $defaults['progress_border_color'], -10 ) ); ?>;
+	--progress-border-color-b: <?php echo esc_html( FrmStylesHelper::adjust_brightness( $defaults['progress_border_color'], -10 ) ) ?>;
 	--image-size:150px;
 }
 
 .js .frm_logic_form:not(.frm_no_hide) {
-	display:none;
+    display:none;
 }
 
 .with_frm_style .frm_conf_field.frm_half label.frm_conf_label {
-	overflow: hidden;
-	white-space: nowrap;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .with_frm_style .frm_time_wrap{
@@ -37,22 +37,15 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 	display:inline;
 }
 
-<?php if ( function_exists( 'twenty_twenty_one_setup' ) ) : ?>
-	body:not(.wp-admin) .frm_time_select {
-		padding-left: var(--form--spacing-unit) !important;
-		padding-right: calc(3 * var(--form--spacing-unit)) !important;
-	}
-<?php endif; ?>
-
 /* Sections */
 
-.with_frm_style .frm-show-form  .frm_section_heading h3[class*="frm_pos_"]{
+.with_frm_style .frm-show-form  .frm_section_heading h3{
 	padding:<?php echo esc_html( $defaults['section_pad'] . $important ); ?>;
 	margin:0<?php echo esc_html( $important ); ?>;
 	font-size:<?php echo esc_html( $defaults['section_font_size'] ); ?>;
 	font-size:var(--section-font-size)<?php echo esc_html( $important ); ?>;
 	<?php if ( ! empty( $defaults['font'] ) ) { ?>
-	font-family:<?php echo FrmAppHelper::kses( $defaults['font'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
+	font-family:<?php echo FrmAppHelper::kses( $defaults['font'] ); // WPCS: XSS ok. ?>;
 	font-family:var(--font);
 	<?php } ?>
 	font-weight:<?php echo esc_html( $defaults['section_weight'] ); ?>;
@@ -62,25 +55,6 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 	border:none<?php echo esc_html( $important ); ?>;
 	background-color:<?php echo esc_html( $defaults['section_bg_color'] ); ?>;
 	background-color:var(--section-bg-color)<?php echo esc_html( $important ); ?>;
-}
-
-.frm_trigger .frmsvg {
-	width: 20px;
-	height: 20px;
-}
-
-.frm_trigger > svg.frmsvg:nth-child(1) {
-	display:inline-block;
-}
-.frm_trigger > svg.frmsvg:nth-child(2) {
-	display:none;
-}
-
-.frm_trigger.active > svg.frmsvg:nth-child(2) {
-	display:inline-block;
-}
-.frm_trigger.active > svg.frmsvg:nth-child(1) {
-	display:none;
 }
 
 .with_frm_style .frm_repeat_sec{
@@ -127,10 +101,6 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 	display: none;
 }
 
-.frm_hide_remove_button.frm_remove_form_row {
-	display: none !important;
-}
-
 .frm_form_field div.frm_repeat_grid .frm_add_form_row.frm_hide_add_button,
 .frm_form_field div.frm_repeat_inline .frm_add_form_row.frm_hide_add_button {
 	visibility: hidden;
@@ -144,16 +114,12 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 	pointer-events: auto;
 }
 
-.frm_repeat_buttons.frm_hidden:last-child, .frm_add_form_row.frm_icon_font.frm_hidden:last-child {
+.frm_add_form_row.frm_button.frm_hidden:last-child, .frm_add_form_row.frm_icon_font.frm_hidden:last-child {
 	display: inline-block;
 }
 
 .frm_form_fields .frm_section_heading.frm_hidden {
 	display: none;
-}
-.frm_repeat_buttons a.frm_remove_form_row,
-.frm_repeat_buttons a.frm_add_form_row {
-	line-height: 1.8;
 }
 
 .frm_repeat_inline .frm_repeat_buttons a.frm_icon_font{
@@ -161,12 +127,7 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 }
 
 .frm_repeat_inline .frm_repeat_buttons a.frm_icon_font:before{
-	vertical-align: text-top;
-}
-
-.frm_repeat_buttons .frmsvg {
-	width: 20px;
-	height: 20px;
+    vertical-align: text-top;
 }
 
 .frm_repeat_grid .frm_button,
@@ -177,18 +138,18 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 }
 
 .with_frm_style .frm_button .frm_icon_font:before{
-	font-size:<?php echo esc_html( $defaults['submit_font_size'] ); ?>;
+    font-size:<?php echo esc_html( $defaults['submit_font_size'] ); ?>;
 	font-size:var(--submit-font-size)<?php echo esc_html( $important ); ?>;
 }
 
 .frm_repeat_sec .frm_button .frm_icon_font:before,
 .frm_repeat_grid .frm_button .frm_icon_font:before,
 .frm_repeat_inline .frm_button .frm_icon_font:before{
-	line-height:1;
+    line-height:1;
 }
 
 .frm_form_field .frm_repeat_grid ~ .frm_repeat_grid .frm_form_field .frm_primary_label{
-	display:none !important;
+    display:none !important;
 }
 
 /* Prefix */
@@ -215,14 +176,16 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 	align-items: center;
 	font-size: 90%;
 	padding: 0 10px;
-	color:<?php echo esc_html( $defaults['progress_color'] ); ?>;
+	color:<?php echo esc_html( $defaults['progress_color'] ) ?>;
 	color:var(--progress-color);
-	border:1px solid <?php echo esc_html( $defaults['border_color'] ); ?>;
+	border:1px solid <?php echo esc_html( $defaults['border_color'] ) ?>;
 	border-color:var(--border-color);
 	border-width:var(--field-border-width);
 	border-style:var(--field-border-style);
 	background-color: <?php echo esc_html( $defaults['progress_bg_color'] ); ?>;
 	background-color:var(--progress-bg-color);
+	-moz-border-radius:<?php echo esc_html( $defaults['border_radius'] ); ?>;
+	-webkit-border-radius:<?php echo esc_html( $defaults['border_radius'] ); ?>;
 	border-radius:<?php echo esc_html( $defaults['border_radius'] ); ?>;
 	border-radius:var(--border-radius);
 	width: auto;
@@ -270,65 +233,6 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 	border-bottom-right-radius: 0 !important;
 }
 
-/* Custom SlimSelect CSS */
-.ss-content.frm_slimselect {
-	padding: 0 !important;
-}
-.with_frm_style .ss-value-delete {
-	border-left: none !important;
-	padding-left: 0 !important;
-}
-.with_frm_style .ss-main {
-	display:flex !important;
-	--ss-font-color: var(--text-color);
-	--ss-border-color: var(--border-color);
-	--ss-border-radius: var(--border-radius);
-	--ss-bg-color: var(--bg-color);
-	/* TODO stop hard coding spacing. --field-pad is problematic because it's something like 6px 10px and ss-spacing-m gets used with ss-spacing-s */
-	--ss-spacing-s: 6px;
-	--ss-spacing-m: 10px;
-	--ss-main-height: var(--field-height);
-	border-width: var(--fieldset);
-	font-size: var(--field-font-size);
-	line-height: 1.3;
-	align-self: baseline;
-	margin-top: 3px; /* This is to account for the difference in vertical alignment for being display: flex. */
-	font-family:var(--font)<?php echo esc_html( $important ); ?>;
-}
-.ss-content.frm_slimselect {
-	font-size: <?php echo esc_html( $defaults['field_font_size'] ); ?>;
-	<?php if ( '' !== $defaults['font'] ) : ?>
-	font-family:<?php echo esc_html( $defaults['font'] ); ?>;
-	<?php endif; ?>
-	/* These rules fix conflicts with Boostrap 3 */
-	height: auto;
-	display: flex;
-}
-.with_frm_style .ss-main .ss-values .ss-value .ss-value-text {
-	padding: 2px var(--ss-spacing-s);
-}
-.ss-content.frm_slimselect.frm_slimselect_rtl {
-	direction: rtl;
-}
-.ss-content.frm_slimselect.frm_slimselect_rtl .ss-search input {
-	text-align: right;
-}
-.ss-main.frm_slimselect.frm_slimselect_rtl .ss-value-delete {
-	margin-left: var(--ss-spacing-m);
-}
-.ss-main.frm_slimselect .ss-values .ss-placeholder {
-	padding: 0;
-}
-.frm_fields_container .frm_form_field .ss-main.auto_width {
-	width: auto !important;
-	display: inline-flex !important;
-}
-.ss-main.frm_slimselect .ss-arrow {
-	margin-left: var(--ss-spacing-s);
-	margin-right: 0;
-}
-/* End SlimSelect CSS */
-
 .with_frm_style .frm_total input,
 .with_frm_style .frm_total_big input {
 	background-color:transparent;
@@ -352,72 +256,61 @@ if ( ! empty( $vars ) && is_callable( 'FrmStylesHelper::output_vars' ) ) {
 
 /* Datepicker */
 
-#ui-datepicker-div {
-	display:none;
-	z-index:999999 !important;
+#ui-datepicker-div{
+    display:none;
+    z-index:999999 !important;
 }
 
-<?php
-$use_default_date = ( empty( $defaults['theme_css'] ) || 'ui-lightness' === $defaults['theme_css'] );
-$datepicker_class = FrmProFieldsHelper::get_datepicker_class();
-$arrow_up         = FrmProStylesController::base64_encode_image( FrmProAppHelper::plugin_path() . '/images/arrowup.svg', 'image/svg+xml' );
-?>
+<?php $use_default_date = ( empty( $defaults['theme_css'] ) || 'ui-lightness' === $defaults['theme_css'] ); ?>
 
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-title select.ui-datepicker-month,
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-title select.ui-datepicker-year {
-	width: <?php echo esc_html( $use_default_date ? '33' : '45' ); ?>% <?php echo esc_html( $important ); ?>;
+.ui-datepicker .ui-datepicker-title select.ui-datepicker-month,
+.ui-datepicker .ui-datepicker-title select.ui-datepicker-year {
+    width: <?php echo esc_html( $use_default_date ? '33' : '45' ); ?>% <?php echo esc_html( $important ); ?>;
 	background-color:#fff;
-	padding: 5px 10px;
-	background-position-y: center;
-	background-position-x: right 5px;
-	line-height: 15px;
+	float:none;
 }
 
-.<?php echo esc_html( $datepicker_class ); ?> select.ui-datepicker-month{
+.ui-datepicker select.ui-datepicker-month{
 	margin-right: 3px;
 }
 
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-month, .<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-year {
+.ui-datepicker-month, .ui-datepicker-year{
 	max-width:100%;
 	max-height:2em;
 	padding:6px 10px;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
 	box-sizing:border-box;
 	display: inline;
 	color: <?php echo esc_html( $defaults['text_color'] ); ?>;
 }
 
-.<?php echo esc_html( $datepicker_class ); ?> span.ui-datepicker-month, .<?php echo esc_html( $datepicker_class ); ?> span.ui-datepicker-year {
-	line-height: 25px;
-	font-weight: 600;
-}
-
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-calendar {
+.ui-datepicker-calendar {
 	margin: 0 !important;
 }
 
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-prev:before{
-	background-image: url( <?php echo $arrow_up; ?> );
-	content: '' !important;
+<?php if ( $use_default_date ) { ?>
+.ui-datepicker .ui-widget-header,
+.ui-datepicker .ui-datepicker-header {
+    background: <?php echo esc_html( $defaults['date_head_bg_color'] ); ?> !important;
+	color: <?php echo esc_html( $defaults['date_head_color'] ); ?> !important;
 }
 
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-prev:before, .<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-next:before{
-	position: absolute;
-	top: 10px;
-	left: 6px;
+.ui-datepicker td.ui-datepicker-today{
+	background: rgba(<?php echo esc_html( FrmStylesHelper::hex2rgb( $defaults['date_band_color'] ) ); ?>,0.15) !important;
 }
 
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-next:before{
-	background-image: url( <?php echo $arrow_up; ?> );
-	content: '' !important;
+.ui-datepicker td.ui-datepicker-current-day,
+.ui-datepicker td .ui-state-hover,
+.ui-datepicker thead {
+    background: <?php echo esc_html( $defaults['date_band_color'] ); ?> !important;
+	color: <?php echo esc_html( $defaults['date_head_color'] ); ?> !important;
 }
 
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-prev{
-	transform: rotate(-90deg) !important;
+.ui-datepicker td.ui-datepicker-current-day .ui-state-default{
+	color: <?php echo esc_html( $defaults['date_head_color'] ); ?> !important;
 }
-
-.<?php echo esc_html( $datepicker_class ); ?> .ui-datepicker-next{
-	transform: rotate(90deg) !important;
-}
+<?php } ?>
 
 /* Graphs */
 .google-visualization-tooltip-item-list,
@@ -438,9 +331,21 @@ $arrow_up         = FrmProStylesController::base64_encode_image( FrmProAppHelper
 	float:left;
 }
 
-.with_frm_style .frm_scale input[type=radio]{
-	display:block !important;
+.with_frm_style .frm_scale input{
+	display:block;
 	margin:0;
+}
+
+.with_frm_style .frm_scale input[type=radio]:before {
+	content: '';
+	width: 13px;
+	height: 13px;
+	border-radius: 50%;
+	transform: scale(0);
+	transition: 120ms transform ease-in-out;
+	box-shadow: inset 10px 10px var(--text-color);
+	display: block;
+	margin: 2px 0 0 2px;
 }
 
 .with_frm_style .frm_scale input[type=radio]:checked:before {
@@ -449,44 +354,35 @@ $arrow_up         = FrmProStylesController::base64_encode_image( FrmProAppHelper
 
 /* Star ratings */
 
-.frm-star-group {
-	white-space: nowrap;
-}
-
 .frm-star-group input {
 	opacity: 0;
-	position: absolute !important;
+	position: absolute;
 	z-index: -1;
 }
 
-.frm-star-group .frmsvg,
-.frm-star-group input + label.star-rating {
-	float:none;
+.frm-star-group .star-rating,
+.frm-star-group input + label {
+	float:left;
 	width:25px;
 	height:25px;
 	font-size:25px;
 	line-height:1;
 	cursor:pointer;
+	display:block;
 	background:transparent;
 	overflow:hidden !important;
 	clear:none;
 	font-style:normal;
-	vertical-align:top;
-	position:relative;
+	margin-right:5px;
+}
+
+.frm-star-group input + label:before,
+.frm-star-group .star-rating:before{
+	font-family:'s11-fp';
+	content:'\e9d7';
+	color:#F0AD4E;
 	display: inline-block;
-}
-
-.frm-star-group .frmsvg {
-	fill: #F0AD4E;
-}
-
-.frm-star-group input + label.star-rating .frmsvg {
-	position: absolute;
-	top: 0;
-}
-
-.frm-star-group input + label.star-rating:before {
-	content: '';
+	vertical-align: top;
 }
 
 .frm-star-group input[type=radio]:checked + label:before,
@@ -494,31 +390,21 @@ $arrow_up         = FrmProStylesController::base64_encode_image( FrmProAppHelper
 	color:#F0AD4E;
 }
 
-.frm-star-group:not(.frm-star-hovered) input[type=radio]:checked + label,
-.frm-star-group input + label:hover,
-.frm-star-group:hover input + label:hover ,
-.frm-star-group .star-rating-on,
-.frm-star-group .star-rating-hover {
+.frm-star-group:not(.frm-star-hovered) input[type=radio]:checked + label:before,
+.frm-star-group input + label:hover:before,
+.frm-star-group:hover input + label:hover:before,
+.frm-star-group .star-rating-on:before,
+.frm-star-group .star-rating-hover:before{
+	content:'\e9d9';
 	color:#F0AD4E;
+}
+
+.frm-star-group .frm_half_star:before{
+	content:'\e9d8';
 }
 
 .frm-star-group .star-rating-readonly{
 	cursor:default !important;
-}
-
-.frm-star-group > svg + svg {
-	margin-left: 5px;
-}
-
-.frm-star-group .star-rating .frmsvg:last-of-type,
-.frm-star-group .star-rating-on .frmsvg:first-of-type,
-.frm-star-group .star-rating-hover .frmsvg:first-of-type {
-	display: none;
-}
-
-.frm-star-group .star-rating-on .frmsvg:last-of-type,
-.frm-star-group .star-rating-hover .frmsvg:last-of-type {
-	display: inline;
 }
 
 /* Other input */
@@ -566,16 +452,16 @@ $arrow_up         = FrmProStylesController::base64_encode_image( FrmProAppHelper
 
 /* Pagination */
 .frm_pagination_cont ul.frm_pagination{
-	display:inline-block;
-	list-style:none;
-	margin-left:0 !important;
+    display:inline-block;
+    list-style:none;
+    margin-left:0 !important;
 }
 
 .frm_pagination_cont ul.frm_pagination > li{
-	display:inline;
-	list-style:none;
-	margin:2px;
-	background-image:none;
+    display:inline;
+    list-style:none;
+    margin:2px;
+    background-image:none;
 }
 
 ul.frm_pagination > li.active a{
@@ -583,95 +469,99 @@ ul.frm_pagination > li.active a{
 }
 
 .frm_pagination_cont ul.frm_pagination > li:first-child{
-	margin-left:0;
+    margin-left:0;
 }
 
 .archive-pagination.frm_pagination_cont ul.frm_pagination > li{
-	margin:0;
+    margin:0;
 }
 
 /* Calendar Styling */
 .frmcal{
-	padding-top:30px;
+    padding-top:30px;
 }
 
 .frmcal-title{
-	font-size:116%;
+    font-size:116%;
 }
 
 .frmcal table.frmcal-calendar{
-	border-collapse:collapse;
-	margin-top:20px;
-	color:<?php echo esc_html( $defaults['text_color'] ); ?>;
+    border-collapse:collapse;
+    margin-top:20px;
+    color:<?php echo esc_html( $defaults['text_color'] ) ?>;
 }
 
 .frmcal table.frmcal-calendar,
 .frmcal table.frmcal-calendar tbody tr td{
-	border:1px solid <?php echo esc_html( $defaults['border_color'] ); ?>;
+    border:1px solid <?php echo esc_html( $defaults['border_color'] ) ?>;
 }
 
 .frmcal table.frmcal-calendar,
 .frmcal,
 .frmcal-header{
-	width:100%;
+    width:100%;
 }
 
 .frmcal-header{
-	text-align:center;
+    text-align:center;
 }
 
 .frmcal-prev{
-	margin-right:10px;
+    margin-right:10px;
 }
 
 .frmcal-prev,
 .frmcal-dropdown{
-	float:left;
+    float:left;
 }
 
 .frmcal-dropdown{
-	margin-left:5px;
+    margin-left:5px;
 }
 
 .frmcal-next{
-	float:right;
+    float:right;
 }
 
 .frmcal table.frmcal-calendar thead tr th{
-	text-align:center;
-	padding:2px 4px;
+    text-align:center;
+    padding:2px 4px;
 }
 
 .frmcal table.frmcal-calendar tbody tr td{
-	height:110px;
-	width:14.28%;
-	vertical-align:top;
-	padding:0 !important;
-	color:<?php echo esc_attr( $defaults['text_color'] ); ?>;
-	font-size:12px;
+    height:110px;
+    width:14.28%;
+    vertical-align:top;
+    padding:0 !important;
+    color:<?php echo esc_attr( $defaults['text_color'] ) ?>;
+    font-size:12px;
 }
 
 table.frmcal-calendar .frmcal_date{
-	background-color:<?php echo esc_html( empty( $defaults['bg_color'] ) ? 'transparent' : $defaults['bg_color'] ); ?>;
-	padding:0 5px;
-	text-align:right;
-	box-shadow:0 2px 5px <?php echo esc_html( $defaults['border_color'] ); ?>;
+    background-color:<?php echo esc_html( empty( $defaults['bg_color'] ) ? 'transparent' : $defaults['bg_color'] ); ?>;
+    padding:0 5px;
+    text-align:right;
+    -moz-box-shadow:0 2px 5px <?php echo esc_html( $defaults['border_color'] ) ?>;
+    -webkit-box-shadow:0 2px 5px <?php echo esc_html( $defaults['border_color'] ) ?>;
+    box-shadow:0 2px 5px <?php echo esc_html( $defaults['border_color'] ) ?>;
 }
 
 table.frmcal-calendar .frmcal-today .frmcal_date{
-	background-color:<?php echo esc_html( $defaults['bg_color_active'] ); ?>;
-	padding:0 5px;
-	text-align:right;
-	box-shadow:0 2px 5px <?php echo esc_html( $defaults['border_color_active'] ); ?>;
+    background-color:<?php echo esc_html( $defaults['bg_color_active'] ) ?>;
+    padding:0 5px;
+    text-align:right;
+    -moz-box-shadow:0 2px 5px <?php echo esc_html( $defaults['border_color_active'] ) ?>;
+    -webkit-box-shadow:0 2px 5px <?php echo esc_html( $defaults['border_color_active'] ) ?>;
+    box-shadow:0 2px 5px <?php echo esc_html( $defaults['border_color_active'] ) ?>;
 }
 
 .frmcal_day_name,
 .frmcal_num{
-	display:inline;
+    display:inline;
 }
 
 .frmcal-content{
-	padding:2px 4px;
+    padding:2px 4px;
 }
 /* End Calendar Styling */
 
@@ -795,7 +685,7 @@ $text_color = '#ffffff' . $important;
 	box-shadow:none !important;
 	border:none !important;
 	cursor: pointer;
-	padding:0 <?php echo esc_html( $important ); ?>;
+	padding:0 <?php echo esc_html( $important ) ?>;
 	background:transparent !important;
 	display: block;
 	width: 100%;
@@ -827,8 +717,7 @@ $text_color = '#ffffff' . $important;
 	echo $border = 'border-radius: ' . esc_html( $defaults['border_radius'] ) . ';
 	border-radius:var(--border-radius)' . esc_html( $important ) . ';
 	border: none;
-	height: ' . esc_html( $defaults['slider_track_size'] ) . ';
-	height: var(--slider-track-size);
+	height: 5px;
 	background-color: ' . esc_html( $defaults['slider_bar_color'] ) . ';
 	background-color:var(--slider-bar-color)' . esc_html( $important ) . ';';
 	?>
@@ -858,18 +747,15 @@ $text_color = '#ffffff' . $important;
 	-webkit-appearance: none;
 	-webkit-border-radius: 20px;
 	<?php
-	echo $thumb_size = 'height: ' . esc_html( $defaults['slider_circle_size'] ) . ';' .
-	'width: ' . esc_html( $defaults['slider_circle_size'] ) . ';' .
-	'height: var(--slider-circle-size);' .
-	'width: var(--slider-circle-size);';
-
+	echo $thumb_size = 'height: 24px;
+	width: 24px;';
 	echo $thumb = 'border-radius: 24px;
 	border: 1px solid ' . esc_html( $thumb_color ) . ';
 	color:' . esc_html( $text_color ) . ';
 	background: #fff;
 	cursor: pointer;';
 	?>
-	margin-top: calc( -10px + var(--slider-track-size) / 2 );
+	margin-top: -10px;
 	box-shadow:0 2px 6px rgba(41, 58, 82, 0.31);
 }
 
@@ -899,26 +785,15 @@ $text_color = '#ffffff' . $important;
 	background-color:var(--bg-color) <?php echo esc_html( $important ); ?>;
 }
 
-.with_frm_style .frm_dropzone .frm_upload_icon,
+.with_frm_style .frm_dropzone .frm_upload_icon:before,
 .with_frm_style .frm_dropzone .dz-remove{
 	color: <?php echo esc_html( $defaults['text_color'] ); ?>;
 	color: var(--text-color) <?php echo esc_html( $important ); ?>;
 }
 
-.with_frm_style .frm_compact .frm_dropzone .frm_upload_icon {
+.with_frm_style .frm_compact .frm_dropzone .frm_upload_icon:before {
 	color: <?php echo esc_html( $defaults['submit_text_color'] . $important ); ?>;
 	color: var(--submit-text-color) <?php echo esc_html( $important ); ?>;
-}
-
-.with_frm_style .frm_dropzone .frmsvg {
-	width: 40px;
-	height: 40px;
-}
-
-.with_frm_style .frm_dropzone .frm_remove_link .frmsvg {
-	width: 18px;
-	height: 18px;
-	cursor: pointer;
 }
 
 .with_frm_style .frm_blank_field .frm_dropzone{
@@ -997,8 +872,7 @@ $text_color = '#ffffff' . $important;
 }
 
 .with_frm_style .vertical_radio.frm_image_options .frm_image_option > label {
-	text-indent: 0;
-	padding-left: 0;
+    text-indent: 0;
 }
 
 .frm_show_images.frm_image_option_container {
@@ -1049,8 +923,7 @@ $text_color = '#ffffff' . $important;
 	word-break: keep-all;
 }
 
-.frm_image_options input[type="radio"]:not([disabled]) + .frm_image_option_container:hover,
-.frm_image_options input[type="checkbox"]:not([disabled]) + .frm_image_option_container:hover,
+.frm_image_options .frm_image_option_container:hover,
 input[type="radio"]:checked + .frm_image_option_container,
 input[type="checkbox"]:checked + .frm_image_option_container {
 	border-color: <?php echo esc_html( $defaults['border_color_active'] ); ?>;
@@ -1146,93 +1019,44 @@ input[type="checkbox"]:checked + .frm_image_option_container .frm_selected_check
  */
 
 @media screen and (max-width: 768px) {
-	.frm-pass-req, .frm-pass-verified {
-		width: 50% !important;
-		white-space: nowrap;
-	}
+    .frm-pass-req, .frm-pass-verified {
+        width: 50% !important;
+        white-space: nowrap;
+    }
 }
 
 .frm-pass-req, .frm-pass-verified {
-	display: flex;
-	align-items: center;
-	float: left;
-	width: 20%;
-	line-height: 20px;
-	font-size: 12px;
-	padding-top: 4px;
-	min-width: 175px;
+    float: left;
+    width: 20%;
+    line-height: 20px;
+    font-size: 12px;
+    padding-top: 4px;
+    min-width: 175px;
 }
 
-.frm-pass-req .frmsvg, .frm-pass-verified .frmsvg {
-	width: 12px;
-	height: 12px;
-	padding-right: 4px;
+.frm-pass-req:before, .frm-pass-verified:before {
+    padding-right: 4px;
+    font-size: 12px !important;
+    vertical-align: middle !important;
 }
 
-.passed_svg, .failed_svg {
-	display: none !important;
+span.frm-pass-verified::before {
+    content: '\e606';
 }
-.frm-pass-verified .passed_svg,
-.frm-pass-req .failed_svg {
-	display: inline-block !important;
+
+span.frm-pass-req::before {
+    content: '\e608';
 }
 
 div.frm-password-strength {
-	width: 100%;
-	float: left;
-}
-
-.frm_show_password_wrapper {
-	position: relative;
-	display: block;
-}
-
-.frm_show_password_wrapper input {
-	display: block;
-}
-
-.frm_show_password_wrapper button {
-	position: absolute;
-	top: 50%;
-	height: 32px;
-	height: var(--field-height);
-	right: 0;
-	border: 0;
-	background: transparent !important;
-	cursor: pointer;
-	transform: translateY(-50%);
-	padding: 0 10px;
-	color: #BFC3C8;
-	color: var(--border-color);
-	display: flex;
-	align-items: center;
-}
-
-.frm_show_password_wrapper button:hover {
-	color: #BFC3C8;
-	color: var(--border-color);
-	background: transparent !important;
-}
-
-.frm_show_password_wrapper button svg {
-	width: 24px;
-	height: 24px;
-}
-
-input[type="text"] + .frm_show_password_btn svg:first-child,
-input[type="password"] + .frm_show_password_btn svg:last-child,
-.frm_form_builder input[type="text"] + .frm_show_password_btn svg:last-child {
-	display: none;
-}
-
-.frm_form_builder input[type="text"] + .frm_show_password_btn svg:first-child {
-	display: block;
+    width: 100%;
+    float: left;
 }
 
 div.frm_repeat_grid:after, div.frm_repeat_inline:after, div.frm_repeat_sec:after {
-	content: '';
-	display: table;
-	clear: both;
+    content: '';
+    display: table;
+    clear: both;
 }
 
 .with_frm_style .frm-summary-page-wrapper {
@@ -1390,28 +1214,6 @@ ul.frm_inline_list li{
 	box-shadow:0 0 5px 1px rgba(0,0,0,0.075);
 <?php } ?>
 }
-/* Repeater Fields */
-
-.with_frm_style .frm_repeat_sec .frm_form_field.frm_repeat_buttons svg.frm-svg-icon {
-	fill:<?php echo esc_html( $defaults['repeat_icon_color'] . $important ); ?>;
-	fill:var(--repeat-icon-color)<?php echo esc_html( $important ); ?>;
-}
-.with_frm_style .frm_remove_form_row:hover,
-.with_frm_style .frm_add_form_row:hover {
-	border-color: var(--submit-hover-border-color);
-	color: var(--submit-hover-color);
-}
-.with_frm_style .frm_remove_form_row.frm_button:hover,
-.with_frm_style .frm_add_form_row.frm_button:hover {
-	background: var(--submit-hover-bg-color);
-}
-.with_frm_style .frm_form_field.frm_repeat_buttons .frm_add_form_row:hover svg.frm-svg-icon,
-.with_frm_style .frm_repeat_sec .frm_form_field.frm_repeat_buttons .frm_remove_form_row:hover svg.frm-svg-icon,
-.with_frm_style .frm_repeat_sec .frm_form_field.frm_repeat_buttons .frm_add_form_row:hover svg.frmsvg,
-.with_frm_style .frm_repeat_sec .frm_form_field.frm_repeat_buttons .frm_remove_form_row:hover svg.frmsvg {
-	fill: var(--submit-hover-color);
-}
-/* End Repeater Fields */
 
 .frm_tiles h3{
 	margin-top:5px;
@@ -1420,30 +1222,14 @@ ul.frm_inline_list li{
 /* Submit Button Position */
 
 .frm_forms.frm_full_submit .frm_submit button {
-	width: 100%<?php echo $important; ?>;
-}
-
-.frm_forms.frm_full_submit .frm_submit.frm_flex button {
-	width: auto<?php echo $important; ?>;
-	flex: 1;
-}
-
-/* Look ups */
-select.frm_loading_lookup[multiple="multiple"] {
-	background-image: none !important;
-}
-
-/* Draft buttons */
-.with_frm_style .frm_submit button.frm_save_draft {
-	color: var(--submit-bg-color) <?php echo esc_html( $important ); ?>;
-	background: var(--submit-text-color) <?php echo esc_html( $important ); ?>;
-	border-color: var(--submit-bg-color) <?php echo esc_html( $important ); ?>;
+	width: 100%;
 }
 
 /* Slide in */
 .frm_slidein .frm_form_fields  > fieldset{
 	animation-name: frmSlideInRight;
 	animation-duration: 1s;
+	animation-fill-mode: both;
 }
 
 .frm_slidein.frm_going_back .frm_form_fields  > fieldset {
@@ -1519,7 +1305,9 @@ select.frm_loading_lookup[multiple="multiple"] {
 /* Slide Up */
 .frm_slideup .frm_form_fields  > fieldset {
 	animation-name: frmSlideDown;
+	-webkit-animation-duration: 1s;
 	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
 	animation-fill-mode: both;
 }
 

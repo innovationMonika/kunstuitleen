@@ -40,4 +40,5 @@ class FrmProFieldUserIDValueSelector extends FrmProFieldValueSelector {
 
 		echo '</select>';
 	}
+
 }

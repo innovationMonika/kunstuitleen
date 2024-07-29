@@ -30,15 +30,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 				'</option>' .
 				'</select>';
 
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo( sprintf( esc_html__( 'if %s of the following match:', 'formidable-pro' ), $all_select ) );
 			unset( $all_select );
 
-			if ( ! empty( $submit_conditions['hide_field'] ) && ! empty( $values['fields'] ) ) {
+			if ( ! empty( $submit_conditions['hide_field'] ) && ( isset( $values['fields'] ) && ! empty( $values['fields'] ) ) ) {
 				$form_fields    = $values['fields'];
 				$exclude_fields = array_merge( FrmField::no_save_fields(), array( 'file', 'rte', 'date' ) );
 				foreach ( (array) $submit_conditions['hide_field'] as $meta_name => $hide_field ) {
-					include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-forms/_submit_logic_row.php';
+					include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-forms/_submit_logic_row.php' );
 				}
 			}
 			?>

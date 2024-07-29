@@ -5,26 +5,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FrmFormTemplateApi extends FrmFormApi {
 
-	protected static $code_option_name = 'frm_free_license_code';
+	protected static $code_option_name  = 'frm_free_license_code';
 
 	private static $base_api_url = 'https://formidableforms.com/wp-json/form-templates/v1/';
 
 	protected static $free_license;
 
 	/**
-	 * @var int
-	 */
-	protected $new_days = 30;
-
-	/**
-	 * @var string
-	 */
-	protected $cache_timeout = '+12 hours';
-
-	/**
 	 * @since 3.06
-	 *
-	 * @return void
 	 */
 	protected function set_cache_key() {
 		$this->cache_key = 'frm_form_templates_l';
@@ -41,8 +29,6 @@ class FrmFormTemplateApi extends FrmFormApi {
 
 	/**
 	 * @since 3.06
-	 *
-	 * @return string
 	 */
 	protected function api_url() {
 		$url = self::$base_api_url . 'list';
@@ -61,8 +47,6 @@ class FrmFormTemplateApi extends FrmFormApi {
 
 	/**
 	 * @since 3.06
-	 *
-	 * @return string[]
 	 */
 	protected function skip_categories() {
 		return array();
@@ -83,8 +67,6 @@ class FrmFormTemplateApi extends FrmFormApi {
 	 * Check to make sure the free code is being used.
 	 *
 	 * @since 4.09.02
-	 *
-	 * @return bool
 	 */
 	public function has_free_access() {
 		$free_access = $this->get_free_license();
@@ -98,9 +80,7 @@ class FrmFormTemplateApi extends FrmFormApi {
 	}
 
 	/**
-	 * @param string $code the code from the email sent for the API.
-	 *
-	 * @return void
+	 * @param string $code the code from the email sent for the API
 	 */
 	private static function verify_code( $code ) {
 		$base64_code = base64_encode( $code );
@@ -119,17 +99,12 @@ class FrmFormTemplateApi extends FrmFormApi {
 		}
 	}
 
-	/**
-	 * @return void
-	 */
 	private static function clear_template_cache_before_getting_free_templates() {
 		delete_option( 'frm_form_templates_l' );
 	}
 
 	/**
 	 * @param array $response
-	 *
-	 * @return void
 	 */
 	private static function handle_verify_response_errors_if_any( $response ) {
 		if ( is_wp_error( $response ) ) {
@@ -142,9 +117,7 @@ class FrmFormTemplateApi extends FrmFormApi {
 	}
 
 	/**
-	 * @param string $code The base64 encoded code.
-	 *
-	 * @return void
+	 * @param string $code the base64 encoded code
 	 */
 	private static function on_api_verify_code_success( $code ) {
 		self::$free_license = $code;
@@ -178,15 +151,13 @@ class FrmFormTemplateApi extends FrmFormApi {
 			}
 
 			$data['url'] = $data['urlByKey'][ $key ];
-		}//end if
+		}
 
 		wp_send_json_success( $data );
 	}
 
 	/**
 	 * AJAX Hook for signing free users up for a template API key
-	 *
-	 * @return void
 	 */
 	public static function signup() {
 		$code = FrmAppHelper::get_param( 'code', '', 'post' );

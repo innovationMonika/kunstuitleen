@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <select name="options[transition]">
 			<option value=""><?php esc_html_e( 'None', 'formidable-pro' ); ?></option>
 			<option value="slidein" <?php selected( $values['transition'], 'slidein' ); ?>>
-				<?php esc_html_e( 'Slide horizontally', 'formidable-pro' ); ?>
+				<?php esc_html_e( 'Slide horizonally', 'formidable-pro' ); ?>
 			</option>
 			<option value="slideup" <?php selected( $values['transition'], 'slideup' ); ?>>
 				<?php esc_html_e( 'Slide vertically', 'formidable-pro' ); ?>

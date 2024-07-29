@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ class Ai1wm_Import_Upload {
 				throw new Ai1wm_Import_Retry_Exception( sprintf( __( 'Unrecognized error %s during upload.', AI1WM_PLUGIN_NAME ), $error ), 400 );
 		}
 
-		ai1wm_json_response( array( 'errors' => array() ) );
+		echo json_encode( array( 'errors' => array() ) );
 		exit;
 	}
 }

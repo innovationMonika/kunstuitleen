@@ -3,21 +3,21 @@
 Plugin Name: Disable Gutenberg
 Plugin URI: https://perishablepress.com/disable-gutenberg/
 Description: Disables Gutenberg Block Editor and restores the Classic Editor and original Edit Post screen. Provides options to enable on specific post types, user roles, and more.
-Tags: classic editor, block editor, block-editor, gutenberg, blocks
+Tags: editor, classic editor, block editor, block-editor, gutenberg, disable, blocks, posts, post types
 Author: Jeff Starr
 Author URI: https://plugin-planet.com/
 Donate link: https://monzillamedia.com/donate.html
 Contributors: specialk
 Requires at least: 4.9
-Tested up to: 6.6
-Stable tag: 3.1.2
-Version:    3.1.2
+Tested up to: 5.9
+Stable tag: 2.6
+Version: 2.6
 Requires PHP: 5.6.20
 Text Domain: disable-gutenberg
 Domain Path: /languages
 License: GPL v2 or later
 
-Disable Gutenberg Block Editor and restore the Classic Editor and original Edit Post screen (TinyMCE, meta boxes, etc.).
+Disable Gutenberg Block Editor and restore the Classic Editor and original Edit Post screen (TinyMCE, meta boxes, etc.). Selectively disable for posts, pages, roles, post types, and theme templates. Hide the Gutenberg nag, menu item, and more.
 
 
 
@@ -82,43 +82,23 @@ _Automatically replaces Gutenberg with the Classic Editor._
 
 > Works great with Google AMP and the WordPress [AMP plugin](https://wordpress.org/plugins/amp/).
 
-Disable Gutenberg is developed and maintained by [Jeff Starr](https://twitter.com/perishable), 15-year [WordPress developer](https://plugin-planet.com/) and [book author](https://books.perishablepress.com/).
+Disable Gutenberg is developed by [Jeff Starr](https://monzillamedia.com/), 15-year WordPress developer, book author, and support guru.
 
 _Super light & fast plugin, super easy on server resources!_
 
 
 **Why?**
 
-Gutenberg is a useful editor but sometimes you want to disable it for specific posts, pages, user roles, post types, and/or theme templates. This plugin enables you to disable Gutenberg and replace it with the Classic Editor wherever you want. For example, lots of WordPress users already enjoy robust page-building functionality via one of the many great plugins like Composer or Elementor. So many options, no need to feel "locked in" to using Gutenberg!
+Gutenberg is a useful editor but sometimes you want to disable it for specific posts, pages, user roles, post types, or theme templates. Disable Gutenberg enables you to disable Gutenberg and replace it with the Classic Editor wherever you want. For example, lots of WordPress users already enjoy robust page-building functionality via one of the many great plugins like Composer or Elementor. So many options, no need to feel "locked in" to using Gutenberg!
 
-_If you like Disable Gutenberg, please give it a [5-star rating](https://wordpress.org/support/plugin/disable-gutenberg/reviews/?rate=5#new-post), thank you!_
+The Disable Gutenberg plugin is targeted at everyone who is not ready for the major changes brought by Gutenberg. Install Disable Gutenberg NOW to be ready for when Gutenberg is finally merged into core and released to the public (likely in WP 5.0). That way, your users and clients will experience the same awesome UX as before ;)
 
 
 **Privacy**
 
 This plugin does not collect or store any user data. It does not set any cookies, and it does not connect to any third-party locations. Thus, this plugin does not affect user privacy in any way.
 
-
-**Support development**
-
-I develop and maintain this free plugin with love for the WordPress community. To show support, you can [make a donation](https://monzillamedia.com/donate.html) or purchase one of my books:
-
-* [The Tao of WordPress](https://wp-tao.com/)
-* [Digging into WordPress](https://digwp.com/)
-* [.htaccess made easy](https://htaccessbook.com/)
-* [WordPress Themes In Depth](https://wp-tao.com/wordpress-themes-book/)
-* [Wizard's SQL Recipes for WordPress](https://books.perishablepress.com/downloads/wizards-collection-sql-recipes-wordpress/)
-
-And/or purchase one of my premium WordPress plugins:
-
-* [BBQ Pro](https://plugin-planet.com/bbq-pro/) - Super fast WordPress firewall
-* [Blackhole Pro](https://plugin-planet.com/blackhole-pro/) - Automatically block bad bots
-* [Banhammer Pro](https://plugin-planet.com/banhammer-pro/) - Monitor traffic and ban the bad guys
-* [GA Google Analytics Pro](https://plugin-planet.com/ga-google-analytics-pro/) - Connect WordPress to Google Analytics
-* [Simple Ajax Chat Pro](https://plugin-planet.com/simple-ajax-chat-pro/) - Unlimited chat rooms
-* [USP Pro](https://plugin-planet.com/usp-pro/) - Unlimited front-end forms
-
-Links, tweets and likes also appreciated. Thanks! :)
+__If you like this plugin, please give it a [5-star rating](https://wordpress.org/support/plugin/disable-gutenberg/reviews/?rate=5#new-post), thank you!__
 
 
 
@@ -252,14 +232,14 @@ Yes, you can install and activate Disable Gutenberg on any supported WordPress v
 Yes, if both plugins are active at the same time, Disable Gutenberg gives priority to Classic Editor plugin. So if you want to use Disable Gutenberg, deactivate the Classic Editor plugin (you do not have to remove it, just deactivate via the Plugins screen).
 
 
-**Classic Editor planned to expire in 2022, what about Disable Gutenberg?**
+**Classic Editor expires in 2022, what about Disable Gutenberg?**
 
 I can't make any promises, but I intend to develop with WordPress for the long-haul. Who knows what the future holds, but the plan is to keep Disable Gutenberg going for many years to come. Why? Because the original RTE/Visual Editor is awesome. I strongly feel it's one of the many reasons why WordPress has enjoyed its great success. I've been using the original/classic editor for over 10 years now and it's always been 100% smooth experience. I've tried Gutenberg, and yes it is much better now than in previous versions, but for me it's just not as comfortable or streamlined as the classic editor. So yeah, will do everything possible to keep Disable Gutenberg (and the Classic Editor) going well beyond 2022.
 
 
 **Why does Classic Editor plugin have way more users?**
 
-Because it is being promoted by the Gutenberg developers and the "official" plugin for replacing Gutenberg. That's fine, but understand that Disable Gutenberg functions the same way AND provides way more features and settings. FWIW, I use Disable Gutenberg on my own sites Perishable Press, DigWP.com, Plugin Planet, and many others. 100% solid.
+Because it is being promoted by the Gutenberg developers and the "official" plugin for replacing Gutenberg. That's fine, but understand that Disable Gutenberg functions the same way AND provides way more features and settings. FWIW, I use Disable Gutenberg on my sites Perishable Press, DigWP.com, Plugin Planet, and many others. 100% solid.
 
 
 **Template exclusions not working?**
@@ -287,14 +267,31 @@ Either route will get you there.
 The default Gutenberg/Block styles are disabled by default when DG plugin is active. To enable/disable the styles, visit the plugin setting, "Enable Frontend".
 
 
-**Does this work with full site editing and block themes?**
-
-No, because block themes rely on blocks. [See Block themes article](https://wordpress.org/support/article/block-themes/) for more information.
-
-
 **Got a question?**
 
 Send any questions or feedback via my [contact form](https://plugin-planet.com/support/#contact)
+
+
+
+== Support development of this plugin ==
+
+I develop and maintain this free plugin with love for the WordPress community. To show support, you can [make a donation](https://monzillamedia.com/donate.html) or purchase one of my books:
+
+* [The Tao of WordPress](https://wp-tao.com/)
+* [Digging into WordPress](https://digwp.com/)
+* [.htaccess made easy](https://htaccessbook.com/)
+* [WordPress Themes In Depth](https://wp-tao.com/wordpress-themes-book/)
+* [Wizard's SQL Recipes for WordPress](https://books.perishablepress.com/downloads/wizards-collection-sql-recipes-wordpress/)
+
+And/or purchase one of my premium WordPress plugins:
+
+* [BBQ Pro](https://plugin-planet.com/bbq-pro/) - Super fast WordPress firewall
+* [Blackhole Pro](https://plugin-planet.com/blackhole-pro/) - Automatically block bad bots
+* [Banhammer Pro](https://plugin-planet.com/banhammer-pro/) - Monitor traffic and ban the bad guys
+* [GA Google Analytics Pro](https://plugin-planet.com/ga-google-analytics-pro/) - Connect WordPress to Google Analytics
+* [USP Pro](https://plugin-planet.com/usp-pro/) - Unlimited front-end forms
+
+Links, tweets and likes also appreciated. Thanks! :)
 
 
 
@@ -305,12 +302,168 @@ Thank you to everyone for using Disable Gutenberg and for all the [awesome 5-sta
 If you have any feedback or suggestions to make this plugin the absolute best it can be, and/or would like to help with development, please reach me via the [contact form](https://plugin-planet.com/support/#contact) at Plugin Planet.
 
 
-**3.1.2 (2024/06/19)**
+**2.6 (2022/01/10)**
 
-* Fixes bug with `dismiss_notice_link`
-* Updates plugin settings page
+* Improves loading of translations
+* Improves clarity on settings page
+* Removes Edit Links when Gutenberg is disabled
+* Updates some links to external resources
+* Generates new default translation template
+* Tests on WordPress 5.9
+
+**2.5.1 (2021/07/25)**
+
+* Fixes bug with not remembering editor
+* Tweaks details on plugin settings page
+* Improves readme.txt/documentation
+* Further tests on WordPress 5.8
+
+**2.5 (2021/07/13)**
+
+* Adds option to disable block widgets and use classic widgets
+* Generates new default translation template
+* Tests on WordPress 5.8
+
+**2.4 (2021/02/08)**
+
+* Tests on PHP 7.4 and 8.0
+* Tests on WordPress 5.7
+
+**2.3 (2020/11/09)**
+
+* Updates plugin script to account for changes in jQuery UI
+* Tests on PHP 7.4 and 8.0
+* Tests on WordPress 5.6
+
+**2.2 (2020/08/02)**
+
+* Improves targeted loading of plugin scripts
+* Refines plugin setting page styles
+* Refines readme/documentation
+* Tests on WordPress 5.5
+
+**2.1 (2020/03/13)**
+
+* Bumps version number
+* Tests on WordPress 5.4
+
+**2.0 (2019/10/26)**
+
+* Updates styles for plugin settings page
+* Fixes bug with front-end script loading
+* Fixes bug with disable for page templates
+* Generates new default translation template
+* Tests on WordPress 5.3
+
+**1.9 (2019/09/02)**
+
+* Updates check for existing Gutenberg plugin
+* Improves logic of `disable_gutenberg_remove()`
+* Updates hooks in `disable_gutenberg_hooks()`
+* Updates some links to https
+* Tests on WordPress 5.3 (alpha)
+
+**1.8.1 (2019/04/29)**
+
+* Fixes PHP Notice: "Trying to get property ID of non-object"
+* Tests on WordPress 5.2
+
+**1.8 (2019/04/28)**
+
+* Bumps [minimum PHP version](https://codex.wordpress.org/Template:Server_requirements) to 5.6.20
+* Fixes bug with block stylesheets and whitelisted posts
 * Updates default translation template
-* Tests on WordPress 6.6 (beta)
+* Tests on WordPress 5.2
 
+**1.7 (2019/03/06)**
 
-Full changelog @ [https://plugin-planet.com/wp/changelog/disable-gutenberg.txt](https://plugin-planet.com/wp/changelog/disable-gutenberg.txt)
+* Fixes bug with empty titles reverting to Gutenberg
+* Removes requirement for custom fields for post types
+* Resolves error when using as mu-plugin (thanks [Dave Lavoie](https://ep4.com/))
+* Adds enable/disable support for `wp-block-library-theme`
+* Tweaks plugin settings screen UI
+* Generates new default translation template
+* Tests on WordPress 5.1 and 5.2 (alpha)
+
+**1.6 (2019/02/02)**
+
+* Just a version bump for compat with WP 5.1
+* Full update coming soon :)
+
+**1.5.2 (2018/12/11)**
+
+* Changes default option for the menu and edit links
+* Adds option to disable frontend Gutenberg styles
+* Updates default translation template
+
+**1.5.1 (2018/12/10)**
+
+* Fixes possible false negative with whitelist settings
+* Tests on WordPress 5.0
+
+**1.5 (2018/12/10)**
+
+* Increases minimum required WP version to 4.9
+* Increases minimum required PHP version to 5.2.4
+* Adds whitelist options for post IDs, slugs, titles
+* Adds filter hook `disable_gutenberg_submenu_types`
+* Adds option to enable Custom Fields Meta Box for ACF
+* Adds "Block Editor" link to each post on Posts screen
+* Adds option to disable "Add New (Classic)" menu link and "Classic Editor" edit link
+* Improves Privacy Policy admin notice (thanks to Classic Editor plugin for the idea)
+* Hides "Edit (Classic)" on Posts screen for posts where Gutenberg is disabled
+* Removes `$current_screen` global where not needed
+* Improves logic of `page_row_actions`
+* Removes `disable_gutenberg_replace()`
+* Improves logic in `classic-editor.php`
+* Removes `/classic-editor/` library
+* Refactors settings JavaScript file
+* Hides the "More Tools" options by default
+* Fine-tunes verbiage on plugin settings page
+* Adds homepage link to Plugins screen
+* Updates default translation template
+* Tests on WordPress 5.0
+
+**1.4 (2018/11/09)**
+
+* Refactored for changes in Gutenberg plugin
+* Checks for Classic Editor plugin is active
+* Restores "Edit Classic" feature for WP 5.0+
+* Further tests on WP 4.9.8 and 5.0 beta
+
+**1.3.1 (2018/10/29)**
+
+* Rolls back new "Edit Classic" feature introduced in 1.3
+* Further tests on WP 5.0 beta
+
+**1.3 (2018/10/27)**
+
+* Refactored for WordPress 5.0 (Gutenberg merged into core)
+* Ensures functionality on pre-5.0 WP versions
+* Adds WP menu item: "Add New (Classic)"
+* Adds post link to "Edit (Classic)"
+* Tests on WordPress 5.0 (beta)
+
+**1.2 (2018/08/14)**
+
+* Adds `rel="noopener noreferrer"` to all [blank-target links](https://perishablepress.com/wordpress-blank-target-vulnerability/)
+* Adds options to disable Gutenberg for specific post templates and post IDs
+* Adds option to hide/remove the Gutenberg plugin menu item
+* Adds Classic Editor replacement for WP 5.0 (in progress)
+* Fixes object-related PHP warning in enqueue script
+* Updates GDPR blurb and donate link
+* Tweaks CSS on plugin settings page
+* Adds "rate this" link to settings page
+* Generates default translation template
+* Further tests on WP versions 4.9 and 5.0 (alpha)
+
+**1.1 (2018/05/06)**
+
+* Removes unused .otf font file
+* Adds option to disable "Try Gutenberg" nag (admin notice)
+* Adds option to hide the plugin's menu item
+* Further testing on WP 5.0 (alpha)
+
+**1.0 (2018/04/16)**
+
+* Initial release

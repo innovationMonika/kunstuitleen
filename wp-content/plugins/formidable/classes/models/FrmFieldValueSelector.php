@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * A class for the field value selector
- * Used in field conditional logic, action conditional logic, Mailchimp action, etc.
+ * Used in field conditional logic, action conditional logic, MailChimp action, etc.
  *
  * @since 2.03.05
  */
@@ -26,11 +26,11 @@ class FrmFieldValueSelector {
 	protected $field_key = '';
 
 	/**
-	 * @var FrmProFieldSettings|null
+	 * @var null
 	 *
 	 * @since 2.03.05
 	 */
-	protected $field_settings;
+	protected $field_settings = null;
 
 	/**
 	 * @var array
@@ -68,11 +68,11 @@ class FrmFieldValueSelector {
 	protected $blank_option_label = '';
 
 	/**
-	 * @var object|null
+	 * @var object
 	 *
 	 * @since 2.03.05
 	 */
-	protected $db_row;
+	protected $db_row = null;
 
 	/**
 	 * FrmFieldValueSelector constructor
@@ -102,8 +102,6 @@ class FrmFieldValueSelector {
 	 * Set the db_row property
 	 *
 	 * @since 2.03.05
-	 *
-	 * @return void
 	 */
 	private function set_db_row() {
 		$where = array(
@@ -121,8 +119,6 @@ class FrmFieldValueSelector {
 	 * Set the field_key property
 	 *
 	 * @since 2.03.05
-	 *
-	 * @return void
 	 */
 	private function set_field_key() {
 		$this->field_key = $this->db_row->field_key;
@@ -132,8 +128,6 @@ class FrmFieldValueSelector {
 	 * Set the field_settings property
 	 *
 	 * @since 2.03.05
-	 *
-	 * @return void
 	 */
 	protected function set_field_settings() {
 		// Leave as null for free version
@@ -143,8 +137,6 @@ class FrmFieldValueSelector {
 	 * Set the options property
 	 *
 	 * @since 2.03.05
-	 *
-	 * @return void
 	 */
 	protected function set_options() {
 		$field_obj     = FrmFieldFactory::get_field_object( $this->db_row );
@@ -157,8 +149,6 @@ class FrmFieldValueSelector {
 	 * @since 2.03.05
 	 *
 	 * @param array $args
-	 *
-	 * @return void
 	 */
 	protected function set_html_name( $args ) {
 		if ( isset( $args['html_name'] ) ) {
@@ -172,8 +162,6 @@ class FrmFieldValueSelector {
 	 * @since 2.03.05
 	 *
 	 * @param array $args
-	 *
-	 * @return void
 	 */
 	protected function set_value( $args ) {
 		if ( isset( $args['value'] ) ) {
@@ -187,8 +175,6 @@ class FrmFieldValueSelector {
 	 * @since 2.03.05
 	 *
 	 * @param array $args
-	 *
-	 * @return void
 	 */
 	protected function set_source( $args ) {
 		if ( isset( $args['source'] ) ) {
@@ -222,8 +208,6 @@ class FrmFieldValueSelector {
 	 * Display the field value selector (dropdown or text field)
 	 *
 	 * @since 2.03.05
-	 *
-	 * @return void
 	 */
 	public function display() {
 		if ( $this->has_options() ) {
@@ -237,8 +221,6 @@ class FrmFieldValueSelector {
 	 * Print the field value text box
 	 *
 	 * @since 2.03.05
-	 *
-	 * @return void
 	 */
 	public function display_text_box() {
 		echo '<input type="text" name="' . esc_attr( $this->html_name ) . '" value="' . esc_attr( trim( $this->value ) ) . '" />';
@@ -248,12 +230,10 @@ class FrmFieldValueSelector {
 	 * Display the field value selector
 	 *
 	 * @since 2.03.05
-	 *
-	 * @return void
 	 */
 	protected function display_dropdown() {
 		echo '<select name="' . esc_attr( $this->html_name ) . '">';
-		echo '<option value="">' . esc_html( $this->blank_option_label ) . '</option>';
+		echo '<option value="">' . esc_attr( $this->blank_option_label ) . '</option>';
 
 		if ( ! empty( $this->options ) ) {
 			foreach ( $this->options as $key => $value ) {

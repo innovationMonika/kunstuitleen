@@ -7,19 +7,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'acf_field_font_awesome' ) ) :
 
-	class acf_field_font_awesome extends \acf_field
+	class acf_field_font_awesome extends acf_field
 	{
 		private $icons = false;
 		private $version;
-		public	$show_in_rest = true;
-		private $env;
 
-		public function __construct()
+		public function __construct( $settings )
 		{
 			$this->version = 'v' . ACFFA_MAJOR_VERSION;
 			$this->name = 'font-awesome';	
 			$this->label = __( 'Font Awesome Icon', 'acf-font-awesome');
 			$this->category = 'content';
+			$this->settings = $settings;
 
 			$this->defaults = array(
 				'enqueue_fa' 		=>	0,
@@ -212,11 +211,6 @@ if ( ! class_exists( 'acf_field_font_awesome' ) ) :
 				$select_value = ( 'null' != $field['value'] ) ? $field['value'] : $field['default_value'];
 			}
 
-			$icon_json = json_decode( $select_value );
-			if ( is_array( $select_value ) || is_object( $icon_json ) ) {
-				$select_value = false;
-			}
-
 			$field['type'] = 'select';
 			$field['ui'] = 1;
 			$field['ajax'] = 1;
@@ -258,7 +252,7 @@ if ( ! class_exists( 'acf_field_font_awesome' ) ) :
 
 		public function input_admin_enqueue_scripts()
 		{
-			$version = ACFFA_VERSION;
+			$version = $this->settings['version'];
 			
 			wp_register_script( 'acf-input-font-awesome', ACFFA_PUBLIC_PATH . "assets/js/input-v5.js", array('acf-input'), $version );
 			wp_localize_script( 'acf-input-font-awesome', 'ACFFA', array(
@@ -351,6 +345,6 @@ if ( ! class_exists( 'acf_field_font_awesome' ) ) :
 		}
 	}
 
-	acf_register_field_type( 'acf_field_font_awesome' );
+	new acf_field_font_awesome( $this->settings );
 
 endif;

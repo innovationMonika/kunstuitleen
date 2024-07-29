@@ -1,0 +1,162 @@
+/*---------------|| Mijn aankoopfacturen Start ||-------------------*/
+.main .h4{
+    color: #2a374a;
+}
+.condition{
+    border-left: 1px solid #f3f3f3;
+    margin-top: 30px;
+    border-top: 0;
+}
+.condition .h4{
+    color:#9dafc2
+}
+.condition .col-md-10{
+    border-right: 1px solid #f3f3f3;
+    padding-left: 30px;
+}
+#condition{
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 30px;
+}
+.select-year .form-control, .select-year .form-control option{
+    border: 1px solid #e1e8f1;
+    color: #2a374a;
+    font-weight: bold;
+    font-family: 'MrJones-Book',sans-serif;
+}
+.gift-cards{
+    color: #9dafc2;
+}
+.table-gift-card{
+    margin-top: 30px;
+}
+.table{
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0 15px; 
+}
+.table thead{
+    border :0;
+}
+.table thead tr th {
+    font-size: 16px;
+    color: #2a374a;
+    border: 0;
+}
+.table tbody tr th{
+    color: #2a374a;
+    border:0;
+    font-size: 16px;
+}
+.table tbody tr td{
+    color: #2a374a;
+    border:0;
+    font-size: 16px;
+}
+.table-borderless .fa{
+    padding-right: 8px;
+    font-size: 15px;
+    color: #2a374a;
+}
+.table-borderless .fa-sign-in{
+    padding-left: 8px;
+    font-size: 15px;
+    color: #2a374a;
+}
+.img-download{
+    height: 25px;
+    padding-right: 10px;
+    display: inline-block;
+}
+/* modal-right */
+.modal.right .modal-dialog {
+    position: fixed;
+    margin: auto;
+    height: 100%;
+    -webkit-transform: translate3d(0%, 0, 0);
+        -ms-transform: translate3d(0%, 0, 0);
+         -o-transform: translate3d(0%, 0, 0);
+            transform: translate3d(0%, 0, 0);
+}
+
+.modal.left .modal-content,
+.modal.right .modal-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.modal.left .modal-body,
+.modal.right .modal-body {
+    padding: 15px 15px 80px;
+}
+
+    .modal.right.fade .modal-dialog {
+    right: -320px;
+    -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+       -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+         -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+            transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.modal.right.fade.in .modal-dialog {
+    right: 0;
+}
+
+/* ----- MODAL STYLE ----- */
+.modal-content {
+    border-radius: 0 0 0 6px;
+    border: none;
+}
+
+.modal-header {
+    border-bottom-color: transparent;
+    background-color: #ffffff;
+}
+
+.modal-header h3{
+    color: #2d3a4d;
+}
+.modal-body .h4{
+    color: #2d3a4d;
+}
+.summary{
+    cursor: pointer;
+}
+.modal-footer{
+    border-radius: 0;
+    bottom: 0px;
+    position: absolute;
+    text-align: center;
+    border-top-color: transparent;
+    width: 100%;
+}
+.modal-footer .btn-primary{
+    background-color: #607ff2;
+    border: transparent;
+}
+.modal-footer label{
+    margin-bottom: 0;
+    font-weight: normal;
+}
+.modal-footer .btn-primary:hover, .modal-footer .btn-primary:focus, .modal-footer .btn-primary:active, .modal-footer .btn-primary.active, .open>.dropdown-toggle.modal-footer .btn-primary{
+    border: transparent;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus{
+    outline: none;
+}
+.bank-selection .form-control{
+    height: 40px;
+    font-size: 18px;
+    border: 1px solid #e1e8f1;
+    font-weight: bold;
+    font-family: 'MrJones-Book';
+    color: #455161;
+}
+.form-control:focus{
+    border-color: 0;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+/*---------------|| Mijn aankoopfacturen End ||-------------------*/

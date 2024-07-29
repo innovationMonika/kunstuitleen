@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @since 2.02.12
  */
+
 class FrmShortcodeHelper {
 
 	/**
@@ -36,7 +37,7 @@ class FrmShortcodeHelper {
 	 * @since 3.0
 	 *
 	 * @param array $shortcodes
-	 * @param int   $short_key  The position in the shortcodes array.
+	 * @param int $short_key The position in the shortcodes array
 	 * @param array $args
 	 *
 	 * @return string

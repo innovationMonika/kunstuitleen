@@ -94,7 +94,7 @@ if ( ! shortcode_exists( 'frm-export-view' ) && strpos( $post->frm_before_conten
 
 	?>
 	<p class="frmcenter">
-		<a href="javascript:void(0)" class="frm_pro_tip" <?php echo FrmAppHelper::array_to_html_params( $data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+		<a href="javascript:void(0)" class="frm_pro_tip" <?php echo FrmAppHelper::array_to_html_params( $data ); // WPCS: XSS ok. ?>>
 			Want to export Views from the front-end?<br/>
 			<span class="frm-tip-cta">Get the Export Views to CSV add-on.</span>
 		</a>

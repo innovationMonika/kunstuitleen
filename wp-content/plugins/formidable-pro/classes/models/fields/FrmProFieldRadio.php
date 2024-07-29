@@ -43,7 +43,7 @@ class FrmProFieldRadio extends FrmFieldRadio {
 			return;
 		}
 
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/other-option.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/other-option.php' );
 	}
 
 	/**
@@ -79,29 +79,6 @@ class FrmProFieldRadio extends FrmFieldRadio {
 		if ( FrmProImages::has_image_option_markup( $value ) ) {
 			$value = '<div class="frm_has_image_options">' . $value . ' </div>';
 		}
-		return $value;
-	}
-
-	/**
-	 * @since 6.8
-	 *
-	 * @param string $value
-	 * @param array  $atts
-	 * @return string
-	 */
-	public function get_display_value( $value, $atts = array() ) {
-		$has_image_option_markup = FrmProImages::has_image_option_markup( $value );
-
-		if ( $has_image_option_markup ) {
-			add_filter( 'frm_allowed_form_input_html', 'FrmProImages::allow_image_option_html' );
-		}
-
-		$value = parent::get_display_value( $value, $atts );
-
-		if ( $has_image_option_markup ) {
-			remove_filter( 'frm_allowed_form_input_html', 'FrmProImages::allow_image_option_html' );
-		}
-
 		return $value;
 	}
 }

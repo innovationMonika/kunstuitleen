@@ -13,7 +13,7 @@ class FrmViewsSimpleBlocksController {
 	 */
 	public static function get_views_options() {
 		$views         = FrmViewsDisplay::getAll( array(), 'post_title' );
-		$views_options = array_map( self::class . '::set_view_options', $views );
+		$views_options = array_map( 'self::set_view_options', $views );
 		$views_options = array_reverse( $views_options );
 		return $views_options;
 	}

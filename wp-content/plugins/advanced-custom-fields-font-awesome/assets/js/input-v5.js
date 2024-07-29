@@ -30,13 +30,11 @@
 		}
 	});
 
-	// Adjust FontAwesome select2 field settings
+	// Add our classes to FontAwesome select2 fields
 	acf.add_filter( 'select2_args', function( args, $select, settings, $field ) {
 		if ( $select.hasClass('select2-fontawesome') ) {
-			if ( 4 == ACFFA.major_version ) {
-				args.dropdownCssClass = 'fa-select2-drop fa4';
-				args.containerCssClass = 'fa-select2 fa4'	
-			}
+			args.dropdownCssClass = 'fa-select2-drop fa' + ACFFA.major_version;
+			args.containerCssClass = 'fa-select2 fa' + ACFFA.major_version;
 			args.escapeMarkup = function( markup ) {
 				if (typeof markup !== 'string') {
 					return markup;

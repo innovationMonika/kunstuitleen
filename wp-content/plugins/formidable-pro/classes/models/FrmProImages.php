@@ -26,17 +26,7 @@ class FrmProImages {
 	 * @return bool
 	 */
 	private static function field_type_support_image_options( $field ) {
-		if ( FrmField::is_field_type( $field, 'radio' ) || FrmField::is_field_type( $field, 'checkbox' ) ) {
-			return true;
-		}
-
-		/**
-		 * @since 6.8.3
-		 *
-		 * @param bool   $supports_image_options
-		 * @return array $field
-		 */
-		return (bool) apply_filters( 'frm_field_type_support_image_options', false, $field );
+		return FrmField::is_field_type( $field, 'radio' ) || FrmField::is_field_type( $field, 'checkbox' );
 	}
 
 	public static function has_images_options_in_html( $options ) {
@@ -78,8 +68,8 @@ class FrmProImages {
 		);
 
 		echo '<div class="frm_grid_container frm_priority_field_choices">';
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/image-options.php';
-		include FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/separate-values.php';
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/image-options.php' );
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/separate-values.php' );
 		echo '</div>';
 	}
 
@@ -118,12 +108,11 @@ class FrmProImages {
 	 * field type check.
 	 *
 	 * @since 5.0
-	 * @since 6.2 This method is public.
 	 *
 	 * @param array $field Field data.
 	 * @return bool
 	 */
-	public static function should_show_images( $field ) {
+	private static function should_show_images( $field ) {
 		$image_options = FrmField::get_option( $field, 'image_options' );
 
 		/**
@@ -319,12 +308,6 @@ class FrmProImages {
 		return $is_image_field && $in_entry_table && $show_image && $format && empty( $atts['plain_text'] );
 	}
 
-	/**
-	 * @param stdClass $field
-	 * @param mixed    $value
-	 * @param array    $atts
-	 * @return string|array
-	 */
 	public static function display( $field, $value, $atts ) {
 		$multiple_values = is_array( $value );
 
@@ -359,9 +342,8 @@ class FrmProImages {
 		}
 
 		foreach ( (array) $value as $v_key => $val ) {
-			$val = self::maybe_adjust_val( $val, $values_to_check );
 			if ( in_array( $val, $values_to_check ) ) {
-				$opt           = array_search( $val, $values_to_check );
+				$opt = array_search( $val, $values_to_check );
 				$display_value = self::option_array( $f_labels, $f_images, $opt );
 
 				if ( is_array( $value ) ) {
@@ -384,16 +366,6 @@ class FrmProImages {
 		);
 
 		return self::get_image_value( $atts, $field, $image_values );
-	}
-
-	/**
-	 * Checkbox value ampersands get encoded, so check for a decoded match if there is no match.
-	 */
-	private static function maybe_adjust_val( $val, $values_to_check ) {
-		if ( false === strpos( $val, '&amp;' ) || in_array( $val, $values_to_check ) ) {
-			return $val;
-		}
-		return str_replace( '&amp;', '&', $val );
 	}
 
 	private static function option_array( $f_labels, $f_images, $opt ) {
@@ -465,43 +437,12 @@ class FrmProImages {
 		$show_label = ( $label !== '' && ( $image_values['show_label'] || ! $has_image || strpos( $display_content, 'img' ) === false ) );
 
 		if ( $show_label ) {
-			// using FrmAppHelper::kses over esc_html to fix Pro issue #3933
-			$display_content .= '<span class="frm_text_label_for_image"><span class="frm_text_label_for_image_inner">' . FrmAppHelper::kses( $label, 'all' ) . '</span></span>';
+			$display_content .= '<span class="frm_text_label_for_image"><span class="frm_text_label_for_image_inner">' . esc_html( $label ) . '</span></span>';
 			$label_class = ' frm_label_with_image';
 		}
 
 		$display_content = '<span class="frm_show_images frm_image_option_container frm_image_option_size_' . esc_attr( $image_size . $label_class ) . '">' . $display_content . '</span>';
 
 		return $display_content;
-	}
-
-	/**
-	 * By default, most HTML is stripped from a value.
-	 * This includes the HTML that is added by this function.
-	 * This image markup is added very early, before get_display_value is called.
-	 * As a result it goes through all of the display filtering as well.
-	 *
-	 * @since 6.8
-	 *
-	 * @param array $allowed_html
-	 * @return array
-	 */
-	public static function allow_image_option_html( $allowed_html ) {
-		$allowed_html['div']  = array( 'class' => true );
-		$allowed_html['span'] = array(
-			'id'    => true,
-			'class' => true,
-		);
-		$allowed_html['img']  = array(
-			'src'   => true,
-			'class' => true,
-			'alt'   => true,
-		);
-		$allowed_html['a']    = array(
-			'href'   => true,
-			'class'  => true,
-			'target' => true,
-		);
-		return $allowed_html;
 	}
 }
