@@ -6,38 +6,31 @@
  */
  
 function safe_get( $var ){
-    
-    if( !isset($_GET[$var]) )
-        return false;
-    
-    return esc_html( $_GET[$var] );
+    if(isset($_GET) && isset($_GET[$var]) && !empty($_GET[$var])){
+        return esc_html( $_GET[$var] );
+    }
 }
 
 function safe_request( $var ){
-    
-        if( !isset($_REQUEST[$var]) )
-        return false;
-        
+    if(isset($_REQUEST)){
     return esc_html( $_REQUEST[$var] );
+    }
 }
  
 function get_web_variant(){
-    
-    if( !isset($_COOKIE['kunstuitleenVariant']) )
-        return 'thuis';
-    
+    if(isset($_COOKIE)){
     return esc_html($_COOKIE['kunstuitleenVariant']);
+    }
 }
 
 function get_cookie_value( $var ){
     
-    if( !isset($_COOKIE[$var]) )
-        return '';
-    
-    $cookie             = $_COOKIE[$var]; 
-    $cookie_stripped    = stripslashes($cookie);
-    $cookie_decoded     = json_decode($cookie_stripped, true);
-                    
+    $cookie_decoded = '';
+    if(isset($_COOKIE) && isset($_COOKIE[$var])){
+        $cookie             = $_COOKIE[$var]; 
+        $cookie_stripped    = stripslashes($cookie);
+        $cookie_decoded     = json_decode($cookie_stripped, true);
+    }              
     return $cookie_decoded;
 }
 
@@ -114,8 +107,6 @@ function get_favorieten(){
     
     $cookieWebVariant = get_web_variant();
     
-    $favorieten = [];
-    
     if( 
         is_singular( 'preselect_collection' ) || 
         is_page_template( 'page-templates/page-collectie-voorselectie.php' ) ||  
@@ -123,14 +114,11 @@ function get_favorieten(){
         is_page_template( 'page-templates/page-favorieten-bevestigen-voorselectie.php' ) 
     ){
         $preselect_client = get_preselect_client();
-        if( isset($_COOKIE['favorieten-preselect-'.$preselect_client['client_code']]) ) {
-            $cookie = $_COOKIE['favorieten-preselect-'.$preselect_client['client_code']];
-            $cookie = stripslashes($cookie); 
-            $favorieten = json_decode($cookie, true);
-        }
+        $cookie = $_COOKIE['favorieten-preselect-'.$preselect_client['client_code']];
+        $cookie = stripslashes($cookie); 
+        $favorieten = json_decode($cookie, true);
     } else {
-        
-        if( isset($_COOKIE['favorieten'.$cookieWebVariant]) ) {
+        if(isset($_COOKIE['favorieten'.$cookieWebVariant]) && !empty($_COOKIE['favorieten'.$cookieWebVariant])){
             $cookie = $_COOKIE['favorieten'.$cookieWebVariant]; 
             $cookie = stripslashes($cookie); 
             $favorieten = json_decode($cookie, true); 
@@ -152,10 +140,15 @@ function get_favorieten(){
  
 function createFilter($filter, $single, $exclude = []) { 
 
-    $createFilter = '<select name="' . $filter . '">';
+    $createFilter = '<select name="' . $filter . '" class="custom_term">';
         $createFilter .= '<option value="">Kies een ' . $single . '</option>';
         
-        $filteritems = get_terms($single, array('hide_empty' => false, 'exclude' => $exclude));
+     //   $filteritems = get_terms($single, array('hide_empty' => false, 'exclude' => $exclude));
+        $filteritems = get_terms( array(
+            'taxonomy' => $single,
+            'hide_empty' => false,
+            'exclude' => $exclude
+        ) );
         foreach($filteritems as $filteritem):
             if( isset($_GET[$filter]) && $filteritem->slug == $_GET[$filter] ):
                 $createFilter .= '<option value="' . $filteritem->slug . '" selected="selected">' . $filteritem->name . '</option>';
@@ -405,4 +398,22 @@ function adtraction_hash($source_address) {
     $processed_address = md5($processed_address);
     
     return $processed_address;
+}
+
+add_filter( 'pre_get_posts', 'collectie_cpt_search' );
+/**
+ * This function modifies the main WordPress query to include an array of
+ * post types instead of the default 'post' post type.
+ *
+ * @param object $query  The original query.
+ * @return object $query The amended query.
+ */
+function collectie_cpt_search( $query ) {
+
+    if ( $query->is_search ) {
+        $query->set( 'post_type', array( 'collectie' ) );
+    }
+
+    return $query;
+
 }

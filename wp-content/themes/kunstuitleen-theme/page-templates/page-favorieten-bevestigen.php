@@ -2,6 +2,7 @@
 /*
     Template name: Favorieten bevestigen
 */
+   
     get_header();
     
     $cookieWebVariant = get_web_variant(); 
@@ -15,7 +16,7 @@
     $step_active = 'two';
     $include_post_id = ( $cookieWebVariant == 'werk' ? 40 : 122282 );
     
-    update_post_meta($updateID, 'uniekecode', wp_generate_password(32, false, false)); 
+    update_post_meta($updateID, 'uniekecode', wp_generate_password(32)); 
     update_post_meta($updateID, 'webvariant', $cookieWebVariant); 
 
 ?>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css?ver=3.2.0">
+<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha512-+L4yy6FRcDGbXJ9mPG8MT/3UCDzwR9gPeyFNMCtInsol++5m3bk2bXWKdZjvybmohrAsn3Ua5x8gfLnbE1YkOg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Open+Sans:wght@300&family=Roboto:wght@300&display=swap" rel="stylesheet">
+
+<!-- multiselect -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css"><link href="style.css" rel="stylesheet">
+
+</head>
+<body class="d-flex flex-column h-100">    
+    <main class="flex-shrink-0">
+        <div class="container mt-4">
+            <div class="row">
+                <section class="container col-md-12">
+                    <section class="row text-center">
+                        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 column page-content">
+                            <h1 class="text-muted cinzel text-uppercase" style="margin-bottom: 0px;">
+                                My favorite
+                            </h1>
+                            <div class="col-md-12 text-center">
+                                <a href="#" class="backto">Terug naar de collectie</a>
+                            </div>
+                        </article>
+                    </section>
+                </section>
+            </div>
+        </div>
+        <div class="content-container no-margin-top">
+            <div class="container relative">
+                <section class="row">
+                    <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 relative page-content favorieten-intro">
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-10 col-lg-offset-1">
+                                <ul class="favorieten-steps">
+                                    <li class="step step-favorieten active">
+                                        <div class="step-inner-container"><div class="step-inner"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.5mm" height="12.5mm" viewBox="0 0 35.4 35.4"><defs><clipPath id="clip-path" transform="translate(0 0)"><rect width="35.4" height="35.38" style="fill:none"></rect></clipPath></defs><title>favorieten-step_mijn-favorieten</title><g style="clip-path:url(#clip-path)"><path d="M26.3,2.4A17.2,17.2,0,0,0,17.4,0,17.2,17.2,0,0,0,8.5,2.4,18.4,18.4,0,0,0,2.2,8.8,17.1,17.1,0,0,0,0,17.7a18.3,18.3,0,0,0,2.5,8.9A18.4,18.4,0,0,0,9.1,33,17.2,17.2,0,0,0,18,35.4,16.6,16.6,0,0,0,26.8,33a17.8,17.8,0,0,0,6.4-6.4,18.1,18.1,0,0,0,2.2-8.9,18.3,18.3,0,0,0-2.5-8.9,19.2,19.2,0,0,0-6.6-6.4M9.7,16.1a3.2,3.2,0,0,1-.5-1.3,2.8,2.8,0,0,1,.1-2A3.2,3.2,0,0,1,10.6,11a3.5,3.5,0,0,1,1.9-.6,3.9,3.9,0,0,1,1.7.4,4.5,4.5,0,0,1,1.3,1.1,2.9,2.9,0,0,0,2.2.9,2.8,2.8,0,0,0,2.2-.9,4.5,4.5,0,0,1,1.3-1.1,3.8,3.8,0,0,1,1.6-.4,3.9,3.9,0,0,1,2,.6,3.4,3.4,0,0,1,1.4,1.8,4.9,4.9,0,0,1,.2,2,2.3,2.3,0,0,1-.6,1.3L18,27Z" transform="translate(0 0)" style="fill:#576b80"></path></g></svg>1. Favorieten</div></div>
+                                    </li>    
+                                    <li class="step step-gegevens" onclick="window.location = 'check-out.html';">
+                                        <div class="step-inner-container"><div class="step-inner"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="12.5mm" height="12.4mm" viewBox="0 0 35.5 35.2"><title>favorieten-step_gegevens</title><polygon points="17.1 14.9 14.3 12 10.2 16.2 17.1 23.2 35.5 4.4 31.4 0.3 17.1 14.9" style="fill:#576b80"></polygon><path d="M28.6,17.6A11.7,11.7,0,0,1,17.1,29.4,11.6,11.6,0,0,1,5.7,17.6,11.5,11.5,0,0,1,17.1,5.9H20V0H17.1C7.7,0,0,7.9,0,17.6S7.7,35.2,17.1,35.2A17.4,17.4,0,0,0,34.3,17.6V14.7H28.6Z" transform="translate(0 0)" style="fill:#576b80"></path></svg>2. Gegevens</div></div>
+                                    </li>    
+                                    <li class="step step-bedankt">
+                                        <div class="step-inner-container"><div class="step-inner"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="12.4mm" height="12.4mm" viewBox="0 0 35.2 35.2"><title>favorieten-step_bedankt</title><path d="M11.7,16.5a3.1,3.1,0,1,1,3.1-3.1,3.1,3.1,0,0,1-3.1,3.1m11.9,0a3.1,3.1,0,1,1,3.1-3.1,3.1,3.1,0,0,1-3.1,3.1m-6,11A10,10,0,0,1,12,25.8a10.2,10.2,0,0,1-3.6-4.6l-.3-.7h4v.3a6.4,6.4,0,0,0,5.4,3.1A6.2,6.2,0,0,0,23,20.8l.2-.3h3.9l-.2.7a10.9,10.9,0,0,1-3.6,4.6,10.3,10.3,0,0,1-5.7,1.7m0-23A13.1,13.1,0,1,0,30.7,17.6,13.1,13.1,0,0,0,17.6,4.5m0,30.7A17.6,17.6,0,1,1,35.2,17.6,17.6,17.6,0,0,1,17.6,35.2" transform="translate(0 0)" style="fill:#576b80"></path></svg>3. Bedankt</div></div>
+                                    </li>    
+                                </ul>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-10 col-lg-offset-1 section-description">                 
+                                <p style="text-align: center;">Ons advies Bekij jouw favorieten kunstwerken in het echit! <i class="fa fa-info-circle"></i></p>
+                                <p style="text-align: center;">Selecteer je 5 favorieten, vul je gegevens in en bevestig je eindselectie. Wij nemen zo snel mogelijk contact met je op om een afspraak te maken. Jouw favoriete kunstwerken worden twee weken voor je gereserveerd.
+                                <strong>Vandaag reserveren = binnen 1 week in huis.</strong>
+                            </p>
+                    </article>
+                </section>
+            </div>
+        </div>
+        <div class="container tabs">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="tabbable-panel">
+                        <div class="tabbable-line">
+                            <ul class="nav nav-tabs nav-justified mt-4">
+                                <li><a href="#tab1default" data-toggle="tab"><label class="mr-jonas h4 text-uppercase"><strong>Collection</strong></label></a></li>
+                                <li class="active"><a href="#tab2default" data-toggle="tab"><label class="mr-jonas h4 text-uppercase"><strong>My favorites</strong></label></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="tab2default">
+                <section class="content-container confirm-bar-top" id="confirm-favorite-selection">
+                    <section class="container">
+                        <div class="row selection-tab">
+                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center text-md-right text-lg-right"> 
+                                <p>Geselecteerd: <span class="favorite-selection-count">4</span> van maximaal 5</p>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center text-md-left text-lg-left">
+                                <a href="#" class="button secondary">
+                                    Reserveer mijn Favorieten
+                                    <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.5mm" height="12.5mm" viewBox="0 0 35.4 35.4"><defs><clipPath id="clip-path" transform="translate(0 0)"><rect width="35.4" height="35.38" style="fill:none"></rect></clipPath></defs><title>favorieten-step_mijn-favorieten</title><g style="clip-path:url(#clip-path)"><path d="M26.3,2.4A17.2,17.2,0,0,0,17.4,0,17.2,17.2,0,0,0,8.5,2.4,18.4,18.4,0,0,0,2.2,8.8,17.1,17.1,0,0,0,0,17.7a18.3,18.3,0,0,0,2.5,8.9A18.4,18.4,0,0,0,9.1,33,17.2,17.2,0,0,0,18,35.4,16.6,16.6,0,0,0,26.8,33a17.8,17.8,0,0,0,6.4-6.4,18.1,18.1,0,0,0,2.2-8.9,18.3,18.3,0,0,0-2.5-8.9,19.2,19.2,0,0,0-6.6-6.4M9.7,16.1a3.2,3.2,0,0,1-.5-1.3,2.8,2.8,0,0,1,.1-2A3.2,3.2,0,0,1,10.6,11a3.5,3.5,0,0,1,1.9-.6,3.9,3.9,0,0,1,1.7.4,4.5,4.5,0,0,1,1.3,1.1,2.9,2.9,0,0,0,2.2.9,2.8,2.8,0,0,0,2.2-.9,4.5,4.5,0,0,1,1.3-1.1,3.8,3.8,0,0,1,1.6-.4,3.9,3.9,0,0,1,2,.6,3.4,3.4,0,0,1,1.4,1.8,4.9,4.9,0,0,1,.2,2,2.3,2.3,0,0,1-.6,1.3L18,27Z" transform="translate(0 0)" style="fill:#576b80"></path></g></svg>               
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-3 img-row">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="h4 mr-jonas"><strong>De door jou voorgeselecteerde kunstwerken voor jouw bedrijf:</strong></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 collection-overview">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <a href="images/large60439.jpg" class="col-4 art-favorite-thumb" style="background-image: url(images/large60439.jpg);">
+                                                </a>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a href="images/large46121.jpg" class="col-4 art-favorite-thumb" style="background-image: url(images/large46121.jpg);">
+                                                </a>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a href="images/large46311.jpg" class="col-4 art-favorite-thumb" style="background-image: url(images/large46311.jpg);">
+                                                </a>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a href="images/large60427.jpg" class="col-4 art-favorite-thumb" style="background-image: url(images/large60427.jpg);">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row collection-overview-btn">
+                                    <button type="button" class="btn btn-default btn-block"><label class="mr-jonas text-uppercase h4"><strong>Verwijder ALLE</strong></button>
+                                </div>
+                            </div>
+                            <div class="col-md-9" style="padding-left: 40px;">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="col-md-5">
+                                            <input type="text" class="form-control" placeholder="Geef deze selectie een naam">
+                                        </div>
+                                        <label class="h4 mr-jonas"><strong>Total per maand 00,00</strong></label>
+                                    </div>
+                                    <div class="col-md-3 text-right share-btn">
+                                        <button class="btn btn-default" data-toggle="modal" data-target="#share-collegue"><i class="fa fa-share-alt"></i><label class="mr-jonas h4"><strong>Deel met collega's</strong></label></button>
+                                    </div>
+                                </div>
+                                <div class="row location">
+                                    <div class="col-md-4">
+                                        <button class="btn btn-default"><i class="fa fa-plus"></i><label class="mr-jonas h4"><strong>Nieuwe locatie</strong></label></button>
+                                    </div>
+                                </div>
+                                <div class="row title-row">
+                                    <div class="col-md-10 title-col">
+                                        <div class="row text-center title-inventory">
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <img class="img-responsive" src="images/large60427.jpg">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-heart"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label class="mr-jonas text-uppercase" style="color: #9dafc2;">Verwijder kunst</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <label class="h4 col-md-12 mr-jonas"><strong>Title Inventory</strong></label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">Name artist</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">000 x 000</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas text-uppercase grayish-blue">€ 00,00 Per maand</label>
+                                                </div>
+                                                <div class="row delete">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </div>
+                                                    <label class="mr-jonas text-uppercase grayish-blue">Verwijder locatie</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <input type="text" class="form-control" value="Edgar Kiwiet">
+                                                    </div>
+                                                </div>
+                                                <div class="row more-info">
+                                                    
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <button class="btn btn-default btn-block"><i class="fa fa-plus"></i><label class="h4 mr-jonas"><strong>Nog een alternatief kiezen</strong></label></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row title-row-main">
+                                    <div class="col-md-12 title-col">
+                                        <div class="row text-center title-inventory">
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-heart-o"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label class="mr-jonas text-uppercase" style="color: #9dafc2;">Sleep Hierheen</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <label class="h4 col-md-12 mr-jonas"><strong>Title Inventory</strong></label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">Name artist</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">000 x 000</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas text-uppercase grayish-blue">€ 00,00 Per maand</label>
+                                                </div>
+                                                <div class="row delete">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </div>
+                                                    <label class="mr-jonas text-uppercase grayish-blue">Verwijder locatie</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Edgar Kiwiet (alternatief)">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Linkerward">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Etage 1">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Hoog ophangen">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Kamer 2">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button class="btn btn-default btn-block"><i class="fa fa-angle-left"></i><label class="h4 mr-jonas"><strong>Verberg meer info</strong></label></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row title-row-main">
+                                    <div class="col-md-12 title-col">
+                                        <div class="row text-center title-inventory">
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-heart-o"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label class="mr-jonas text-uppercase" style="color: #9dafc2;">Sleep Hierheen</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <label class="h4 col-md-12 mr-jonas"><strong>Title Inventory</strong></label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">Name artist</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">000 x 000</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas text-uppercase grayish-blue">€ 00,00 Per maand</label>
+                                                </div>
+                                                <div class="row delete">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </div>
+                                                    <label class="mr-jonas text-uppercase grayish-blue">Verwijder locatie</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Kees Smit">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" placeholder="Positie">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Etage 1">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" placeholder="Opmerking">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Kamer 2">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button class="btn btn-default btn-block"><i class="fa fa-angle-left"></i><label class="h4 mr-jonas"><strong>Verberg meer info</strong></label></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row title-row-main">
+                                    <div class="col-md-12 title-col">
+                                        <div class="row text-center title-inventory">
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-heart-o"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label class="mr-jonas text-uppercase" style="color: #9dafc2;">Sleep Hierheen</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <label class="h4 col-md-12 mr-jonas"><strong>Title Inventory</strong></label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">Name artist</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">000 x 000</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas text-uppercase grayish-blue">€ 00,00 Per maand</label>
+                                                </div>
+                                                <div class="row delete">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </div>
+                                                    <label class="mr-jonas text-uppercase grayish-blue">Verwijder locatie</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Kelvin Smees">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" placeholder="Positie">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Etage 1">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" placeholder="Opmerking">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Kamer 2">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button class="btn btn-default btn-block"><i class="fa fa-angle-left"></i><label class="h4 mr-jonas"><strong>Verberg meer info</strong></label></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row title-row-main">
+                                    <div class="col-md-12 title-col">
+                                        <div class="row text-center title-inventory">
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-heart-o"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label class="mr-jonas text-uppercase" style="color: #9dafc2;">Sleep Hierheen</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <label class="h4 col-md-12 mr-jonas"><strong>Title Inventory</strong></label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">Name artist</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas grayish-blue">000 x 000</label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-12 mr-jonas text-uppercase grayish-blue">€ 00,00 Per maand</label>
+                                                </div>
+                                                <div class="row delete">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </div>
+                                                    <label class="mr-jonas text-uppercase grayish-blue">Verwijder locatie</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Leon Put">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" placeholder="Positie">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Etage 1">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" placeholder="Opmerking">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" value="Kamer 2">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button class="btn btn-default btn-block"><i class="fa fa-angle-left"></i><label class="h4 mr-jonas"><strong>Verberg meer info</strong></label></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <section class="content-container confirm-bar-bottom" id="confirm-favorite-selection">
+                    <section class="container">
+                        <div class="row selection-tab">
+                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center text-md-right text-lg-right">
+                                
+                                <p>Geselecteerd: <span class="favorite-selection-count">4</span> van maximaal 5</p>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center text-md-left text-lg-left">
+                                <a href="#" class="button secondary">
+                                    Reserveer mijn Favorieten
+                                    <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.5mm" height="12.5mm" viewBox="0 0 35.4 35.4"><defs><clipPath id="clip-path" transform="translate(0 0)"><rect width="35.4" height="35.38" style="fill:none"></rect></clipPath></defs><title>favorieten-step_mijn-favorieten</title><g style="clip-path:url(#clip-path)"><path d="M26.3,2.4A17.2,17.2,0,0,0,17.4,0,17.2,17.2,0,0,0,8.5,2.4,18.4,18.4,0,0,0,2.2,8.8,17.1,17.1,0,0,0,0,17.7a18.3,18.3,0,0,0,2.5,8.9A18.4,18.4,0,0,0,9.1,33,17.2,17.2,0,0,0,18,35.4,16.6,16.6,0,0,0,26.8,33a17.8,17.8,0,0,0,6.4-6.4,18.1,18.1,0,0,0,2.2-8.9,18.3,18.3,0,0,0-2.5-8.9,19.2,19.2,0,0,0-6.6-6.4M9.7,16.1a3.2,3.2,0,0,1-.5-1.3,2.8,2.8,0,0,1,.1-2A3.2,3.2,0,0,1,10.6,11a3.5,3.5,0,0,1,1.9-.6,3.9,3.9,0,0,1,1.7.4,4.5,4.5,0,0,1,1.3,1.1,2.9,2.9,0,0,0,2.2.9,2.8,2.8,0,0,0,2.2-.9,4.5,4.5,0,0,1,1.3-1.1,3.8,3.8,0,0,1,1.6-.4,3.9,3.9,0,0,1,2,.6,3.4,3.4,0,0,1,1.4,1.8,4.9,4.9,0,0,1,.2,2,2.3,2.3,0,0,1-.6,1.3L18,27Z" transform="translate(0 0)" style="fill:#576b80"></path></g></svg>               
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <div class="modal fade" id="share-collegue" tabindex="-1" role="dialog" aria-labelledby="share-collegueLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body modal-collegue" id="modal-collegue">
+                                <div class="row" id="send-request">
+                                    <label class="h3 col-md-12 mr-jonas form-title"><strong>Deel met collega's</strong></label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="h4 mr-jonas title">De link wordt prive gedeeld met alleen je gedeelde collega die bekend staan in het account. Je collega's kunnen zo huin eigen kunstwerk kiezen van de door jou voorgeselecteerde favorieten</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 select-box">
+                                        <select id="boot-multiselect-demo" class="form-control" multiple="multiple">
+                                            <option value="kees@email.com" class="form-control">kees@email.com</option>
+                                            <option value="kelvin@email.com" class="form-control">kelvin@email.com</option>
+                                            <option value="leon@email.com" class="form-control">leon@email.com</option>
+                                            <option value="collega.4@email.com" class="form-control">collega.4@email.com</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" id="send-request">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-info btn-block btn-round part mr-jonas">Deel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body confirm" id="modal-collegue">
+                                <div class="row">
+                                    <label class="h3 col-md-12 mr-jonas form-title"><strong>Link is succesvol gedeeld</strong></label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="h4 mr-jonas title">De link wordt prive gedeeld met alleen je gedeelde collega die bekend staan in het account. Je collega's kunnen zo huin eigen kunstwerk kiezen van de door jou voorgeselecteerde favorieten</label>
+                                    </div>
+                                </div>
+                                <div class="row text-center img-checked">
+                                    <img src="images/icons8-checked.svg" class="img-responsive checked">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-info btn-block btn-round mr-jonas" id="close" data-dismiss="modal">Sluit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade in" id="tab1default"></div>
+        </div>
+    </main>
+</body>
+</html>
+<script type="text/javascript">
+    $(document).ready(function() {
+        jQuery('.confirm').hide();
+        jQuery('.part').click(function(){
+            jQuery('.modal-collegue').hide();
+            jQuery('.confirm').show();
+        });
+        jQuery('#close').click(function(){
+            jQuery('.modal-collegue').show();
+            jQuery('.confirm').hide();
+        });
+        $('#boot-multiselect-demo').multiselect({
+            filterPlaceholder: 'Search',
+            includeSelectAllOption: true,
+            buttonWidth: 250,
+            enableFiltering: true,
+        });
+    });
+</script>

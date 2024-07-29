@@ -1,0 +1,75 @@
+@font-face {
+    font-family: 'MrJones-Book';
+    src: url(../mr_jones/Mr_Jones/MrJonesBook.ttf);
+}
+.margin-top{
+    margin-top: 6rem;
+}
+.cinzel{
+    font-family: 'Cinzel', serif;
+}
+.mr-jonas{
+    font-family: "MrJones-Book", sans-serif;
+}
+.heading{
+    margin-top: 55px;
+    margin-bottom:30px
+}
+.img-responsive{
+    display: inline-block;
+    height: 55px;
+}
+.tray{
+    display: flex;
+    margin-bottom:100px
+}
+.tray-row{
+    display: flex;
+    place-content: center;
+}
+.tray-col{
+    background-color: white;
+    border: 1px solid #d0cfcd;
+    padding: 70px;
+    border-radius: 10px;
+}
+h1, .h1, h2, .h2, h3, .h3{
+    margin-top: 0;
+}
+.jumbotron::before{
+    content: "";
+    background-image: url('images/qr-code.png');
+    background-size: contain;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0.25;
+    max-height: 148px;
+}
+.jumbotron{
+    background-color: transparent;
+}
+.details-row{
+    border-bottom: 1px solid #f6f6f6;
+    font-family: "MrJones-Book", sans-serif;
+    display: flex;
+}
+.details-row .col-md-8 .h5{
+    font-weight: bold;
+}
+.icon-col{
+    text-align: right;
+}
+.icon-col .fa{
+    padding-top: 7px;
+    font-size: 20px;
+}
+.details-row .img-thumbnail{
+    max-height: 33px;
+    border: 0;
+}
+.tray-container{
+    background-image: url("images/Foto-pand-leks.jpg");
+}

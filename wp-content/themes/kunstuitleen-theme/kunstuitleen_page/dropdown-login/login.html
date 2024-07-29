@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css?ver=3.2.0">
+<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js?ver=1.1"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha512-+L4yy6FRcDGbXJ9mPG8MT/3UCDzwR9gPeyFNMCtInsol++5m3bk2bXWKdZjvybmohrAsn3Ua5x8gfLnbE1YkOg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Open+Sans:wght@300&family=Roboto:wght@300&display=swap" rel="stylesheet">
+
+<link href="style.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">    
+    <main class="flex-shrink-0">
+        <div class="container margin-top login">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                          </button>
+                        <a class="navbar-brand" href="#"><div class="logo-image"><img src="images/kunstuitleen.svg"/></div></a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li   class="active cinzel"><a href="#">Home</a></li>
+                            <li class="cinzel"><a href="#">Collectie</a></li>
+                            <li class="cinzel"><a href="#">Kunst kadobon</a></li>
+                            <li class="cinzel"><a href="#">DIENSTEN</a></li>
+                            <li class="cinzel"><a href="#">OVER ONS</a></li>
+                            <li class="cinzel"><a href="#">CONTACT</a></li>
+                            <li class="cinzel"><a href="#"><i class="fa fa-search"></i></a></li>
+                            <li id='dropdown'>
+                                <button class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-auto-close="false">
+                                    <i class="fa fa-user"></i>Login
+                                </button>            
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <div class="modal-content">
+                                        <div class="modal-body login" id="login">
+                                            <div class="form-title">
+                                                <h2 class="mr-jonas"><strong>Login</strong></h2>
+                                            </div>
+                                            <div class="row title">
+                                                <label class="h4"><strong>Welkom terug bij kunstuitleen</strong></label>
+                                            </div>
+                                            <div class="d-flex flex-column text-center">
+                                                <form>
+                                                    <div class="form-group">
+                                                        <input type="email" class="form-control" id="email"placeholder="Your email address...">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control" id="password1" placeholder="Your password...">
+                                                    </div>
+                                                    <div class="row text-right forget-pass">
+                                                        <a class="mr-jonas" style="cursor: pointer;">Forget password ?</a>
+                                                    </div>
+                                                    <button type="button" class="btn btn-info btn-block btn-round" id="login-btn">Login</button>
+                                                </form>
+                                                <div class="d-flex justify-content-center social-media-icons">
+                                                    <div class="row">
+                                                        <a type="button" class="btn btn-round sign-up">
+                                                            <strong>Nog geen account? Begin heir. </strong>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body" id="forget-pass">
+                                            <div class="form-title">
+                                                <h2 class="mr-jonas"><strong>Wachtwoord opnieuw instellen</strong></h2>
+                                            </div>
+                                            <div class="row title">
+                                                <label class="h4"><strong>Vul je emailadress in en je ontvangt binnen enkele minuteen een link waarme je een Wachtwoord kunt instellen</strong></label>
+                                            </div>
+                                            <div class="d-flex flex-column text-center">
+                                                <form>
+                                                    <div class="form-group">
+                                                        <input type="email" class="form-control" id="email1"placeholder="Emailadres">
+                                                    </div>
+                                                    <button type="button" class="btn btn-info btn-block btn-round confirm">Login</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body" id="confirm">
+                                            <div class="form-title">
+                                                <h2 class="mr-jonas"><strong>Wachtwoord opnieuw opgevraagd</strong></h2>
+                                            </div>
+                                            <div class="row title">
+                                                <label class="h4"><strong>Binnen enkele minuten ontvang je een mail met een tijdelijke wachtwoord. Deze kun je ondar je gegevens in je account weer annpassen naar jee gewenste wachtwoord</strong></label>
+                                            </div>
+                                            <div class="d-flex flex-column text-center">
+                                                <button type="button" class="btn btn-info btn-block btn-round" id="close">Sluiten</button>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body" id="sign-up">
+                                            <div class="form-title">
+                                                <h2 class="mr-jonas"><strong>Account aanmaken</strong></h2>
+                                            </div>
+                                            <div class="row title">
+                                                <label class="h4"><strong>Met de onderstaande gegevens kun je een account aanvragen</strong></label>
+                                            </div>
+                                            <form>
+                                                <div class="form-group">
+                                                    <input type="email" class="form-control" id="vooornaam"placeholder="Vooornaam*">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="password" class="form-control" id="achternaam" placeholder="Achternaam*">
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <input type="password" class="form-control" id="organisatie" placeholder="Organisatie*">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="password" class="form-control" id="telefoonnummer" placeholder="Telefoonnummer*">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="password" class="form-control" id="emailadres" placeholder="Emailadres*">
+                                                </div>
+                                                <button type="button" class="btn btn-info btn-block btn-round sign-up-complete">Account aanvragen</button>
+                                            </form>
+                                            <div class="d-flex justify-content-center social-media-icons">
+                                                <div class="row  text-center">
+                                                    <a type="button" class="btn btn-round sign-in">
+                                                        <strong>Terug naar login</strong>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body" id="sign-up-complete">
+                                            <div class="form-title">
+                                                <h2 class="mr-jonas"><strong>Account aangevraagd!</strong></h2>
+                                            </div>
+                                            <div class="row title">
+                                                <label class="h4"><strong>Je account is met succes aangevraagd. Je ontvangt een mail met jouw wachtwoord. Dit kan enkele minuten duren.</strong></label>
+                                            </div>
+                                            <div class="row text-center">
+                                                <img src="images/icons8-checked.svg" class="img-responsive checked">
+                                            </div>
+                                            <div class="d-flex justify-content-center social-media-icons">
+                                                <div class="row">
+                                                    <button type="button" class="btn btn-info btn-block btn-round" id="close_2">Sluiten</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body" id="account-detail">
+                                            <div class="form-title">
+                                                <h2 class="mr-jonas"><strong>Welkom Voornaam</strong></h2>
+                                            </div>
+                                            <div class="row" style="margin-top: 22px;">
+                                                <ul>
+                                                    <li><a href="#" class="btn"><label class="h5"><strong>Accountoverzicht</strong></label></a></li>
+                                                    <li><a href="#" class="btn"><label class="h5"><strong>Mijn kunstwerken</strong></label></a></li>
+                                                    <li><a href="#" class="btn"><label class="h5"><strong>Mijn tegoeden</strong></label></a></li>
+                                                    <li><a href="#" class="btn"><label class="h5"><strong>Mijn aankoopfacturen</strong></label></a></li>
+                                                    <li><a href="#" class="btn"><label class="h5"><strong>Mijn huurfacturen</strong></label></a></li>
+                                                    <li><a href="#" class="btn"><label class="h5"><strong>Mijn gegevens</strong></label></a></li>
+                                                    <li><a href="#" class="btn"><label class="h5"><strong>Log uit</strong></label></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </main>
+</body>
+</html>
+<script>
+    jQuery(document).ready(function(){
+        jQuery('#confirm').hide();
+        jQuery('#sign-up-complete').hide();
+        jQuery('#forget-pass').hide();
+        jQuery('#sign-up').hide();
+        jQuery('#account-detail').hide();
+            
+        jQuery('.forget-pass').click(function(){
+            jQuery('#forget-pass').show();
+            jQuery('#login').hide();
+            jQuery('#sign-up-complete').hide();
+        });
+        jQuery('#login-btn').click(function(){
+            jQuery('.dropdown-menu').css({"min-width": "400px"});
+            jQuery('#account-detail').show();
+            jQuery('#login').hide();
+            jQuery('#sign-up-complete').hide();
+        });
+        jQuery('.confirm').click(function(){
+            jQuery('#forget-pass').hide();
+            jQuery('#confirm').show();
+            jQuery('#login').hide();
+        });
+        jQuery('.sign-up-complete').click(function(){
+            jQuery('#forget-pass').hide();
+            jQuery('#sign-up').hide();
+            jQuery('#login').hide();
+            jQuery('#sign-up-complete').show();
+        });
+        jQuery('.sign-up').click(function(){
+            jQuery('#sign-up').show();
+            jQuery('#login').hide();
+        });
+        jQuery('.sign-in').click(function(){
+            jQuery('#sign-up-complete').hide();
+            jQuery('#login').show();
+            jQuery('#sign-up').hide();
+            jQuery('#forget-pass').hide();
+            jQuery('#confirm').hide();
+        });
+        $('#close_2').click(function(){
+            console.log('hello');
+            jQuery('#dropdown').removeClass('open');
+            jQuery('#confirm').hide();
+            jQuery('#forget-pass').hide();
+            jQuery('#login').show();
+            jQuery('#sign-up-complete').hide();
+            jQuery('#account-detail').hide();
+        });
+        $('#close').click(function() {
+            jQuery('#dropdown').removeClass('open');
+            jQuery('#confirm').hide();
+            jQuery('#forget-pass').hide();
+            jQuery('#login').show();
+            jQuery('#sign-up-complete').hide();
+            jQuery('#account-detail').hide();
+        });
+        $('.dropdown-menu').on("click.bs.dropdown", function (e) {
+            e.stopPropagation();
+            e.preventDefault();                
+        });
+    });
+
+</script>

@@ -2,6 +2,8 @@
 /*
     Template name: Favorieten - Thank you
 */
+ 
+
     get_header();
     
     $cookieWebVariant = get_web_variant(); 

@@ -1,5 +1,5 @@
 <?php
-  
+    define('KUNSTUITLEEN_PATH', get_stylesheet_directory_uri());
     add_action( 'after_setup_theme', 'gotopeople_setup' );
 
     if ( ! function_exists( 'gotopeople_setup' ) ):
@@ -75,7 +75,7 @@ add_action( 'wp_enqueue_scripts', 'theme_name_scripts' );
         
         // Vars
         $cookieWebVariant   = get_web_variant();
-        $version            = '3.1.2';
+        $version            = '3.0.8';
         
         /*
          * Styles		
@@ -107,6 +107,11 @@ add_action( 'wp_enqueue_scripts', 'theme_name_scripts' );
 		wp_enqueue_style( 'custom-style', get_stylesheet_uri(), array(), $version, 'all' );
 		
 		wp_enqueue_style( 'custom-theme', get_template_directory_uri() . '/static/css/' . $cookieWebVariant . '.css', array(), $version, 'all' );
+        $wp_get_current_user = '';
+        $wp_get_current_user = wp_get_current_user();
+        if( is_user_logged_in() && in_array( 'company', $wp_get_current_user->roles ) ) :
+            wp_enqueue_style( 'collectie-art-favorite', get_template_directory_uri() . '/static/css/collectie-art-favorite.css', array(), $version, 'all' );
+        endif;
 		
 
         /*
@@ -149,6 +154,7 @@ add_action( 'wp_enqueue_scripts', 'theme_name_scripts' );
         ){
     	    wp_enqueue_script('jqueryui', get_template_directory_uri() . '/static/js/jquery-ui.js', array('jquery'), '2.1.1', true );
     	    wp_enqueue_script('collectiejs', get_template_directory_uri() . '/static/js/collectie.js', array('jquery'), $version, true );
+            wp_localize_script( 'collectiejs', 'collectie_public_ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
     	}
     	
     	if( is_home() ){
@@ -210,4 +216,126 @@ add_action( 'wp_enqueue_scripts', 'theme_name_scripts' );
     	);
     	
     }
-?>
+
+// 	add_action('init', 'get_function');
+// 	function get_function() {
+// 		 var_dump(get_template_directory_uri());
+// 	}
+if (!function_exists('kstage_favorieten_collectie')) {
+    function kstage_favorieten_collectie($postsPerPage = '',$favorieten){
+        $posts_per_page =  !empty($postsPerPage) ? $postsPerPage : -1;
+        if (!empty($favorieten)) :
+            $favorieten = $favorieten;
+        endif;
+        $the_query = new WP_Query( 
+                        array(
+                         'post_type' => 'collectie', 
+                         'orderby' => 'date', 
+                         'post__in' => $favorieten,
+                         'order' => 'DESC', 
+                         'posts_per_page' => $posts_per_page
+                        ) 
+                    );
+        if ( $the_query->have_posts() ) { 
+            while ( $the_query->have_posts() ) { $the_query->the_post();
+                $cols = 'col-xs-12 col-sm-4 col-md-15 col-lg-15'; 
+                   include( locate_template( 'inc/art-favorite.php', false, false )); 
+
+            } /* endwhile */
+             wp_reset_postdata(); 
+        }/* endif */
+   
+    }
+}
+
+/* Start collectie page */
+if (!function_exists('kstage_kstage_favorieten_collectie_ajax')) {
+    function kstage_kstage_favorieten_collectie_ajax(){
+        $favorieten = get_favorieten();
+        $_POST['favorite_text'];
+        if ($_POST['favorite_text'] == 'VOEGTOE') {
+            if (!empty( $favorieten )) {
+               array_push($favorieten, $_POST['favorite_id']);
+            }else{
+                $favorieten = array($_POST['favorite_id']);
+            }   
+        }
+        else{
+            $pos = array_search($_POST['favorite_id'], $favorieten);
+            unset($favorieten[$pos]);
+
+        }
+        if (!empty($favorieten)) {
+
+            $output = kstage_favorieten_collectie($postsPerPage = '',$favorieten);
+        }
+        else{
+           $output = 'error';
+        }
+        wp_die();
+    }
+    add_action('wp_ajax_nopriv_kstage_kstage_favorieten_collectie_ajax', 'kstage_kstage_favorieten_collectie_ajax');
+    add_action('wp_ajax_kstage_kstage_favorieten_collectie_ajax', 'kstage_kstage_favorieten_collectie_ajax');
+}
+
+    function kstage_favorieten_collectie_jquery(){
+        ?>
+        <script>
+            function favrate_collectie(){
+
+            }
+            function favrate_collectiee(e){
+
+                   var favorite_id =  jQuery(e).attr('id');
+                   var data_drag =  jQuery(e).attr('data_drag');
+                   if (data_drag == '1') {
+                     jQuery(e).html('<span>VOEG TOE</span>');
+                   }
+                   jQuery(e).attr('data_drag','0');
+                   var favorite_text = '';               
+                if (jQuery(e).text() == 'VERWIJDER') {
+                    var favorite_text = 'VERWIJDER';
+                    jQuery(this).removeClass('active favorite-remove');
+                    jQuery(this).html('<span>VOEG TOE</span>');
+                } 
+                else {
+                    var favorite_text = 'VOEGTOE';
+                    jQuery(this).addClass('active favorite-remove');
+                    jQuery(this).html('<span>VERWIJDER</span>');
+                }
+                jQuery.ajax({
+                    url : "<?php echo admin_url( 'admin-ajax.php' );?>",
+                    data :  {
+                                action : 'kstage_kstage_favorieten_collectie_ajax',
+                                favorite_id : favorite_id,
+                               favorite_text : favorite_text,
+                            },
+                    type : 'POST',
+                    success : function( response ) {                        
+                        if (response !='error') {
+                            jQuery('#favrate_collectie').html('');
+                            jQuery('#favrate_collectie').html(response);
+                            jQuery('#favrate_collectie .favorite').addClass('active favorite-remove');
+                            jQuery('#favrate_collectie .favorite').html('<span>VERWIJDER</span>');
+                            //favorietenCookie();
+                            /*jQuery('.favorite.active.favorite-remove').on('click', function(){
+                                jQuery(this).removeClass('active favorite-remove');
+                                var clickedID = jQuery(this).attr('id');
+                                var get_ID = $('#'+clickedID).closest('article').attr('id');
+                                $('.favorite-remove-'+get_ID).remove();
+                            });*/
+                        }
+                        else{
+
+                        }
+                    }
+                });
+
+            }
+
+        </script>
+        <?php 
+
+    }
+    add_action('wp_footer', 'kstage_favorieten_collectie_jquery', 999);
+/*End collectie page  */

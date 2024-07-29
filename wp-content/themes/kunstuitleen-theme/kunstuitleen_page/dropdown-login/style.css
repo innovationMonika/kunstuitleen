@@ -1,0 +1,188 @@
+@font-face {
+    font-family: 'MrJones-Book';
+    src: url(../mr_jones/Mr_Jones/MrJonesBook.ttf);
+}
+.margin-top{
+    margin-top: 6rem;
+}
+.login .dropdown-toggle{
+    margin-top: 4px;
+    background-color: #607ff2;
+    color: white;
+    font-size: 20px;
+    font-family:  "MrJones-Book", sans-serif;
+}
+.login .fa{
+    padding-right: 5px;
+}
+.cinzel{
+    font-family: 'Cinzel', serif;
+}
+.dropdown-menu {
+    margin: 0;
+    padding: 0;
+    min-width: 480px;
+    max-width: 480px;
+    border: 0;
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.mr-jonas{
+    font-family: "MrJones-Book", sans-serif;
+}
+.modal-content{
+    padding: 0 4rem 15px;
+}
+
+.login .title{
+    font-family: "MrJones-Book", sans-serif;
+    color: #74869d;
+    margin: 0;
+    margin-bottom: 25px;
+}
+.form-title {
+    color: #607ff2;
+    margin-bottom: 0;
+}
+.login h4{
+    margin: 0;
+}
+.delimiter {
+    padding: 1rem;  
+}
+.signup-section {
+    padding: 0.3rem 0rem;
+}
+
+.login input[type="text"], 
+.login input[type="email"], 
+.login input[type="password"] 
+{
+    font-family: 'MrJones-Book', sans-serif;
+    border: 1px solid #e1e8f1;
+    border-radius: 4px;
+    height: 50px;
+    background-color: #ffffff;
+    font-size: 18px;
+    color: #9fb1c3;
+}
+.login .form-group{
+    margin-bottom: 20px;
+}
+.login .forget-pass{
+    margin-top: -12px;
+    margin-bottom: 20px;
+    margin-right: 4px;
+}
+.login .forget-pass a {
+    color: #607ff2;
+}
+.login .btn-info{
+    background-color: #607ff2;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 0;
+    margin-bottom: 15px;
+}
+.login .btn-info:focus, .login .btn-info:active {
+    border: 0;
+    box-shadow: none;
+    outline:none;
+}
+.login .btn-info:hover{
+    background-color:  #607ff2d9;
+}
+.social-media-icons{
+    margin-top: 30px
+}
+.login .social-media-icons .row{
+    margin-bottom: 20px;
+}
+.login .social-media-icons .h4{
+    font-size: 20px;
+}
+.login .social-media-icons a{
+    font-size: 20px;
+    color: #2d3a4d;
+    font-family: 'MrJones-Book', sans-serif;
+}
+.login .social-media-icons img{
+    height: 34px;
+    padding-right: 20px;
+}
+.login .social-media-icons a:focus, .login .social-media-icons a:active {
+    box-shadow: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active
+{
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+    color: black;
+    border-bottom: 1px solid red;
+    color: red;
+    background-color: white;
+}
+.navbar-default {
+    background-color: white;
+    border: 0;
+}
+.logo-image{
+    overflow: hidden;
+    margin-top: -55px;
+}
+.navbar-nav{
+    font-size: 15px;
+}
+@media (min-width: 768px){
+    .modal-content {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+}
+
+.modal-content {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: 0px 0px 6px 6px;
+    border: 1px solid #e8e5e4;
+}
+.btn{
+    font-family: 'MrJones-Book', sans-serif;
+}
+.checked{
+    height: 150px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#account-detail ul{
+    padding-inline-start: 2px;
+	list-style: none;
+}
+#account-detail li {
+    border-left: 4px solid #e9f4ff;
+    padding-left: 10px;
+    color: #2a374a;
+    margin-bottom: 15px;
+}
+#account-detail a{
+    color: #2a374a;
+}
+#account-detail a .h5{
+    font-size: 16px;
+    cursor: pointer;
+}
+#account-detail a:focus, #account-detail a:active {
+    box-shadow: none;
+}
+.fa{
+    padding-right: 10px;
+    font-size: 15px;
+}

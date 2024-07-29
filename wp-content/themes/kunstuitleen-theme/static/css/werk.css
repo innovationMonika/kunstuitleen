@@ -1172,11 +1172,18 @@ p#breadcrumbs, #back {
                 .page-art-content .favorite:hover .cta::after {
                     background: #000;
                 }
-				
+			
 				    .page-art-content .favorite.preselect-favorite:before {
     				    content: none;
 				    }
-
+				
+					@media screen and ( max-width: 767px ) {
+						
+						.page-art-content .favorite:before {
+							display: none;
+						}
+						
+					}
                 
                     .page-art-content .favorite span, .art .favorite span {
                         color: #e20816;
@@ -1317,8 +1324,7 @@ p#breadcrumbs, #back {
         }
         
         .page-art-content a.art-nav.art-next {
-            right: 0;
-            margin-right: -20px;
+            right: 0;           
         }
 
 .bio-more {
@@ -1810,7 +1816,7 @@ footer {
     
 /* CHOSENJS */
 
-#filters select {
+ #filters select {
     background-color: #FFF;
     background-image: url(../images/thuis-filter-dropdown.svg);
     background-position: right top;
@@ -1910,7 +1916,7 @@ footer {
 
 .chosen-container-single .chosen-single div b {
 	display: none;
-}
+} 
 
 /* END OF CHOSENJS */ 
 

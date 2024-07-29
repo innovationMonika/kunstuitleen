@@ -293,7 +293,7 @@ a:hover, a:focus {
         color: #FFF;
         display: inline-block;
         font-size: 18px;
-        min-width: 275px;
+        /* min-width: 275px; */
         padding: 5px 0 3px 25px;
         text-align: center;
         text-transform: uppercase;
@@ -540,7 +540,7 @@ p {
         
         #voordelen p .fa {
             margin-top: 5px;
-            margin-right: 15px;
+            margin-right: 10px;
             font-size: 18px;
             float: left;
         }
@@ -773,14 +773,17 @@ header {
 
             
 p#breadcrumbs, #back {
-    font-size: 12px;
-    position: absolute;
-    top: 30px;
+    font-size: 12px;   
     z-index: 50;
 }
-
+.collect #back .fa {
+    font-size: 15px;
+    margin-right: 5px;
+}
     #back {
         right: 0;
+        vertical-align: middle;
+        position: unset;
     }
 
     p#breadcrumbs a, #back {
@@ -793,7 +796,7 @@ p#breadcrumbs, #back {
         }
             
 .column {
-    padding: 30px 0;
+    padding-top: 30px;
     position: relative;
 }
 
@@ -969,7 +972,7 @@ p#breadcrumbs, #back {
     margin-top: 15px;
 }
 
-    .video {}
+    
     
         .play {
             position: absolute;
@@ -988,7 +991,7 @@ p#breadcrumbs, #back {
     }
 
     #voordelen.single-product-voordelen {
-        margin-top: -30px;
+        margin-top: 0px;
         margin-bottom: 30px;
     }
 
@@ -1005,8 +1008,6 @@ p#breadcrumbs, #back {
         -o-background-size: 100%;
         background-size: 100%;
         padding: 30px;
-        max-width: 300px;
-        margin: 0 auto;
     }
 
 /* ABOUT US HEADER */
@@ -1057,7 +1058,7 @@ p#breadcrumbs, #back {
                     z-index: 20;
                 }
                 
-                    #collectie .art-content .favorite.active {
+                    #collectie .art-content .favorite.active, .art-favorite-thumb .favorite.active {
                         background-image: url(../images/favorite-active.svg);
                     }
                     
@@ -1069,28 +1070,21 @@ p#breadcrumbs, #back {
                     width: 48px;
                 }
 				
-				.page-art-content .favorite .cta {
-					/*background-image: url(../images/popup-proefplaatsing-thuis.svg);*/
-                    border-radius: 41px;
-                    background: #dcb853;
-                    color: #FFF;
-                    font-family: 'MrJones-Book', sans-serif;
-                    font-size: 24px;
-                    line-height: 1.1;
-                    text-align: center;
-                    padding: 15px 30px;
+				.page-art-content .favorite:before {
+					background-image: url(../images/popup-proefplaatsing-thuis.svg);
+					content: "";
+					width: 367px;
+					height: 77px;
 					position: absolute;
-                    display: block;
-                    left: -380px;
-                    top: 50%;
-                    text-transform: uppercase;
-                    transform: translateY(-50%);
-                    width: 367px;
+					display: block;
+					left: -380px;
+					top: -15px;
+					background-repeat: no-repeat;					
 				}
 				
 					@media screen and ( max-width: 767px ) {
 						
-						.page-art-content .favorite .cta {
+						.page-art-content .favorite:before {
 							display: none;
 						}
 						
@@ -1129,7 +1123,7 @@ p#breadcrumbs, #back {
                         background: #000;
                     }
 
-                    .page-art-content .favorite span, .art .favorite span {
+                   .page-art-content .favorite span, .art .favorite span {
                         color: #ed1c24;
                         font-size: 18px;
                         margin-top: 5px;
@@ -1167,7 +1161,7 @@ p#breadcrumbs, #back {
                 bottom: -1px;
                 left: -1px;
             }
-            
+           
                 #collectie .art-content .corner.selected {
                     display: none;
                 }
@@ -1248,7 +1242,7 @@ p#breadcrumbs, #back {
         border-radius: 50%;
         color: #949698;
         font-size: 30px;
-        line-height: 30px;
+        line-height: 25px;
         height: 40px;
         padding: 5px;
         position: absolute;
@@ -1264,12 +1258,12 @@ p#breadcrumbs, #back {
     
         .page-art-content a.art-nav.art-prev {
             left: 0;
-            margin-left: -20px;
+            margin-left: -15px;            
         }
         
         .page-art-content a.art-nav.art-next {
-            right: 0;
-            margin-right: -20px;
+            right: 0;   
+            margin-right: -15px;         
         }
 
 .bio-more {

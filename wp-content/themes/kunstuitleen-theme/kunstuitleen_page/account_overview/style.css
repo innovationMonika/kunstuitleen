@@ -1,0 +1,216 @@
+@font-face {
+    font-family: 'MrJones-Book';
+    src: url(../mr_jones/Mr_Jones/MrJonesBook.ttf);
+}
+.margin-top{
+    margin-top: 6rem;
+}
+.cinzel{
+    font-family: 'Cinzel', serif;
+}
+.mr-jonas{
+    font-family: "MrJones-Book", sans-serif;
+}
+ul{
+    padding-inline-start: 2px;
+	list-style: none;
+}
+li {
+    border-left: 2px solid #e9f4ff;
+    padding-left: 10px;
+    margin-bottom: 15px;
+}
+li a{
+    color: #2a374a;
+}
+.active{
+    background-color: #e9f4ff;
+    color: #607ff2;
+    border-left: 2px solid #607ff2;
+    border-radius: 0 30px 30px 0;
+}
+.active a{
+    color: #607ff2;
+}
+.img-responsive{
+    height: 112px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+}
+
+.main .h4{
+    color: #2a374a;
+}
+.h5{
+    font-size: 16px;
+}
+.status{
+    color: #a3b4c5;
+}
+.block .col-md-3 .row{
+    margin-left: 0;
+}
+.button {
+    margin-bottom: 22px;
+}
+.button .btn-default{
+    font-family: 'MrJones-Book', sans-serif;
+    border: 1px solid #e1e8f1;
+    color: #2d394c;
+    font-weight: bold;
+}
+.btn-default:hover{
+    background-color: white;
+}
+.btn-default:focus-visible{
+    outline: none;
+}
+.btn-default:focus, .btn-default:active:focus, .btn-default.active:focus {
+    background-color: white;
+    border: 1px solid#e1e8f1;
+    box-shadow: none;
+    outline:none;
+}
+.button .fa{
+    padding-left: 10px;
+}
+.border-right{
+    border-right: 1px solid #e1e8f1;
+    height: 140px;
+}
+.border-left{
+    border-left: 1px solid #e1e8f1;
+    height: 140px;
+}
+.current-artworks .btn-default{
+    border: 1px solid #e1e8f1;
+    color: #2a374a;
+    height: 40px;
+    font-family: 'MrJones-Book', sans-serif;
+    padding-top: 0;
+}
+.current-artworks{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.current-artworks .btn-default .fa{
+    padding-left: 15px;
+    font-size: 24px;
+    position: relative;
+    display: inline-block;
+    top: 3px;
+}
+.current-artworks .btn-default .h5{
+    margin: 0;
+}
+.gift-cards{
+    color: #9dafc2;
+}
+#label {
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    margin-top: 20px;
+    -webkit-box-shadow: 0 10px 6px -6px #ececec;
+    -moz-box-shadow: 0 10px 6px -6px #ececec;
+    box-shadow: 0 10px 6px -6px #ececec;
+}
+.payment-overview{
+    margin-top: 30px;
+}
+.payment-overview .btn-default .fa{
+    padding-left: 15px;
+    font-size: 24px;
+    position: relative;
+    display: inline-block;
+    top: 3px;
+}
+.payment-overview .btn-default{
+    padding-top: 0;
+    font-size: 16px;
+    color: #2a374a;
+    border: 1px solid#e1e8f1;
+    height: 42px;
+}
+.rent-overview{
+    margin-top: 30px;
+}
+.rent-overview .btn-default .fa{
+    padding-left: 15px;
+    font-size: 24px;
+    position: relative;
+    display: inline-block;
+    top: 3px;
+}
+.rent-overview .btn-default{
+    padding-top: 0;
+    font-size: 16px;
+    color: #2a374a;
+    border: 1px solid#e1e8f1;
+    height: 42px;
+}
+.condition{
+    border-left: 1px solid #f3f3f3;
+    margin-top: 30px;
+    border-top: 0;
+}
+.condition .h5{
+    color:#9dafc2
+}
+.condition .col-md-10{
+    border-right: 1px solid #f3f3f3;
+    padding-left: 30px;
+}
+#condition{
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 30px;
+}
+.art-block{
+    margin-top: 40px;
+}
+.art-block .border{
+    border-left: 1px solid #e1e8f1;
+    border-right: 1px solid #e1e8f1;
+    height: 135px;
+}
+.m0{
+    margin: 0;
+}
+.content{
+    border-bottom: 1px solid #e1e8f1;
+    padding-bottom: 30px;
+    -webkit-box-shadow: 0 10px 6px -6px #eaeaea;
+    -moz-box-shadow: 0 10px 6px -6px #eaeaea;
+    box-shadow: 0 10px 6px -6px #eaeaea;
+}
+.current-artworks-headings{
+    margin-bottom: 20px;
+}
+.search{
+    font-family: 'MrJones-Book', sans-serif;
+    height: 42px;
+    color: #9eb0c3;
+    font-weight: bold;
+    font-size: 16px;
+}
+.search-btn{
+    border: 0;
+    font-size: 18px;
+    font-family: 'MrJones-Book';
+    font-weight: bold;
+}
+.search-btn:hover{
+    background-color: white;
+}
+.search-btn:focus, .search-btn:active:focus, .search-btn.active:focus {
+    background-color: white;
+    border: none;
+    box-shadow: none;
+    outline:none;
+}
+.search-btn .fa{
+    padding-left: 18px;
+    position: relative;
+    font-size: 20px;
+    top: 1px;
+}

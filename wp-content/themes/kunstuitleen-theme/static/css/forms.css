@@ -75,6 +75,23 @@ form{
 		-webkit-appearance: none;
 	}
 		
+	.collection select {
+			display: block;
+			width: 100% !important;
+			height: 34px;
+			padding: 5px 15px;
+			font-size: 14px;
+			color: #555;
+			vertical-align: middle;
+			background-color: #fff;
+			background-image: none;
+			border: 0;
+			outline: none;
+			-webkit-appearance: none;
+
+	}
+
+
 		textarea{
 			height:134px;
 			max-width:100%;
@@ -258,6 +275,10 @@ footer .frm_forms .frm_form_field label.frm_primary_label {
     margin-top: -10px;
 }
 
+
+.collection input:read-only{
+	background-color: none !important;
+}
 @media screen and (min-width: 992px) {
 
     .horizontal_radio .frm_checkbox {

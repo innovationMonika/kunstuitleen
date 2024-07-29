@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css?ver=3.2.0">
+<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha512-+L4yy6FRcDGbXJ9mPG8MT/3UCDzwR9gPeyFNMCtInsol++5m3bk2bXWKdZjvybmohrAsn3Ua5x8gfLnbE1YkOg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Open+Sans:wght@300&family=Roboto:wght@300&display=swap" rel="stylesheet">
+
+<!-- multiselect -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+
+<link href="style.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">    
+    <main class="flex-shrink-0">
+        <div class="container">
+            <div class="row text-center">
+                <label class="h2 mr-jonas title"><strong>Mijn kunstwerken</strong></label>
+            </div>
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-md-12">
+                    <div class="col-md-3" style="padding-right: 30px;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul>
+                                    <li><a href="#" class="btn"><label class="h5 mr-jonas"><strong>Accountoverzicht</strong></label></a></li>
+                                    <li  class="active"><a href="#" class="btn"><label class="h5 mr-jonas"><strong>Mijn kunstwerken</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h5 mr-jonas"><strong>Mijn tegoeden</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h5 mr-jonas"><strong>Mijn aankoopfacturen</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h5 mr-jonas"><strong>Mijn huurfacturen</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h5 mr-jonas"><strong>Mijn gegevens</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h5 mr-jonas"><strong>Uitloggen</strong></label></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row condition">
+                            <div class="col-md-10">
+                                <label class="h5 mr-jonas"><strong>Contract 0000</strong></label>
+                            </div>
+                            <div class="col-md-10">
+                                <label class="h5 mr-jonas"><strong>Contract Type 1</strong></label>
+                            </div>
+                            <div class="col-md-10">
+                                <label class="h5 mr-jonas"><strong>Aantal kunstwerken: 0</strong></label>
+                            </div>
+                            <div class="col-md-10">
+                                <label class="h5 mr-jonas"><strong>Waarde aan kunst: € 00,00</strong></label>
+                            </div>
+                            <div class="col-md-10" id="condition">
+                                <label class="h5 mr-jonas"><strong>Algemene voorwardeen</strong></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 main">
+                        <div class="row flex">
+                            <div class="col-md-9">
+                                <input type="text" class="form-control search" placeholder="&#xF002;  Zoek naar eerder geselecteerde kunst...">
+                            </div>
+                            <div class="col-md-3 align-self-center">
+                                <button class="btn btn-default search-btn">Kies niew kunst<i class="fa fa-angle-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="row art-block">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-7">
+                                            <div class="row">
+                                                <label class="h4 mr-jonas"><strong>Mijn huidige kunstwerken</strong></label>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-md-3 text-right share-btn">
+                                            <button class="btn btn-default" data-toggle="modal" data-target="#share-collegue"><i class="fa fa-share-alt"></i><label class="mr-jonas h4"><strong>Deel met collega's</strong></label></button>
+                                        </div>
+                                        <div class="col-md-2 delete-share">
+                                            <button class="btn btn-default" data-toggle="modal" data-target="#delete-share"> <i class="fa fa-trash"></i></button>
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="row current-artworks-headings">
+                                    <label class="h4 mr-jonas col-md-12 per-month"><strong>Total per maand € 00,00</strong></label>
+                                </div>
+                                <div class="row content d-lg-flex">
+                                    <div class="col-md-4 img-view">
+                                        <div class="row">
+                                            <img class="img-responsive" src="images/large46121.jpg">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 border">
+                                        <div class="row m0">
+                                            <label class="h4 mr-jonas"><strong>Status: Momenteel gehuurd</strong></label>
+                                        </div>
+                                        <div class="row m0">
+                                            <label class="h4 mr-jonas"><strong>Kees Smit</strong></label>
+                                        </div>
+                                        <div class="row m0">
+                                            <label class="h4 mr-jonas"><strong>Etage 1-Kamer 2-Rechterwand</strong></label>
+                                        </div>
+                                        <div class="row m0">
+                                            <label class="h4 mr-jonas"><strong>€ 00,00 per maand</strong></label>
+                                        </div>
+                                        <div class="row m0">
+                                            <p class="h5 mr-jonas"><i class="fa fa-info-circle"></i> Omruil mogelijk op 01-12-2020</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row m0">
+                                            <div class="col-md-7">
+                                                <div class="row button">
+                                                    <button type="button" class="btn btn-default">Bekijk kunstwerk<i class="fa fa-angle-right"></i></button>
+                                                </div>
+                                                <div class="row button">
+                                                    <button type="button" class="btn btn-default">Kunst omruilen<i class="fa fa-refresh"></i></button>
+                                                </div>
+                                                <div class="row button">
+                                                    <button type="button" class="btn btn-default">Contact opnemen <i class="fa fa-angle-right"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row content d-lg-flex">
+                                    <div class="col-md-4 img-view">
+                                        <div class="row">
+                                            <img class="img-responsive" src="images/large60427.jpg">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 border">
+                                        <div class="row m0">
+                                            <label class="h4 mr-jonas"><strong>Status: Momenteel gehuurd</strong></label>
+                                        </div>
+                                        <div class="row m0">
+                                            <label class="h4 mr-jonas"><strong>Kees Smit</strong></label>
+                                        </div>
+                                        <div class="row m0">
+                                            <label class="h4 mr-jonas"><strong>Etage 1-Kamer 2-Linkerwand -Hoog ophangen</strong></label>
+                                        </div>
+                                        <div class="row m0">
+                                            <label class="h4 mr-jonas"><strong>€ 00,00 per maand</strong></label>
+                                        </div>
+                                        <div class="row m0">
+                                            <p class="h5 mr-jonas"><i class="fa fa-info-circle"></i> Omruil mogelijk op 01-12-2020</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row m0">
+                                            <div class="col-md-7">
+                                                <div class="row button">
+                                                    <button type="button" class="btn btn-default">Bekijk kunstwerk<i class="fa fa-angle-right"></i></button>
+                                                </div>
+                                                <div class="row button">
+                                                    <button type="button" class="btn btn-default">Kunst omruilen<i class="fa fa-refresh"></i></button>
+                                                </div>
+                                                <div class="row button">
+                                                    <button type="button" class="btn btn-default">Contact opnemen <i class="fa fa-angle-right"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="share-collegue" tabindex="-1" role="dialog" aria-labelledby="share-collegueLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body modal-collegue" id="modal-collegue">
+                        <div class="row" id="send-request">
+                            <label class="h3 col-md-12 mr-jonas form-title"><strong>Deel met collega's</strong></label>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="h4 mr-jonas title">De link wordt prive gedeeld met alleen je gedeelde collega die bekend staan in het account. Je collega's kunnen zo huin eigen kunstwerk kiezen van de door jou voorgeselecteerde favorieten</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 select-box">
+                                <select id="boot-multiselect-demo" class="form-control" multiple="multiple">
+                                    <option value="kees@email.com" class="form-control">kees@email.com</option>
+                                    <option value="kelvin@email.com" class="form-control">kelvin@email.com</option>
+                                    <option value="leon@email.com" class="form-control">leon@email.com</option>
+                                    <option value="collega.4@email.com" class="form-control">collega.4@email.com</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" id="send-request">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-info btn-block btn-round part mr-jonas">Deel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body confirm" id="modal-collegue">
+                        <div class="row">
+                            <label class="h3 col-md-12 mr-jonas form-title"><strong>Link is succesvol gedeeld</strong></label>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="h4 mr-jonas title">De link wordt prive gedeeld met alleen je gedeelde collega die bekend staan in het account. Je collega's kunnen zo huin eigen kunstwerk kiezen van de door jou voorgeselecteerde favorieten</label>
+                            </div>
+                        </div>
+                        <div class="row text-center img-checked">
+                            <img src="images/icons8-checked.svg" class="img-responsive checked">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-info btn-block btn-round mr-jonas" id="close" data-dismiss="modal">Sluit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="delete-share" tabindex="-1" role="dialog" aria-labelledby="delete-shareLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 480px;">
+                <div class="modal-content">
+                    <div class="modal-body delete-share-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img class="img-responsive icon-trash" src="images/icons8-trash-208.png">
+                                <label class="mr-jonas h4 delete-title">Weet je zeker dat het wilt verwijderen</label>
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <p>Het kunstwerk zal uit je collectie worden verwijderen</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger">Ja Verwijder</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">Annuleer</button>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        jQuery('.confirm').hide();
+        jQuery('.part').click(function(){
+            jQuery('.modal-collegue').hide();
+            jQuery('.confirm').show();
+        });
+        jQuery('#close').click(function(){
+            jQuery('.modal-collegue').show();
+            jQuery('.confirm').hide();
+        });
+        $('#boot-multiselect-demo').multiselect({
+            filterPlaceholder: 'Search',
+            includeSelectAllOption: true,
+            buttonWidth: 250,
+            enableFiltering: true,
+        });
+    });
+</script>

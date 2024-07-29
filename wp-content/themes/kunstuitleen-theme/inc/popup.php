@@ -37,8 +37,9 @@
                 </div>
                 
                 <div class="<?php echo $photoCols; ?> modal-col-photo">
-                    <?php $photo = get_field($cookieWebVariant.'_popup_photo', 'option'); ?>
-                    <img src="<?php echo $photo['url']; ?>" />
+                    <?php /* $photo = get_field($cookieWebVariant.'_popup_photo', 'option'); ?>
+                    <img src="<?php echo isset($photo['url'])?$photo['url']:$photo; ?>" />
+                    */ ?>
                 </div>
                 
                 <div class="<?php echo $listCols; ?> modal-col-list">

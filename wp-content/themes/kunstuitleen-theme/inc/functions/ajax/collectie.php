@@ -36,7 +36,6 @@
             
         
             if( safe_request('consignatie') ):
-                
                 if( !array_key_exists('meta_query', $args) ): $args['meta_query'] = array('relation' => 'AND'); endif;
                 
                 $args['meta_query'][] = array(

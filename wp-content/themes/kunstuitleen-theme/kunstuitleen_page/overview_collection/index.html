@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css?ver=3.2.0">
+<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js?ver=1.1"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha512-+L4yy6FRcDGbXJ9mPG8MT/3UCDzwR9gPeyFNMCtInsol++5m3bk2bXWKdZjvybmohrAsn3Ua5x8gfLnbE1YkOg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Open+Sans:wght@300&family=Roboto:wght@300&display=swap" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+<link href="style.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">    
+    <main class="flex-shrink-0">
+        <div class="container mt-4">
+            <div class="row">
+                <section class="container col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="row text-center">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <h1 class="text-muted cinzel">
+                                COLLECTION
+                            </h1>
+                        </div>
+                        <div>
+                            <label class="col text-muted mr-jonas">Art inspires, makes curious and creates atmosphere. With KUNSTUITLEEN.NL you no longer have to go to a museum to admire art; you can easily bring your favorite art into your home. Renting art is very accessible and makes it possible to adjust paintings per season or attune them to your new interior. Our art collection is diverse, innovative and the largest in the Netherlands.We drive daily throughout the Netherlands and visit you without obligation so that you can admire your favorite works of art in real life. Can you make a choice? You get your favorite one month free trial. Got attached to your new asset? You can also choose to purchase the artwork with your saved savings. Curious how it works or view our collection directly ?</label>
+                        </div>
+                    </div>
+                    <div class="tabbable-panel">
+                        <div class="tabbable-line">
+                            <ul class="nav nav-tabs nav-justified mt-4">
+                                <li class="active"><a href="#tab1default" data-toggle="tab"><label class="collection-heading h4 text-uppercase mr-jonas"><strong>Collection</strong></label></a></li>
+                                <li><a href="#tab2default" data-toggle="tab"><label class="collection-heading h4 text-uppercase mr-jonas"><strong>My favorites</strong></label></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row mt-5">
+                <section class="container col-md-offset-1 col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="tab1default">
+                            <div class="row mt-4">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-4 col-lg-4 col-md-4">
+                                            <label class="h4 mr-jonas"><strong style="padding-right: 4px;">Collection for you</strong><span class="badge bg-info" style="background-color: #428bca;">3</span></label>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-8 col-lg-8 col-md-8 text-center">
+                                            <div class="col-xs-12 col-sm-6 col-lg-6 col-md-6">
+                                                <input type="text" class="form-control filter-input" placeholder="Search">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div clas="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="row collection">
+                                        <div class="col-md-2">
+                                            <div class="row mt-4">
+                                                <label class="h4 col-md-12 filter"><strong>Artists:</strong></label>
+                                                <div class="col-md-12">
+                                                    <select class="form-control filter-input">
+                                                        <option class="form-control filter-input" selected>All artists</option>
+                                                        <option class="form-control filter-input">A. van Dijk</option>
+                                                        <option class="form-control filter-input">Art of Dobbenburgh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-4">
+                                                <label class="h4 col-md-12 filter"><strong>Technic:</strong></label>
+                                                <div class="col-md-12">
+                                                    <select class="form-control filter-input">
+                                                        <option class="form-control filter-input" selected>All Style</option>
+                                                        <option class="form-control filter-input">A. van Dijk</option>
+                                                        <option class="form-control filter-input">Art of Dobbenburgh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-4">
+                                                <label class="h4 col-md-12 filter"><strong>Monthly amount:</strong></label>
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-6" style="margin-bottom: 10px;"> <input type="text" class="form-control filter-input" placeholder="€ min"></div>
+                                                        <div class="col-md-6"> <input type="text" class="form-control filter-input" placeholder="€ max"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-4">
+                                                <label class="h4 col-md-12 filter"><strong>Style:</strong></label>
+                                                <div class="col-md-12">
+                                                    <select class="form-control filter-input">
+                                                        <option class="form-control filter-input" selected>All Style</option>
+                                                        <option class="form-control filter-input">A. van Dijk</option>
+                                                        <option class="form-control filter-input">Art of Dobbenburgh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-4 filter">
+                                                <label class="h4 col-md-12"><strong>Orientation:</strong></label>
+                                                <div class="col-md-12">
+                                                    <select class="form-control filter-input">
+                                                        <option class="form-control filter-input" selected>All Style</option>
+                                                        <option class="form-control filter-input">A. van Dijk</option>
+                                                        <option class="form-control filter-input">Art of Dobbenburgh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-4">
+                                                <label class="h4 col-md-12 filter"><strong>Format:</strong></label>
+                                                <div class="col-md-12">
+                                                    <select class="form-control filter-input">
+                                                        <option class="form-control filter-input" selected>All Style</option>
+                                                        <option class="form-control filter-input">A. van Dijk</option>
+                                                        <option class="form-control filter-input">Art of Dobbenburgh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-4">
+                                                <label class="h4 col-md-12 filter"><strong>Technic:</strong></label>
+                                                <div class="col-md-12">
+                                                    <select class="form-control filter-input">
+                                                        <option class="form-control filter-input" selected>All Style</option>
+                                                        <option class="form-control filter-input">A. van Dijk</option>
+                                                        <option class="form-control filter-input">Art of Dobbenburgh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1" style="width: 3%;"></div>
+                                        <div class="col-md-9 mt-4">
+                                            <section class="row collectie grid" id="collectie">
+                                                <article class="col-xs-12 col-sm-4 col-md-3 col-lg-3 art">
+                                                    <section class="art-content text-center">
+                                                        <a href="collection-page.html"><img src="https://www.petermaasdam.nl/kunstuitleen/invent/inv46000/large46023.jpg" alt="Berlin-city-portrait 2011"></a>
+                                                        <section class="favorite" id="462825"><span>ADD</span></section>
+                                                         <h2 class="mr-jonas text-uppercase"><a href="collection-page.html">Berlin-city-portrait 2011</a></h2>
+                                                        <h3 class="kunstenaar cinzel">Nissim Men</h3>
+                                                        <p>
+                                                            150 x 50<br>
+                                                            <span class="maandbedrag">€ 65.34 per month</span><br>
+                                                            <small><em>(of which 50% savings)</em></small>
+                                                        </p>  
+                                                        <img src="https://kunstuitleen.nl/wp-content/themes/kunstuitleen/static/images/art-corner.svg" class="corner">
+                                                    </section>
+                                                </article>
+                                                <article class="col-xs-12 col-sm-4 col-md-3 col-lg-3 art">
+                                                    <section class="art-content text-center">
+                                                        <a href="#"><img src="https://www.petermaasdam.nl/kunstuitleen/invent/inv46000/large46121.jpg" alt="Paris city portrait 2014"></a>
+                                                        <section class="favorite active" id="545832"><span>DELETE</span></section>
+                                                        <h2 class="mr-jonas text-uppercase"><a href="#">Paris city portrait 2014</a></h2>
+                                                        <h3 class="kunstenaar cinzel">Nissim Men</h3>
+                                                        <p>
+                                                            90x60<br>
+                                                            <span class="maandbedrag">€ 52.64 per month</span><br>
+                                                            <small><em>(of which 50% savings)</em></small>
+                                                        </p>
+                                                        <img src="https://kunstuitleen.nl/wp-content/themes/kunstuitleen/static/images/art-corner.svg" class="corner">
+                                                    </section>
+                                                </article>
+                                                <article class="col-xs-12 col-sm-4 col-md-3 col-lg-3 art">
+                                                    <section class="art-content text-center">
+                                                        <a href="#"><img src="https://www.petermaasdam.nl/kunstuitleen/invent/inv46000/large46311.jpg" alt="Loenen city portrait"></a>
+                                                        <section class="favorite active" id="462825"><span>DELETE</span></section>
+                                                         <h2 class="mr-jonas text-uppercase"><a href="#">Loenen city portrait</a></h2>
+                                                        <h3 class="kunstenaar cinzel">Nissim Men</h3>
+                                                        <p>
+                                                            125 x 50<br>
+                                                            <span class="maandbedrag">€ 52.64 per month</span><br>
+                                                            <small><em>(of which 50% savings)</em></small>
+                                                        </p>  
+                                                        <img src="https://kunstuitleen.nl/wp-content/themes/kunstuitleen/static/images/art-corner.svg" class="corner">
+                                                    </section>
+                                                </article>
+                                                <article class="col-xs-12 col-sm-4 col-md-3 col-lg-3 art">
+                                                    <section class="art-content text-center">
+                                                        <a href="#"><img src="https://www.petermaasdam.nl/kunstuitleen/invent/inv60000/large60438.jpg" alt="New Amsterdam tower"></a>
+                                                        <section class="favorite active" id="462825"><span>DELETE</span></section>
+                                                         <h2 class="mr-jonas text-uppercase"><a href="#">New Amsterdam tower</a></h2>
+                                                        <h3 class="kunstenaar cinzel">RUDOLF BROERSMA</h3>
+                                                        <p>83 x 123<br>
+                                                            <span class="maandbedrag">€ 43.56 per month</span><br>
+                                                            <small><em>(of which 50% savings)</em></small>
+                                                        </p>  
+                                                        <img src="https://kunstuitleen.nl/wp-content/themes/kunstuitleen/static/images/art-corner.svg" class="corner">
+                                                    </section>
+                                                </article>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade in" id="tab2default"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+
+<script>
+    $(function () {
+    $(".grid").sortable({
+            tolerance: 'pointer',
+            revert: 'invalid',
+            forceHelperSize: true
+        });
+    });
+    jQuery(document).ready(function(){
+        jQuery('.favorite').click(function(){
+            console.log(jQuery(this).text());
+            if(jQuery(this).text() == 'DELETE'){
+                jQuery(this).removeClass('active');
+                jQuery(this).html('<span>ADD</span>');
+            } else{
+                jQuery(this).addClass('active');
+                jQuery(this).html('<span>DELETE</span>');
+            }
+        });
+    });
+</script>

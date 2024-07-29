@@ -49,43 +49,11 @@
         </div>
     </div>
     
-    <?php include( locate_template( 'inc/favorieten/bevestig-eindselectie.php', false, false ) ); ?>
+
     
-    <section class="container text-center" id="collectie">
-        
-        <?php if($favorieten){} else { ?>               
-             <p>Je hebt nog geen favorieten.</p>
-        <?php } ?>
-        
-        <section class="row">
-            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 column favorieten-overzicht">
-                <?php if($favorieten){ ?>
-                    <section class="row collectie">
-                        <?php 
-                            //$selectedArt = get_cookie_value('selectedArt'); 
-                            $the_query = new WP_Query( 
-                                array(
-                                    'post_type' => 'collectie', 
-                                    'orderby' => 'date', 
-                                    'post__in' => $favorieten,
-                                    'order' => 'DESC', 
-                                    'posts_per_page' => '-1'
-                                ) 
-                            ); 
-                        ?>
-                        <?php if ( $the_query->have_posts() ) {	while ( $the_query->have_posts() ) { $the_query->the_post(); ?>
-                            <?php $cols = 'col-xs-12 col-sm-4 col-md-15 col-lg-15'; ?>
-                            <?php include( locate_template( 'inc/art-favorite.php', false, false )); ?>
-                        <?php  } /* endwhile */ } /* endif */ wp_reset_postdata(); /* Restore original Post Data */ ?>
-                        
-                    </section> 
-                <?php } ?> 
-            </article>
-		</section>
-    </section>
-    
-    <?php include( locate_template( 'inc/favorieten/bevestig-eindselectie.php', false, false ) ); ?>
-    
+    <?php include( locate_template( 'inc/collection_header.php', false, false ) ); ?>
+    <div class="favorieten-ajax" id="favorieten-ajax-section"><?php include( locate_template( 'inc/favorieten/bevestig-eindselectie.php', false, false ) ); ?></div>    
     <?php include( locate_template( 'inc/hoe-werkt-het.php', false, false ) ); ?>
 
 <?php get_footer(); ?>
+

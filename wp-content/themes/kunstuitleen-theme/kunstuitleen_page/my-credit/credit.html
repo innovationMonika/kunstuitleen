@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css?ver=3.2.0">
+<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha512-+L4yy6FRcDGbXJ9mPG8MT/3UCDzwR9gPeyFNMCtInsol++5m3bk2bXWKdZjvybmohrAsn3Ua5x8gfLnbE1YkOg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Open+Sans:wght@300&family=Roboto:wght@300&display=swap" rel="stylesheet">
+
+<link href="style.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">    
+    <main class="flex-shrink-0">
+        <div class="container">
+            <div class="row text-center">
+                <label class="h2 mr-jonas"><strong>Mijn tegoeden</strong></label>
+            </div>
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-md-12">
+                    <div class="col-md-3" style="padding-right: 30px;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul>
+                                    <li><a href="#" class="btn"><label class="h4 mr-jonas"><strong>Accountoverzicht</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h4 mr-jonas"><strong>Mijn kunstwerken</strong></label></a></li>
+                                    <li  class="active"><a href="#" class="btn"><label class="h4 mr-jonas"><strong>Mijn tegoeden</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h4 mr-jonas"><strong>Mijn aankoopfacturen</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h4 mr-jonas"><strong>Mijn huurfacturen</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h4 mr-jonas"><strong>Mijn gegevens</strong></label></a></li>
+                                    <li><a href="#" class="btn"><label class="h4 mr-jonas"><strong>Log uit</strong></label></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row condition">
+                            <div class="col-md-10">
+                                <label class="h4 mr-jonas"><strong>Contract 0000</strong></label>
+                            </div>
+                            <div class="col-md-10">
+                                <label class="h4 mr-jonas"><strong>Contract Type 1</strong></label>
+                            </div>
+                            <div class="col-md-10">
+                                <label class="h4 mr-jonas"><strong>Aantal kunstwerken: 0</strong></label>
+                            </div>
+                            <div class="col-md-10">
+                                <label class="h4 mr-jonas"><strong>Waarde aan kunst: 00,00</strong></label>
+                            </div>
+                            <div class="col-md-10" id="condition">
+                                <label class="h4 mr-jonas"><strong>Algemene voorwardeen</strong></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 main">
+                        <div class="row">
+                            <label class="h4 mr-jonas text-capitalize"><strong>Mijn cadeaubonnen</strong></label>
+                        </div>
+                        <div class="row main-row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <label class="col-md-12 mr-jonas h4"><strong>Totaal aan cadeaubonnen</strong></label>
+                                        <label class="col-md-12 mr-jonas h4"><strong>€ 100.00</strong></label>
+                                        <label class="col-md-12 mr-jonas  gift-cards">Bijna aflopende bon:XXXX</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="row">
+                                            <img src="images/icons8-voucher-80.png" class="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row text-center" id="label">
+                                        <label class="h5 mr-jonas"><strong>Bekijk al mijn cadeaubonnen</strong></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-12 mr-jonas h4 text-uppercase"><strong>op zoek naar een inspierend en persoonalijk kado? GEEF een kunst kadobn</strong></label>
+                                </div>
+                                <div class="row present">
+                                    <div class="col-md-12">
+                                        <div class="row text-center" id="label">
+                                            <label class="h5 mr-jonas"><strong>Geef iemand cadeau</strong></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row search-btn">
+                            <div class="col-md-12">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" placeholder="Voeg nieuw cadeaubon heir toe">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="submit" class="btn btn-primary">Voeg toe</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row table-gift-card table-responsive">
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="mr-jonas">Cadeaubonnummer</th>
+                                        <th scope="col" class="mr-jonas">Wardee</th>
+                                        <th scope="col" class="mr-jonas">Restwarde</th>
+                                        <th scope="col" class="mr-jonas">Vervaldatum</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="mr-jonas">0000</th>
+                                        <td class="mr-jonas"><strong>€ 100,00</strong></td>
+                                        <td class="mr-jonas"><strong>€ 100,00</strong></td>
+                                        <td class="mr-jonas"><strong>15-06-2020</strong></td>
+                                        <td class="mr-jonas"><strong>Details </strong><i class="fa fa-sign-in"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mr-jonas">0000</th>
+                                        <td class="mr-jonas"><strong>€ 00,00</strong></td>
+                                        <td class="mr-jonas"><strong>€ 00,00</strong></td>
+                                        <td class="mr-jonas"><strong>10-06-2020</strong></td>
+                                        <td class="mr-jonas"><strong>Details </strong><span class="fa fa-sign-in" data-toggle="modal" data-target="#myModal"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal right fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" id="spend-gift-cards">
+                    <div class="modal-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <label class="col-md-9 mr-jonas h3"><strong>Mijn cadeaubonnen besteden</strong></label>
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    </div>
+                                    <div class="row spend-gift-cards">
+                                        <label class="col-md-12 h4 mr-jonas"><strong>Het besteden van je cadeaubonnen kan voor verschillende dingen. Geef hieronder aan waar je je cadeaubonnen aan milt besteden en wij verzorgen de rest. Wlij nemen contact met je op om het verder te bespreken</strong></label>
+                                    </div>
+                                    <div class="row spend-gift-cards">
+                                        <label class="col-md-12 h4 mr-jonas"><strong>Je cadeaubonnen kun je besteden aan je incassao voor huurfacturen</strong></label>
+                                        <div class="col-md-12 flex">
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="€ 00,00">
+                                            </div>
+                                            <label class="col-md-8 mr-jonas"><strong>Total € 00,00 beschikbaar van cadeaubonnen</strong></label>
+                                        </div>
+                                    </div>
+                                    <div class="row spend-gift-cards">
+                                        <label class="col-md-12 h4 mr-jonas"><strong>Je cadeaubonnen kun je besteden aan het kopen van kunstwerken</strong></label>
+                                        <div class="col-md-12 flex">
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="€ 00,00">
+                                            </div>
+                                            <label class="col-md-8 mr-jonas"><strong>Total € 00,00 beschikbaar van cadeaubonnen</strong></label>
+                                        </div>
+                                    </div>
+                                    <div class="row spend-gift-cards">
+                                        <label class="col-md-12 h4 mr-jonas"><strong>Je cadeaubonnen kun je besteden aan kopen van cadeaubonnen</strong></label>
+                                        <div class="col-md-12 flex">
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="€ 00,00">
+                                            </div>
+                                            <label class="col-md-8 mr-jonas"><strong>Total € 00,00 beschikbaar van cadeaubonnen</strong></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <button type="button" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">Aanvraag cadeaubonnen besteden</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

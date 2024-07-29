@@ -1,48 +1,5 @@
 <?php
     
-add_filter( 'frm_time_to_check_duplicates', '__return_false' );
-
-include_once( dirname( dirname( __FILE__ ) ) . '/functions/formidable/formidable-datalayer.php');
-
-
-add_filter('pronamic_payment_redirect_url_formidable-forms', function($url, $payment) {
-
-    error_log('pronamic_payment_redirect_url_formidable');
-    error_log('Url: ' . print_r($url, 1));
-
-    if (empty($payment) || !isset($payment->order_id))
-        return $url;
-
-    $order_id = $payment->order_id;
-    $entry = FrmEntry::getOne($order_id, true);
-
-    if (empty($entry))
-        return $url;
-
-    $form = FrmForm::getOne($entry->form_id);
-    if (empty($form) || $form->options['success_action'] !== 'redirect')
-        return $url;
-
-    $success_url = $form->options['success_url'];
-
-    // Merge, keep keys
-    $data = (array)$entry + $entry->metas;
-
-    foreach ($data as $key => $value) {
-
-        if (is_array($value))
-            continue;
-
-        $success_url = str_replace('[' . $key . ']', urlencode($value), $success_url);
-        $success_url = str_replace('[' . $key . ' sanitize_url=1]', sanitize_text_field($value), $success_url);
-    }
-
-    if (empty($success_url))
-        return $url;
-    
-    return $success_url;
-}, 10, 3);
-    
 /*
 add_filter('frm_email_value', 'frm_email_val', 15, 3);
     function frm_email_val($value, $meta, $entry){
@@ -367,7 +324,7 @@ add_filter('frm_notification_attachment', 'add_my_attachment', 30, 3);
                 ob_end_clean();
                 
                 
-                $mpdf = new \Mpdf\Mpdf(['tempDir' => ABSPATH . '/tmp']);
+                $mpdf = new \Mpdf\Mpdf();
                 
                 $mpdf->SetTitle("Kunstuitleen - Favorieten");
                 $mpdf->SetAuthor("Kunstuitleen");
@@ -449,9 +406,8 @@ add_filter('frm_notification_attachment', 'add_my_attachment', 30, 3);
                 
                 $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
                 $fontData = $defaultFontConfig['fontdata'];
-
+                
                 $mpdf = new \Mpdf\Mpdf([
-                    'tempDir' => ABSPATH . '/tmp',
                     'mode' => 'utf-8', 
                     'format' => 'A4-L',
                     'fontDir' => array_merge($fontDirs, [ $customFontDir ]),

@@ -1,0 +1,521 @@
+@font-face {
+    font-family: 'MrJones-Book';
+    src: url(../mr_jones/Mr_Jones/MrJonesBook.ttf);
+}
+.margin-top{
+    margin-top: 6rem;
+}
+.cinzel{
+    font-family: 'Cinzel', serif;
+}
+.mr-jonas{
+    font-family: "MrJones-Book", sans-serif;
+}
+ul{
+    padding-inline-start: 2px;
+	list-style: none;
+}
+@media screen and (min-width: 1199px){
+    .d-lg-flex {
+        display: -ms-flexbox !important;
+        display: flex !important;
+    }
+}
+li {
+    border-left: 2px solid #e9f4ff;
+    padding-left: 10px;
+    margin-bottom: 15px;
+}
+li a{
+    color: #2a374a;
+}
+li a .h5{
+    cursor: pointer;
+}
+
+.active{
+    background-color: #e9f4ff;
+    color: #607ff2;
+    border-left: 2px solid #607ff2;
+    border-radius: 0 30px 30px 0;
+}
+.active a{
+    color: #607ff2;
+}
+li:hover{
+    background-color: #e9f4ff;
+    color: #607ff2;
+    border-left: 2px solid #607ff2;
+    border-radius: 0 30px 30px 0;
+}
+li .btn:hover, .active .btn:focus{
+    color: #607ff2;
+}
+li .btn:active, li .btn.active{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.img-view{
+    /* align-self: center; */
+    text-align: -webkit-center;
+    /* text-align: center; */
+}
+.content .border p{
+    color: #a0b1c4;
+    font-size: 15px;
+    font-weight: normal;
+}
+.img-responsive{
+    height: 140px;
+}
+
+.main .h4{
+    color: #2a374a;
+}
+.main .per-month{
+    color: #9eb0c2;
+}
+.h5{
+    font-size: 16px;
+}
+.status{
+    color: #a3b4c5;
+}
+.block .col-md-3 .row{
+    margin-left: 0;
+}
+.button {
+    margin-bottom: 22px;
+}
+.button .btn-default{
+    font-family: 'MrJones-Book', sans-serif;
+    border: 1px solid #e1e8f1;
+    color: #2d394c;
+    font-weight: bold;
+    font-size: 16px;
+}
+.btn-default:hover{
+    background-color: white;
+}
+.btn-default:focus-visible{
+    outline: none;
+}
+.btn-default:focus, .btn-default:active:focus, .btn-default.active:focus {
+    background-color: white;
+    border: 1px solid#e1e8f1;
+    box-shadow: none;
+    outline:none;
+}
+.button .fa{
+    padding-left: 10px;
+}
+.border-right{
+    border-right: 1px solid #e1e8f1;
+    height: 140px;
+}
+.border-left{
+    border-left: 1px solid #e1e8f1;
+    height: 140px;
+}
+.current-artworks .btn-default{
+    border: 1px solid #e1e8f1;
+    color: #2a374a;
+    height: 40px;
+    font-family: 'MrJones-Book', sans-serif;
+    padding-top: 0;
+}
+.view-artworks-btn .btn-default {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.current-artworks{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.current-artworks .btn-default .fa{
+    padding-left: 15px;
+    font-size: 24px;
+    position: relative;
+    display: inline-block;
+    top: 3px;
+}
+.current-artworks .btn-default .h5{
+    margin: 0;
+}
+.gift-cards{
+    color: #9dafc2;
+}
+#label {
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    margin-top: 20px;
+    -webkit-box-shadow: 0 10px 6px -6px #ececec;
+    -moz-box-shadow: 0 10px 6px -6px #ececec;
+    box-shadow: 0 10px 6px -6px #ececec;
+}
+.main #label .h5{
+    color: #2f3c4e;
+}
+.payment-overview{
+    margin-top: 30px;
+}
+.payment-overview .btn-default .fa{
+    padding-left: 15px;
+    font-size: 24px;
+    position: relative;
+    display: inline-block;
+    top: 3px;
+}
+.payment-overview .btn-default{
+    padding-top: 0;
+    font-size: 16px;
+    color: #2a374a;
+    border: 1px solid#e1e8f1;
+    height: 45px;
+}
+.rent-overview{
+    margin-top: 30px;
+}
+.rent-overview .btn-default .fa{
+    padding-left: 15px;
+    font-size: 24px;
+    position: relative;
+    display: inline-block;
+    top: 3px;
+}
+.rent-overview .btn-default{
+    padding-top: 0;
+    font-size: 16px;
+    color: #2a374a;
+    border: 1px solid#e1e8f1;
+    height: 45px;
+}
+.condition{
+    border-left: 1px solid #f3f3f3;
+    margin-top: 30px;
+    border-top: 0;
+    margin-left: 0;
+    margin-right: -30px;
+}
+.condition .h5{
+    color:#9dafc2
+}
+.condition .col-md-10{
+    border-right: 1px solid #f3f3f3;
+    padding-left: 30px;
+}
+#condition{
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 30px;
+    -webkit-box-shadow: 0 10px 6px -6px #ededed;
+     -moz-box-shadow: 0 10px 6px -6px #ededed;
+          box-shadow: 0 10px 6px -6px #ededed;
+}
+.art-block{
+    margin-top: 40px;
+}
+.border{
+    border-left: 1px solid #e1e8f1;
+    border-right: 1px solid #e1e8f1;
+}
+.m0{
+    margin: 0;
+}
+.content{
+    border-bottom: 1px solid #e1e8f1;
+    padding-bottom: 30px;
+    -webkit-box-shadow: 0 10px 6px -6px #eaeaea;
+    -moz-box-shadow: 0 10px 6px -6px #eaeaea;
+    box-shadow: 0 10px 6px -6px #eaeaea;
+    margin-bottom: 60px;
+    border-left: 1px solid #fdfdfd;
+    border-right: 1px solid #fdfdfd;
+}
+.current-artworks-headings{
+    margin-bottom: 20px;
+}
+.search{
+    font-family: 'MrJones-Book', sans-serif;
+    height: 47px;
+    color: #2a374a;
+    font-weight: bold;
+    font-size: 17px;
+    border: 1px solid #9dafc2;
+}
+.form-control:focus{
+    border-color: #9dafc2;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.search::placeholder{
+    padding-left: 5px;
+    font-family: 'FontAwesome','MrJones-Book', sans-serif;
+    color: #9eb0c3;
+    font-size: 16px;
+}
+.search-btn{
+    color: #2a374a;
+    border: 0;
+    font-size: 18px;
+    font-family: 'MrJones-Book';
+    font-weight: bold;
+}
+.search-btn:hover{
+    background-color: white;
+}
+.search-btn:focus, .search-btn:active:focus, .search-btn.active:focus {
+    background-color: white;
+    border: none;
+    box-shadow: none;
+    outline:none;
+}
+.search-btn .fa{
+    padding-left: 18px;
+    position: relative;
+    font-size: 20px;
+    top: 1px;
+}
+.share-btn .fa{
+    padding-right: 10px;
+    font-size: 15px;
+}
+.input-group-addon:first-child {
+    border-right: 0;
+    color: #334052;
+    border: 1px solid #e1e8f1;
+    background-color: white;
+}
+.multiselect-search{
+    border: 1px solid #e1e8f1;
+    color: #2a374a;
+    font-family: 'MRJONES-BOOK';
+    font-weight: bold;
+}
+.multiselect-clear-filter{
+    border: 1px solid #e1e8f1;
+}
+.multiselect-container .active{
+    background-color: transparent;
+}
+.input-group .form-control {
+    height: 34px;
+}
+.multiselect-container .form-control{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    /* -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; */
+}
+.multiselect-container>li {
+    padding: 0;
+    border: 0;
+    height: 35px;
+}
+.multiselect-container>li>a>label.radio, .multiselect-container>li>a>label.checkbox {
+    margin: 0;
+    font-weight: bold;
+    font-family: 'MrJones-Book';
+    border: 0;
+    font-size: 16px;
+}
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+    background-color: transparent;
+}
+.multiselect-container .form-control:focus-visible{
+    outline: none;
+}
+a:focus {
+    outline: none;
+}
+.dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
+    color: black;
+    text-decoration: none;
+    background-color: white;
+    outline: 0;
+}
+.title{
+    font-family: "MrJones-Book", sans-serif;
+    color: #74869d;
+    margin: 0;
+    margin-bottom: 25px;
+}
+.form-title {
+    color: #607ff2;
+    margin-bottom: 20px;
+}
+.btn-info{
+    background-color: #607ff2;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 0;
+    margin-bottom: 15px;
+}
+.btn-info:focus, .login .btn-info:active {
+    border: 0;
+    box-shadow: none;
+    outline:none;
+}
+.btn-info:hover{
+    background-color:  #607ff2d9;
+}
+.select-box{
+    margin-bottom: 30px;
+}
+#modal-collegue{
+    padding: 50px;
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+.checked{
+    height: 150px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.img-checked{
+    margin-bottom: 30px;
+}
+.btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open>.dropdown-toggle.btn-info {
+    background-color:  #607ff2d9;
+}
+.share-btn .btn-default{
+    border: 0;
+}
+.delete-share .btn-default{
+    border: 0;
+}
+.share-btn label{
+    cursor: pointer;
+}
+.share-btn .btn-default:hover, .share-btn .btn-default:focus, .share-btn .btn-default:active, .share-btn .btn-default.active, .open>.dropdown-toggle.share-btn .btn-default,
+.delete-share .btn-default:hover, .delete-share .btn-default:focus, .delete-share .btn-default:active, .delete-share .btn-default.active, .open>.dropdown-toggle.delete-share .btn-default{
+    background-color: white;
+    border: 0;
+}
+.btn:active, .btn.active{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.fa-trash{
+    font-size: 30px;
+    cursor: pointer;
+}
+.icon-trash{
+    height: 18px;
+    padding-right: 10px;
+    display: inline-flex;
+    margin-top: -4px;
+}
+.delete-share-body p{
+    padding-left: 30px;
+    color: #72849c;
+}
+.delete-title{
+    margin-bottom: 22px;
+    color: #2c394b;
+    font-weight: bold;
+}
+#cancel{
+    color: #607ff2;
+    border: 1px solid #607ff2;
+}
+.my-details{
+    margin-bottom: 0;
+}
+.view-artworks-btn{
+    padding-left:0;
+}
+.view-artworks-btn .btn-default{
+    height: 48px;
+}
+.payment-overview-heading{
+    margin-bottom: 10px;
+}
+table {
+    border-spacing: 15px;
+    border-collapse: separate;
+}
+.table-borderless>thead>tr>th{
+    border: 0;
+}
+.table-borderless>thead>tr>th, .table-borderless>tbody>tr>th, .table-borderless>tfoot>tr>th, .table-borderless>thead>tr>td, .table-borderless>tbody>tr>td, .table-borderless>tfoot>tr>td{
+    border:0;
+    color: #2d394c;
+}
+.table-borderless thead tr th{
+    font-size: 16px;
+}
+.table-borderless{
+    font-size: 15px;
+}
+.table-borderless tbody tr .fa{
+    font-size: 16px;
+}
+.table-borderless tbody tr .fa-check{
+    padding-right: 10px;
+}
+.table-borderless tbody tr .fa-sign-in{
+    padding-left: 20px;
+}
+.pdf{
+    height: 24px;
+    display: inline-block;
+    padding-right: 6px;
+}
+.voucher .img-responsive{
+    height: auto;
+    max-height: 108px;
+}
+.voucher-col{
+    padding-left: 30px;
+}
+.flex{
+    display: flex;
+}
+.align-self-center{
+    align-self: center;
+}
+.inline-block{
+    display: inline-block;
+}
+.table-borderless tbody tr a{
+    color: #607ff2;
+}
+.mb-30px{
+    margin-bottom: 30px;
+}
+.expire-date{
+    font-size: 14px;
+    font-weight: bold;
+}
+#label .btn-block{
+    padding-top: 0;
+    padding-bottom: 10px;
+    border: 0;
+}
+#label .btn-block .h5{
+    cursor: pointer;
+}
+.title{
+    color: #2a374a;
+}
+.btn-group.open .btn-default:hover{
+    background-color: transparent;
+}
+.btn-group.open .btn-default:hover, .btn-group.open .btn-default:focus, .btn-group.open .btn-default:active, .btn-group.open .btn-default.active, .open>.dropdown-toggle .btn-group.open .btn-default {
+    color: #2c394b;
+    background-color: white;
+    border-color: #e1e8f1;
+}
+.btn-group.open .dropdown-toggle{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default{
+    background-color: white;
+}
+.multiselect-container>li:hover{
+    background-color: white;
+}
+.table-responsive{
+    border: 0;
+}

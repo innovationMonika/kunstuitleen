@@ -14,7 +14,7 @@
 ); ?>
 <?php if ( $the_query->have_posts() ) {	while ( $the_query->have_posts() ) { $the_query->the_post(); ?>
 
-    <section id="testimonial" class="<?php echo @$referentieClass; ?>">
+    <section id="testimonial" class="<?php echo $referentieClass; ?>">
         
         <article class="testimonial-content">
             

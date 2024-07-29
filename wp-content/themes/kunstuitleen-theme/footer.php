@@ -56,8 +56,9 @@
         	<?php endif; ?>
         	
         	<section id="bottom">
-            	Copyright <?php echo date('Y'); ?> - <a href="<?php bloginfo('siteurl'); ?>">Kunstuitleen.nl</a> 
+            	Copyright <?php echo date('Y'); ?> - <a href="<?php echo get_site_url(); ?>">Kunstuitleen.nl</a> 
                 <div class="footershare">
+                    <?php $shareid = ''; ?>
                     <?php include( locate_template( 'inc/share.php', false, false )); ?>
                 </div>
             	<?php the_field('footer_copyright'.$option, 'option'); ?>
@@ -75,77 +76,11 @@
                	
 		<a class="backtotop" onclick="$('html, body').animate({ scrollTop: 0 });">Terug naar boven</a>
 
-        <?php
-        $entry_id = safe_get('entry_id');
-        $email = safe_get('email');
+        <?php      
 
-        // GTM Enhanced conversions (datalayer)
-        if (!empty($entry_id) && !empty($email)) {
-
-            $entry = FrmEntry::getOne($entry_id, true);
-            $datalayerSettings = maybe_unserialize(get_option('frm_datalayer_' . $entry->form_id));
-
-            if ($entry && !empty($datalayerSettings) && !empty(@$datalayerSettings['event']) && @$datalayerSettings['event'] !== 'none') {
-
-                $event = $datalayerSettings['event'];
-
-                // We can't use 'type' as a field
-                unset($datalayerSettings['event']);
-
-                $values = [];
-                foreach($datalayerSettings as $key => $fieldId) {
-
-                    if(!empty($fieldId) && isset($entry->metas[$fieldId])) {
-                        $values[$key] = $entry->metas[$fieldId];
-                    }
-
-                    // Small fallback
-                    if ($key === 'land' && empty($fieldId)) {
-                        $values[$key] = 'NL';
-                    }
-                }
-
-                if ($values['email'] === $email) {
-
-                    if(!empty($values['price'])) {
-                        $price = $values['price'];
-                        unset($values['price']);
-                    } else {
-                        $price = 0;
-                    }
-
-                    $datalayer = array_merge([
-                        'event' => $event,
-                    ], $values);
-
-                    if ($event === 'purchase') {
-
-                        $datalayer = array_merge($datalayer, [
-                            'transaction_id' => sprintf('%d_%d_%s', $entry->form_id, $entry_id, $entry->form_key),
-                            'value' => $price,
-                            'currency' => 'EUR',
-                            'items' => [
-                                'item_id' => $entry->form_id,
-                                'item_name' => $entry->form_name,
-                                'quantity' => 1,
-                                'price' => number_format((float)$price, 2, '.', '')
-                            ],
-                        ]);
-                    }
-
-                    ?>
-                    <script>
-                        window.dataLayer = window.dataLayer || [];
-                        window.dataLayer.push(<?= json_encode($datalayer) ?>);
-                    </script>
-                    <?php
-                }
-            }
-
-        }
-
-        // Adtraction
         if( isset($_GET['entry_id']) && !empty($entry_id) && isset($_GET['email']) && !empty($email) ){
+            $entry_id = esc_html($_GET['entry_id']);
+            $email = esc_html($_GET['email']);
             $hashed_email = adtraction_hash($email);
         ?>
         <script>
@@ -166,5 +101,140 @@
 	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
-	</body>
-</html>
+<script>
+// 	login form
+		jQuery(document).ready(function(){
+        jQuery('#confirm').hide();
+        jQuery('#sign-up-complete').hide();
+        jQuery('#forget-pass').hide();
+        jQuery('#sign-up').hide();
+        jQuery('#account-detail').hide();
+            
+        jQuery('.forget-pass').click(function(){
+            jQuery('#forget-pass').show();
+            jQuery('#login').hide();
+            jQuery('#sign-up-complete').hide();
+        });
+        /*jQuery('#login-btn').click(function(){
+            jQuery('.dropdown-menu').css({"min-width": "400px"});
+            jQuery('#account-detail').show();
+            jQuery('#login').hide();
+            jQuery('#sign-up-complete').hide();
+        });*/
+       /* jQuery('.confirm').click(function(){
+            jQuery('#forget-pass').hide();
+            jQuery('#confirm').show();
+            jQuery('#login').hide();
+        });*/
+       /* jQuery('.sign-up-complete').click(function(){
+            jQuery('#forget-pass').hide();
+            jQuery('#sign-up').hide();
+            jQuery('#login').hide();
+            jQuery('#sign-up-complete').show();
+        });*/
+        jQuery('.sign-up').click(function(){
+            jQuery('#sign-up').show();
+            jQuery('#login').hide();
+        });
+        jQuery('.sign-in').click(function(){
+            jQuery('#sign-up-complete').hide();
+            jQuery('#login').show();
+            jQuery('#sign-up').hide();
+            jQuery('#forget-pass').hide();
+            jQuery('#confirm').hide();
+        });
+         jQuery('.go_to_login').click(function(){
+            jQuery('#sign-up-complete').hide();
+            jQuery('#login').show();
+            jQuery('#sign-up').hide();
+            jQuery('#forget-pass').hide();
+            jQuery('#confirm').hide();
+        });
+        $('#close_2').click(function(){
+            jQuery('#dropdown').removeClass('open');
+            jQuery('#form_one').removeClass('form_toggle');
+            jQuery('#confirm').hide();
+            jQuery('#forget-pass').hide();
+            jQuery('#login').show();
+            jQuery('#sign-up-complete').hide();
+            jQuery('#account-detail').hide();
+        });
+        $('#close').click(function() {
+            jQuery('#dropdown').removeClass('open');
+            jQuery('#confirm').hide();
+            jQuery('#forget-pass').hide();
+            jQuery('#login').show();
+            jQuery('#sign-up-complete').hide();
+            jQuery('#account-detail').hide();
+        });
+//         $('.dropdown-menu').on("click.bs.dropdown", function (e) {
+//             e.stopPropagation();
+//             e.preventDefault();                
+//         });
+			
+		$('#new_account, #dropdown').click(function() {
+			jQuery('#form_one').show();
+		});
+			
+		/*$(document).mouseup(function(){
+		    jQuery("#form_one").hide();
+		});*/
+        jQuery('.dropdown-toggle').on('click', function(){
+        jQuery('div#form_one').toggleClass('form_toggle');
+});
+    });
+	
+    // $(function () {
+    // $(".grid").sortable({
+    //         tolerance: 'pointer',
+    //         revert: 'invalid',
+    //         forceHelperSize: true
+    //     });
+    // });
+	
+    jQuery(document).ready(function () {
+        jQuery('.favorite').click(function () {
+            console.log(jQuery(this).text());
+            if (jQuery(this).text() == 'VERWIJDER') {
+                jQuery(this).removeClass('active');
+                jQuery(this).html('<span>VOEG TOE</span>');
+            } else {
+                jQuery(this).addClass('active');
+                jQuery(this).html('<span>VERWIJDER</span>');
+            }
+        });
+    });
+
+</script>
+<script>
+function allowDrop(ev) {
+  ev.preventDefault();  
+}
+
+function drag(ev) {   
+  ev.dataTransfer.setData('dragged-image', ev.target.id);  
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData('dragged-image');
+  ev.target.append(document.getElementById(data)); 
+  var get_dataset = document.getElementById(data).dataset.wrapper_image_meta;
+  const obj = JSON.parse(get_dataset);
+  var sethtml = '<div class="favorite_details_title text-center">\n\
+                    <strong class="h4 mr-jonas">'+obj.post_title+'</strong>\n\
+                </div>\n\
+                <div class="favorite_details_content">\n\
+                    <p>'+obj.art_kunstenaar_name+'</p>\n\
+                    <p>'+obj.image_size+'</p>\n\
+                    <p>'+obj.monthly_price+' PER MAAND</p>\n\
+                </div>\n\
+                <div class="delet_btn">\n\
+                    <span><img src="'+obj.delete_img_url+'"></span>\n\
+                    <a href="javascript:;" id="company-clear-cart" class="company-clear-cart">'+obj.delete_img_text+'</a>\n\
+                </div>';
+    document.getElementById('favorite-details').innerHTML = sethtml;
+    document.getElementById('company-add-employee').dataset.company_frame_details = get_dataset;
+    document.getElementById('company-add-employee').dataset.company_frame_id = obj.post_id;
+}
+</script>

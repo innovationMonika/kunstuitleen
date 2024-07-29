@@ -187,4 +187,49 @@ get_header();
 
     </section>
 
+
+    <section id="partof" class="column text-center">
+        <section class="container">
+            <section class="row">
+                <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h3 class="subtitle">Kunstuitleen.nl is onderdeel van:</h3>
+                    <h2>Amsterdam Art Center</h2>
+
+                    <section id="parts">
+                        <section class="row">
+                            <?php $a = 0; ?>
+                            <?php $the_query = new WP_Query(array(
+                                'post_type' => 'amsterdamartcenter', 'orderby' => 'menu_order', 'order' => 'ASC', 'showposts' => '10')); ?>
+                            <?php if ($the_query->have_posts()) {
+                                while ($the_query->have_posts()) {
+                                    $the_query->the_post();
+                                    $a++; ?>
+                                    <article class="col-xs-6 col-sm-4 col-md-3 col-lg-3 part">
+                                        <?php $image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'full_thumbnail_size'); ?>
+                                        <?php if(!empty($image)) { ?>
+                                        <?php if (get_field('onderdeel_url')): ?>
+                                            <a href="<?php the_field('onderdeel_url'); ?>" target="_blank">
+                                                <img src="<?php echo $image[0]; ?>" alt="<?php the_title(); ?>"/>
+                                            </a>
+                                        <?php else: ?>
+                                            <img src="<?php echo $image[0]; ?>" alt="<?php the_title(); ?>"/>
+                                        <?php endif; ?>
+                                        <?php } ?>
+
+                                        <h3><?php the_title(); ?></h3>
+                                        <div class="text-left"><?php the_content(); ?></div>
+                                    </article>
+                                    <?php if ($a == 3) {
+                                        echo '<br class="clear hidden-xs hidden-md hidden-lg" />';
+                                    } ?>
+                                <?php } /* endwhile */
+                            } /* endif */
+                            wp_reset_postdata(); /* Restore original Post Data */ ?>
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </section>
+
 <?php get_footer(); ?>

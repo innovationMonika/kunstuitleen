@@ -17,20 +17,22 @@ $(window).load(function(){
     /* END OF FLEX NAV */  
     
     
-    if($('select').length != 0 && $(window).width() > 991){
-    	$("select").chosen({ disable_search_threshold:100,width:'' });
-    	
-    	
-    	if( $('.filter-kunstenaars select option').filter(':selected').text() != 'Alle kunstenaars' ){
-        	$('.filter-kunstenaars .chosen-container .chosen-single').addClass('has-remove-filter').append('<div class="remove-kunstenaar-filter"><i class="fa fa-close"></i></div>');
-        	
-        	$('.filter-kunstenaars .chosen-container .chosen-single .remove-kunstenaar-filter').on('click', function(){
-            	$('.filter-kunstenaars select option:first').attr("selected", "selected");
-            	$('#filters form').submit();
-        	});
-        	
-    	}
-    }
+   /* if($('select').length != 0 && $(window).width() > 991){
+        $("select").chosen({ disable_search_threshold:100,width:'' });
+        
+        
+        if( $('.filter-kunstenaars select option').filter(':selected').text() != 'Alle kunstenaars' ){
+            $('.filter-kunstenaars .chosen-container .chosen-single').addClass('has-remove-filter').append('<div class="remove-kunstenaar-filter"><i class="fa fa-close"></i></div>');
+            
+            $('.filter-kunstenaars .chosen-container .chosen-single .remove-kunstenaar-filter').on('click', function(){
+                $('.filter-kunstenaars select option:first').attr("selected", "selected");
+                $('#filters form').submit();
+            });
+            
+        }
+    }*/
+    
+    $('p#breadcrumbs a:first').attr('href', '/werk/');
     
     if($('.bio-more').length != 0){
         $('.showfullbio').click(function(){
@@ -54,6 +56,12 @@ $(window).load(function(){
     });
     
     
+    if($('#back.backlink').length != 0){
+        var backlink = $('#back.backlink').attr('href');
+        $( "#breadcrumbs a:contains('Collectie')" ).attr('href', backlink);
+    }
+    
+    
     // HEADER 
     
     function scrollHeader() {
@@ -68,10 +76,11 @@ $(window).load(function(){
                 if($(document).scrollTop() > 20) {
                     if(headerSize == 'big') {
                         headerSize = 'small';
-                        $('#top').animate({ 'padding-bottom' : 10 }, 300);
+                        $('#top').animate({ 'padding-bottom' : 20 }, 300);
                         //$('#top nav').fadeOut('fast');
                         $('.logo img').animate({ 'width' : '90px', 'margin-top' : '-5px' },300);
                         $('nav ul li').animate({ 'padding-bottom' : 10, 'margin-bottom' : '-10px', }, 300);
+                         $('.header_nav_menu').css( 'bottom', '-12px' );
                         //$('.scrollshowmenu').fadeIn();
                     }
                 } else {
@@ -82,6 +91,7 @@ $(window).load(function(){
                         $('nav ul li').animate({ 'padding-bottom' : 15, 'margin-bottom' : '-15px', }, 300);
                         //$('#top nav').fadeIn('fast');
                         $('.logo img').animate({ 'width' : logoHeight, 'margin-top' : '0' },300);
+                         $('.header_nav_menu').css( 'bottom', '0px' );
                         //$('.scrollshowmenu').fadeOut();
                     }
                 }
@@ -211,16 +221,16 @@ $(window).load(function(){
     $('.footer-col').css({ 'min-height' : footerColHeight });
     
     if($('.video-controls').length != 0){
-	    var videoMuted = false;
-	    
+        var videoMuted = false;
+        
         $('.video-play').click(function(){
             $(this).fadeOut();
             $('.video-pause').fadeIn();
             
             if( videoMuted == true) {
-	            $('.video-volume-off').fadeIn();
+                $('.video-volume-off').fadeIn();
             } else {
-	        	$('.video-volume-on').fadeIn();    
+                $('.video-volume-on').fadeIn();    
             }
             
             document.getElementById('html5videoAbout').play();
@@ -234,18 +244,18 @@ $(window).load(function(){
         });
         
         $('.video-volume-on').click(function(){
-	        $(this).fadeOut();
+            $(this).fadeOut();
             $('.video-volume-off').fadeIn();
             videoMuted = true;
             $("#html5videoAbout").prop('muted', true); //mute
-	    });
-	    
-	    $('.video-volume-off').click(function(){
-	        $(this).fadeOut();
+        });
+        
+        $('.video-volume-off').click(function(){
+            $(this).fadeOut();
             $('.video-volume-on').fadeIn();
             videoMuted = false;
             $("#html5videoAbout").prop('muted', false); //mute
-	    });
+        });
         
         
         var video = document.getElementById('html5videoAbout');
@@ -283,21 +293,21 @@ $(window).load(function(){
 
     
     /* Responsive Table */
-	$("table").addClass("table");
-	
+    $("table").addClass("table");
+    
 
-	
-	
-	
-	function createPopup(melding){
-    	$('body').prepend('<section class="popup"><section class="melding"><i class="fa fa-close"></i>' + melding + '</section></section>');
+    
+    
+    
+    function createPopup(melding){
+        $('body').prepend('<section class="popup"><section class="melding"><i class="fa fa-close"></i>' + melding + '</section></section>');
         $('.popup').fadeIn();
         
         closePopup();
-	}
-	
-	function closePopup(){
-    	$('.popup .melding .fa-close').on('click', function(){
+    }
+    
+    function closePopup(){
+        $('.popup .melding .fa-close').on('click', function(){
             $('.popup').fadeOut(300);
             setTimeout(function() { $('.popup').remove(); }, 500);
         });
@@ -307,48 +317,46 @@ $(window).load(function(){
     function confirmSelection( preselection ){
         
         var webVariant = Cookies.get('kunstuitleenVariant');
-        if( typeof webVariant === 'undefined' ){ webVariant = 'thuis'; }
-       
-    	if( webVariant == 'werk' ){ maxSelection = 20; } else { maxSelection = 5; }
-    	
-    	var favorite = [];
-    	
-    	if( preselection == 'true' ){
-        	
-        	if(Cookies.get('favorieten-preselect-'+$('#preselect_client_code').val() ) === undefined || Cookies.get('favorieten-preselect-'+$('#preselect_client_code').val() ) === '') {
-            	favorite = '';
-        	} else {
-            	favorite = JSON.parse(Cookies.get('favorieten-preselect-'+$('#preselect_client_code').val() ) );
-        	}
-        	
-    	} else {
-        	
+        if( webVariant == 'werk' ){ maxSelection = 20; } else { maxSelection = 5; }
+        
+        var favorite = [];
+        
+        if( preselection == 'true' ){
+            
+            if(Cookies.get('favorieten-preselect-'+$('#preselect_client_code').val() ) === undefined || Cookies.get('favorieten-preselect-'+$('#preselect_client_code').val() ) === '') {
+                favorite = '';
+            } else {
+                favorite = JSON.parse(Cookies.get('favorieten-preselect-'+$('#preselect_client_code').val() ) );
+            }
+            
+        } else {
+            
             if(Cookies.get('favorieten'+webVariant) === undefined || Cookies.get('favorieten'+webVariant) === '') {
                 favorite = '';
             } else {
                 favorite = JSON.parse(Cookies.get('favorieten'+webVariant));    
             }
-    	}
-    	        
+        }
+                
 
-    	if(favorite.length == 0){
-        	
-        	createPopup('<h2>Minimaal 1 favoriet</h2><p>Je hebt ' + favorite.length + ' kunstwerken geselecteerd, selecteer a.u.b. minimaal 1 kunstwerk als favoriet om verder te kunnen gaan.</p>');
-        	    
-	    	return false;
-	    	        
-    	} else {
-        	
+        if(favorite.length == 0){
+            
+            createPopup('<h2>Minimaal 1 favoriet</h2><p>Je hebt ' + favorite.length + ' kunstwerken geselecteerd, selecteer a.u.b. minimaal 1 kunstwerk als favoriet om verder te kunnen gaan.</p>');
+                
+            return false;
+                    
+        } else {
+            
             if( favorite.length > maxSelection ){
                 
                 createPopup('<h2>Maximaal ' + maxSelection + ' favorieten</h2><p>Je hebt ' + favorite.length + ' kunstwerken geselecteerd. Hierdoor zit je over de max. van ' + maxSelection + ' favorieten. Verwijder ' + ( favorite.length - maxSelection) + ' kunstwerk(en) om verder te kunnen gaan.</p>');
                 
                 return false;
                 
-            }	
+            }   
             
-    	}
-    	
+        }
+        
     }
 
     $('form#form_v3tom924, #form_v3tom92').on('submit', function(){
@@ -356,24 +364,24 @@ $(window).load(function(){
         var preselection = 'false';
         return confirmSelection(preselection);
 
-	});
-	
-	$('#confirm-favorite-selection a.button').on('click', function(){
-    	
-    	var preselection = 'false';
-    	return confirmSelection(preselection);
-    	
-	});
-	
+    });
+    
+    $('#confirm-favorite-selection a.button').on('click', function(){
+        
+        var preselection = 'false';
+        return confirmSelection(preselection);
+        
+    });
+    
     $('#confirm-favorite-preselection a.button').on('click', function(){
-    	
-    	var preselection = 'true';
-    	return confirmSelection(preselection);
-    	
-	});
-	
-	
-	 //back to top link
+        
+        var preselection = 'true';
+        return confirmSelection(preselection);
+        
+    });
+    
+    
+     //back to top link
     var backtotop = 0;
       
     function showOrHideBackToTop() {
@@ -575,34 +583,34 @@ $(window).load(function(){
         helpBox.trigger();
     
     //Smooth scrolling
-	$('a[href^="#"]').on('click',function (e) {
-	    e.preventDefault();
+    $('a[href^="#"]').on('click',function (e) {
+        e.preventDefault();
 
-	    var target = this.hash,
-	    $target = $(target);
+        var target = this.hash,
+        $target = $(target);
 
-	    $('html, body').stop().animate({
-	        'scrollTop': $target.offset().top - 100
-	    }, 800, 'swing', function () {
-	        window.location.hash = target;
-	    });
-	});
+        $('html, body').stop().animate({
+            'scrollTop': $target.offset().top - 100
+        }, 800, 'swing', function () {
+            window.location.hash = target;
+        });
+    });
     
     /* STICKY FOOTER */
-	function stickyFooterHeight(){
-		var footerHeight = $("footer").outerHeight();
-		$("#wrap").css('margin-bottom', - footerHeight - 40);
-		$("#push").css('height', footerHeight);
-	}
+    function stickyFooterHeight(){
+        var footerHeight = $("footer").outerHeight();
+        $("#wrap").css('margin-bottom', - footerHeight - 40);
+        $("#push").css('height', footerHeight);
+    }
 
-	stickyFooterHeight();
-	/* END OF STICKY FOOTER */
-	
-	$(window).resize(function() {
-		stickyFooterHeight();
-		
-		$('.item-with-ul ul').hide(); /* Fix for FlexNav */
-		$('.touch-button.active').removeClass('active'); /* Fix for FlexNav */
+    stickyFooterHeight();
+    /* END OF STICKY FOOTER */
+    
+    $(window).resize(function() {
+        stickyFooterHeight();
+        
+        $('.item-with-ul ul').hide(); /* Fix for FlexNav */
+        $('.touch-button.active').removeClass('active'); /* Fix for FlexNav */
     });
 
 });

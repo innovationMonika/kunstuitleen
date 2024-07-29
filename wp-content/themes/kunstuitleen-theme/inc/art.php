@@ -2,7 +2,7 @@
     $favorieten = get_favorieten(); 
     if(!$cols){ $cols = 'col-xs-12 col-sm-4 col-md-3 col-lg-3'; }
 ?>
-<article class="<?php echo $cols; ?> art" id="<?php the_field('art_inventnr'); ?>">
+<article class="<?php echo $cols; ?> art"  draggable="true" ondragstart="drag(event)" id="<?php the_field('art_inventnr'); ?>">
 
     <section class="art-content text-center">
         

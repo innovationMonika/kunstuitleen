@@ -1,6 +1,6 @@
-<?php if(!isset($shareid) || !$shareid){ $shareid = @$post->ID; } ?>
+<?php  $termname = ''; if(!$shareid){ $shareid = $post->ID; $termname = ''; } ?>
 Deel! 
-<a href="https://twitter.com/intent/tweet?original_referer=https://www.facebook.com/sharer/sharer.php?u=<?php echo get_permalink($shareid); ?>&source=tweetbutton&text=<?php the_title($shareid); ?>%20<?php echo get_permalink($shareid); ?>&hashtags=<?php echo @$termname; ?>" onclick="window.open(this.href, 'mywin',
+<a href="https://twitter.com/intent/tweet?original_referer=https://www.facebook.com/sharer/sharer.php?u=<?php echo get_permalink($shareid); ?>&source=tweetbutton&text=<?php the_title($shareid); ?>%20<?php echo get_permalink($shareid); ?>&hashtags=<?php echo $termname; ?>" onclick="window.open(this.href, 'mywin',
 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;">
     <i class="fa fa-twitter"></i>
 </a> / 

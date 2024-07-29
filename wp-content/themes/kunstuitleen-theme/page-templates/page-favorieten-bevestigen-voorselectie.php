@@ -15,7 +15,7 @@
     $step_active            = 'two';
     
     // Required to sent data via form
-    update_post_meta($updateID, 'uniekecode', wp_generate_password(32, false, false));
+    update_post_meta($updateID, 'uniekecode', wp_generate_password(32)); 
     update_post_meta($updateID, 'webvariant', $cookieWebVariant); 
     update_post_meta($updateID, 'clientcode', $preselect_client['client_code']); 
     update_post_meta($updateID, 'clientid', $preselect_client['client_id']); 

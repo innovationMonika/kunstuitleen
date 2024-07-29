@@ -1,0 +1,424 @@
+@font-face {
+    font-family: 'MrJones-Book';
+    src: url(../mr_jones/Mr_Jones/MrJonesBook.ttf);
+}
+
+/* tabs */
+.tabbable-panel {
+    padding-bottom: 0;
+}
+
+/* Default mode */
+.tabbable-line > .nav-tabs {
+    border: none;
+    margin: 0px;
+}
+.tabbable-line > .nav-tabs > li {
+    margin-right: 2px;
+}
+
+.tabbable-line > .nav-tabs > li > a > i {
+    color: #a6a6a6;
+}
+.tabbable-line > .nav-tabs > li.open, .tabbable-line > .nav-tabs > li:hover {
+    border-bottom: 1px solid #4d90fe;
+}
+.tabbable-line > .nav-tabs > li.open > a, .tabbable-line > .nav-tabs > li:hover > a {
+    border: 0;
+    background: none !important;
+    color: #333333;
+}
+.tabbable-line > .nav-tabs > li.open > a > i, .tabbable-line > .nav-tabs > li:hover > a > i {
+    color: #a6a6a6;
+}
+.tabbable-line > .nav-tabs > li.open .dropdown-menu, .tabbable-line > .nav-tabs > li:hover .dropdown-menu {
+    margin-top: 0px;
+}
+.tabbable-line > .nav-tabs > li.active {
+    border-bottom: 1px solid #4d90fe;
+    position: relative;
+}
+.nav-tabs.nav-justified>li>a {
+    border-bottom: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+}
+.tabbable-line > .nav-tabs > li.active > a {
+    border: 0;
+    color: #333333;
+}
+.tabbable-line > .nav-tabs > li.active > a > i {
+    color: #404040;
+}
+.tabbable-line > .tab-content {
+    margin-top: -3px;
+    background-color: #fff;
+    border: 0;
+    border-top: 1px solid #eee;
+    padding: 15px 0;
+}
+.tab-style{
+    width: 1500px;
+}
+.portlet .tabbable-line > .tab-content {
+    padding-bottom: 0;
+}
+
+.cinzel{
+    font-family: 'Cinzel', serif;
+}
+
+.mr-jonas{
+    font-family: "MrJones-Book", sans-serif;
+}
+.filter{
+    font-family: "MrJones-Book", sans-serif;
+}
+.filter-input{
+    font-family: "MrJones-Book", sans-serif;
+    height: 45px;
+    font-size: 18px;
+    background-color: white;
+    color: #555;
+    border: 1px solid #8080802e;
+}
+.mt-4{
+    margin-top: 1.5rem!important;
+}
+.mt-5{
+    margin-top: 3.5rem!important;
+}
+.mb-4{
+    margin-bottom: 1.5rem!important;
+}
+
+.ms-4{
+    margin-left: 1.5rem!important;
+}
+.fa{
+    font-size: 20px;
+}
+.heading{
+    margin: 2px;
+}
+.collection{
+    margin-top: 2rem;
+}
+.article-img{
+    background-color: #f7f8f8;
+    border: 1px solid #bdc8cc;
+    padding: 20px;
+    padding-bottom: 40px;
+    position: relative;
+    margin-left: 20px;
+}
+.article-link{
+    color: #333;
+}
+.article-section{
+    margin-left: 30px;
+}
+ul.art-meta {
+    margin: 30px 0 0 0;
+    padding: 0;
+}
+ul.art-meta li{
+    font-size: 14px;
+    list-style-type: none;
+    text-align: center;
+    margin-bottom: 15px;
+}
+ul.art-meta li label {
+    color: #949698;
+    font-style: italic;
+}
+.page-art-content {
+    background-color: #f7f8f8;
+    border: 1px solid #d5d6d7;
+    margin-top: 30px;
+    padding: 40px;
+}
+ul.art-meta.border {
+    border-top: 2px dotted #c6c8ca;
+    padding-top: 30px;
+}
+.page-art-content .favorite:before {
+    background-image: url(images/popup-proefplaatsing-thuis.svg);
+    content: "";
+    width: 367px;
+    height: 77px;
+    position: absolute;
+    display: block;
+    left: -380px;
+    top: -15px;
+    background-repeat: no-repeat;
+}
+.share-art {
+    font-size: 18px;
+    padding-top: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    display: contents;
+}
+.socail-icons{
+    font-size: 18px;
+    margin-left: 10px;
+}
+img {
+    height: auto;
+    max-width: 100%;
+    width: auto;
+}
+.page-section-content {
+    margin-top: -5.5rem !important;
+    border-top: 0;
+    padding: 70px;
+    border-bottom: 1px solid #d5d6d7;
+    border-left: 1px solid #d5d6d7;
+    border-right: 1px solid #d5d6d7;
+    padding-bottom: 16px;
+}
+.padding-bottom{
+    padding-bottom: 5px;
+}
+.collection-heading{
+    margin-bottom: 0px;
+}
+
+.art, .kunstenaar {
+    margin-bottom: 30px;
+}
+#collectie .art-content, .kunstenaar .kunstenaar-content {
+    background-color: #f7f8f8;
+    border: 1px solid #bdc8cc;
+    padding: 20px;
+    padding-bottom: 40px;
+    position: relative;
+}
+#collectie .art-content p {
+    font-size: 14px;
+    line-height: 24px;
+}
+#collectie .art-content .corner, .page-art-content .corner, #kunstenaars .kunstenaar .corner {
+    position: absolute;
+    bottom: -1px;
+    left: -1px;
+}
+h3.kunstenaar {
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+#collectie .art-content p span.maandbedrag {
+    font-family: 'Cinzel';
+    font-size: 14px;
+    display: inherit;
+}
+#collectie .art-content .favorite.active {
+    background-image: url(images/favorite-active.svg);
+}
+#collectie .art-content .favorite {
+    margin: -13.5px auto 0 auto;
+    z-index: 20;
+}
+.favorite {
+    background-image: url(images/favorite.svg);
+    background-repeat: no-repeat;
+    cursor: pointer;
+    margin: 0 auto 0 auto;
+    height: 27px;
+    position: relative;
+    width: 27px;
+}
+.art .favorite.active span {
+    color: #e20816;
+    left: -36px;
+    width: 100px;
+}
+
+.art .favorite span {
+    color: #7b8084;
+    left: -25px;
+}
+.page-art-content .favorite span, .art .favorite span {
+    color: #ed1c24;
+    font-size: 18px;
+    margin-top: 5px;
+    position: absolute;
+    left: -13.5px;
+    top: 100%;
+    text-align: center;
+    text-decoration: underline;
+    white-space: normal;
+    width: 75px;
+}
+.art .favorite span {
+    color: #7b8084;
+    left: -25px;
+}
+#collectie .art-content .favorite {
+    margin: -13.5px auto 0 auto;
+    z-index: 20;
+}
+#collectie .art h2 {
+    margin-top: 40px;
+}
+#collectie .art h2 a, h2.kunstenaar a, #kunstenaars .kunstenaar h2 a {
+    color: #333;
+    text-decoration: none;
+}
+.font-size{
+    font-size: 18px;
+}
+
+.page-art-content .favorite {
+    background-image: url(images/favorite-large.svg);
+    height: 48px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    width: 48px;
+}
+.page-art-content .favorite.active, .page-art-content .favorite:hover {
+    background-image: url(images/favorite-large-active.svg);
+}
+#voordelen p {
+    color: #000;
+    font-size: 22px;
+    margin: 15px 0;
+}
+.icon-size{
+    color: #333333;
+    font-size: 25px;
+    padding-right: 10px;
+}
+.relative {
+    position: relative;
+}
+.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  .author{
+      padding-top: 22rem !important;
+      margin-left: 0px;
+  }
+  .author-description{
+    padding-right: 60px;
+  }
+.author-image{
+    padding-top: 10.5rem !important;
+}
+.well label{
+    margin-bottom: 0px;
+    cursor: pointer;
+}
+.well a {
+    color: black;
+    text-decoration: none;
+}
+a.button-simple:hover, a.button-simple.red {
+    background-color: #dcb853;
+}
+.author-paragraph p{
+    margin-bottom: 20px;
+}
+.well{
+    background-color: white;
+}
+.side-list{
+    font-size: 25px;
+    color: #7f909e;
+}
+.author-space{
+    margin-top: 4.5rem;
+    margin-bottom: 2.5rem;
+    border: 1px solid #e1e8f1;
+    /* padding: 5px; */
+}
+.author-space .btn{
+    white-space: normal;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.author-space a {
+    color: #2a374a;
+}
+.btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;border-radius: 3px 0 0 3px;}
+.back-btn{
+    color: #6785f3;
+}
+.image-model{
+    margin-top: 10px;
+    color: #2b384b;
+    background-color: #f7f8f8;
+    font-family: "MrJones-Book", sans-serif;
+}
+.image-model:hover, .image-model:focus, .image-model:active, .image-model.active, .open>.dropdown-toggle.image-model {
+    color: #2b384b;
+    background-color: #f7f8f8;
+}
+.image-model:active, .image-model.active {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.image-model:hover, .image-model:focus, .image-model:active, .image-model.active, .open>.dropdown-toggle.image-model {
+    color: #2b384b;
+    background-color: #f7f8f8;
+}
+.image-model:focus, .image-model:active:focus, .image-model.active:focus {
+    outline: none;
+}
+.modal-backdrop.in {
+    filter: alpha(opacity=50);
+    opacity: 0;
+}
+.modal-backdrop.in {
+    filter: alpha(opacity=50);
+    opacity: 0;
+}
+#myModal .modal-header, .modal-footer{
+    border: 0px;
+}
+.modal-dialog-center {
+    margin-top: 2%;
+}
+.page-art-content a.art-nav.art-prev {
+    left: 0;
+}
+
+.page-art-content a.art-nav {
+    background-color: #FFF;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    color: #949698;
+    font-size: 30px;
+    line-height: 30px;
+    height: 40px;
+    padding: 5px;
+    position: absolute;
+    top: 50%;
+    margin-top: -20px;
+    text-align: center;
+    width: 40px;
+}
+.back-arrow {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.page-art-content a.art-nav.art-next {
+    right: 0;   
+}
+.nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:hover, .nav-tabs.nav-justified>.active>a:focus{
+    border: 0;
+}
+.form-control:focus {
+    border-color: #8080802e;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}

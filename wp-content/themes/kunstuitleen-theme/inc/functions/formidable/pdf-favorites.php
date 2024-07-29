@@ -66,7 +66,7 @@
                                         
                                         echo $letter . ' x ' . ${'waarde_'.$waarde->slug};
                                         
-                                        if( $total != 0 && $w < $total ){ echo '  |  '; }
+                                        if( $total != 0 && $w < count( ${'waarde_'.$waarde->slug} ) ){ echo '  |  '; }
                                         $w++;
                                     }
                                 } ?>
