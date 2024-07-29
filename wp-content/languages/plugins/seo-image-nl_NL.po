@@ -1,0 +1,223 @@
+# Translation of Plugins - SEO Friendly Images - Development (trunk) in Dutch
+# This file is distributed under the same license as the Plugins - SEO Friendly Images - Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2022-08-19 11:12:01+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/4.0.0-alpha.1\n"
+"Language: nl\n"
+"Project-Id-Version: Plugins - SEO Friendly Images - Development (trunk)\n"
+
+#. Author URI of the plugin/theme
+msgid "http://www.prelovac.com/vladimir"
+msgstr "http://www.prelovac.com/vladimir"
+
+#. Author of the plugin/theme
+msgid "Vladimir Prelovac"
+msgstr "Vladimir Prelovac"
+
+#. Description of the plugin/theme
+msgid "Automatically adds alt and title attributes to all your images. Improves traffic from search results and makes them W3C/xHTML valid as well."
+msgstr "Voegt automatisch alt- en titelkenmerken toe aan al je afbeeldingen. Verbetert het verkeer van zoekresultaten en maakt ze ook W3C/xHTML geldig."
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.prelovac.com/vladimir/wordpress-plugins/seo-friendly-images"
+msgstr "http://www.prelovac.com/vladimir/wordpress-plugins/seo-friendly-images"
+
+#: seo-friendly-images.class.php:532
+msgid "Version:"
+msgstr "Versie:"
+
+#: seo-friendly-images.class.php:495 seo-friendly-images.class.php:535
+msgid "Another fine WordPress plugin by"
+msgstr "Nog een prima WordPress-plugin van"
+
+#: seo-friendly-images.class.php:490
+msgid "Update options"
+msgstr "Opties bijwerken"
+
+#: seo-friendly-images.class.php:474
+msgid "Strip extension and delimiter characters from title tag"
+msgstr "Extensie- en scheidingstekens uit titel-tag verwijderen"
+
+#: seo-friendly-images.class.php:467
+msgid "( recommended )"
+msgstr "( aanbevolen )"
+
+#: seo-friendly-images.class.php:427
+msgid "All Attachments"
+msgstr "Alle bijlagen"
+
+#: seo-friendly-images.class.php:417
+msgid "All Pages"
+msgstr "Alle pagina's"
+
+#: seo-friendly-images.class.php:407
+msgid "All Posts"
+msgstr "Alle berichten"
+
+#: seo-friendly-images.class.php:401
+msgid "Singular Pages"
+msgstr "Bijzondere pagina's"
+
+#: seo-friendly-images.class.php:389
+msgid "Time Pages"
+msgstr "Tijd-pagina's"
+
+#: seo-friendly-images.class.php:386
+msgid "Day Pages"
+msgstr "Dag-pagina's"
+
+#: seo-friendly-images.class.php:383
+msgid "Month Pages"
+msgstr "Maand-pagina's"
+
+#: seo-friendly-images.class.php:380
+msgid "Year Pages"
+msgstr "Jaar-pagina's"
+
+#: seo-friendly-images.class.php:376
+msgid "Date Pages"
+msgstr "Datum-pagina's"
+
+#: seo-friendly-images.class.php:365
+msgid "All Authors"
+msgstr "Alle auteurs"
+
+#: seo-friendly-images.class.php:355
+msgid "All Taxonomies"
+msgstr "Alle taxonomiën"
+
+#: seo-friendly-images.class.php:345
+msgid "All Tags"
+msgstr "Alle tags"
+
+#: seo-friendly-images.class.php:338 seo-friendly-images.class.php:348
+#: seo-friendly-images.class.php:358 seo-friendly-images.class.php:368
+#: seo-friendly-images.class.php:410 seo-friendly-images.class.php:420
+#: seo-friendly-images.class.php:430
+msgid "or specify by IDs:"
+msgstr "of specificeer met ID's:"
+
+#: seo-friendly-images.class.php:335
+msgid "All Categories"
+msgstr "Alle categorieën"
+
+#: seo-friendly-images.class.php:329
+msgid "Archive Pages"
+msgstr "Archiefpagina's"
+
+#: seo-friendly-images.class.php:321
+msgid "Front Pages"
+msgstr "Voorpagina's"
+
+#: seo-friendly-images.class.php:318
+msgid "Home Pages"
+msgstr "Homepage 's"
+
+#: seo-friendly-images.class.php:314
+msgid "Main Pages"
+msgstr "Hoofd-pagina's"
+
+#: seo-friendly-images.class.php:308
+msgid "Rule"
+msgstr "Regel"
+
+#: seo-friendly-images.class.php:289
+msgid "Strip extension and delimiter characters (like dot dash etc) from the title tag"
+msgstr "Extensie- en scheidingstekens (zoals puntstreepjes enz.) Uit de title-tag verwijderen"
+
+#: seo-friendly-images.class.php:285 seo-friendly-images.class.php:470
+msgid "Override default image title tag"
+msgstr "Standaard titeltag voor afbeelding overschrijven"
+
+#: seo-friendly-images.class.php:282
+msgid "<span class=\"description\">( recommended )</span>"
+msgstr "<span class=\"description\"> (aanbevolen) </span>"
+
+#: seo-friendly-images.class.php:280 seo-friendly-images.class.php:465
+msgid "Override default image alt tag"
+msgstr "Standaard alt-tag voor afbeelding overschrijven"
+
+#: seo-friendly-images.class.php:275 seo-friendly-images.class.php:460
+msgid "example: %name photo"
+msgstr "voorbeeld: %name foto"
+
+#: seo-friendly-images.class.php:273 seo-friendly-images.class.php:458
+msgid "Image <b>TITLE</b> attribute:"
+msgstr "Kenmerk afbeelding <b> TITLE </b>:"
+
+#: seo-friendly-images.class.php:270 seo-friendly-images.class.php:455
+msgid "example: %name %title"
+msgstr "bijvoorbeeld:% naam% titel"
+
+#: seo-friendly-images.class.php:268 seo-friendly-images.class.php:453
+msgid "Image <b>ALT</b> attribute:"
+msgstr "Afbeeldingskenmerk <b> ALT </b>:"
+
+#: seo-friendly-images.class.php:259
+msgid "Setting title attribute to <b>\"%name photo\"</b> will produce title=\"Ferrari photo\""
+msgstr "Als je het titelkenmerk instelt op <b>\"% naamafbeelding\" </b>, wordt title =\"Ferrari-afbeelding\" \"geproduceerd"
+
+#: seo-friendly-images.class.php:258
+msgid "Setting alt attribute to <b>\"%name %title\"</b> will produce alt=\"Ferrari Car Pictures\""
+msgstr "Als je alt attribuut instelt op <b>\"% name% title\" </b>, wordt alt =\"Ferrari Car Pictures\" \"geproduceerd"
+
+#: seo-friendly-images.class.php:257
+msgid "In a post titled Car Pictures there is a picture named Ferrari.jpg"
+msgstr "In een bericht met de titel Car Pictures staat een afbeelding met de naam Ferrari.jpg"
+
+#: seo-friendly-images.class.php:256
+msgid "Example:"
+msgstr "Voorbeeld:"
+
+#: seo-friendly-images.class.php:253
+msgid "replaces post tags"
+msgstr "vervangt berichttags"
+
+#: seo-friendly-images.class.php:252
+msgid "replaces post category"
+msgstr "vervangt berichtcategorie"
+
+#: seo-friendly-images.class.php:251
+msgid "replaces image file name ( without extension )"
+msgstr "vervangt afbeeldingsbestandsnaam (zonder extensie)"
+
+#: seo-friendly-images.class.php:250
+msgid "replaces post excerpt"
+msgstr "vervangt berichtfragment"
+
+#: seo-friendly-images.class.php:249
+msgid "replaces post title"
+msgstr "vervangt berichttitel"
+
+#: seo-friendly-images.class.php:247
+msgid "Plugin supports several special tags:"
+msgstr "Plugin ondersteunt verschillende speciale tags:"
+
+#: seo-friendly-images.class.php:245
+msgid "SEO Friendly Images automatically adds ALT and Title attributes to all your images in all your posts. Default options are usually good but you can change them below."
+msgstr "SEO-vriendelijke afbeeldingen voegt automatisch ALT- en titelkenmerken toe aan al je afbeeldingen in al je berichten. Standaardopties zijn meestal goed, maar je kan ze hieronder wijzigen."
+
+#: seo-friendly-images.class.php:227 seo-friendly-images.class.php:514
+#: seo-friendly-images.class.php:529
+msgid "About"
+msgstr "Over"
+
+#: seo-friendly-images.class.php:227 seo-friendly-images.class.php:262
+#: seo-friendly-images.class.php:514
+msgid "Settings"
+msgstr "Instellingen"
+
+#. #-#-#-#-#  tmp-seo-image.pot (SEO Friendly Images 3.0.5)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: seo-friendly-images.class.php:226 seo-friendly-images.class.php:513
+msgid "SEO Friendly Images"
+msgstr "SEO Friendly Images"
+
+#: seo-friendly-images.class.php:200
+msgid "SEO Friendly Images settings saved."
+msgstr "Instellingen voor SEO-vriendelijke afbeeldingen opgeslagen."
